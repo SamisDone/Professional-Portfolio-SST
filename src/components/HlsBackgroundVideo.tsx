@@ -51,17 +51,35 @@ export default function HlsBackgroundVideo({
     let cancelled = false;
     let hls: { destroy: () => void } | null = null;
 
-    // Safari plays HLS natively, so the 130 KB library is only fetched for the
-    // browsers that genuinely need it.
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    // canPlayType is not a safe test on its own: Chrome answers "maybe" for
+    // HLS and then cannot play it, which leaves a dead video element behind a
+    // poster. Only trust native playback where Media Source Extensions are
+    // absent, which is the case that actually identifies iOS Safari.
+    const hasMse = typeof window.MediaSource !== "undefined";
+    const nativeHls = video.canPlayType("application/vnd.apple.mpegurl") !== "";
+
+    if (!hasMse && nativeHls) {
       video.src = STREAM_URL;
       void video.play().catch(() => {});
     } else {
       import("hls.js").then(({ default: Hls }) => {
-        if (cancelled || !Hls.isSupported()) return;
+        if (cancelled) return;
+        if (!Hls.isSupported()) {
+          // Last resort: let the element try the manifest itself.
+          if (nativeHls) {
+            video.src = STREAM_URL;
+            void video.play().catch(() => {});
+          }
+          return;
+        }
         const instance = new Hls({ capLevelToPlayerSize: true });
         instance.loadSource(STREAM_URL);
         instance.attachMedia(video);
+        // Autoplay can be refused even when muted; asking explicitly once the
+        // manifest is parsed is what actually starts the loop.
+        instance.on(Hls.Events.MANIFEST_PARSED, () => {
+          void video.play().catch(() => {});
+        });
         hls = instance;
       });
     }

@@ -135,7 +135,7 @@ export default function Contact() {
     >
       <div className="absolute inset-0">
         <div className="absolute inset-0 scale-y-[-1]">
-          <HlsBackgroundVideo posterOnly />
+          <HlsBackgroundVideo />
         </div>
         <div className="absolute inset-0 bg-black/60" />
       </div>
