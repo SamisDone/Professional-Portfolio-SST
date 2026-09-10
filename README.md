@@ -53,7 +53,8 @@ handler stands down inside form fields and while a dialog is open.
 
 The header nav is generated from the same `ROUTES` list the arrows walk, so the
 two orders cannot drift apart. The CV is a download, not a section, so it sits
-with the theme toggle rather than inline where it would read as the next step.
+off to the right rather than inline, where it read as the next step and sent
+people somewhere the arrow key did not.
 
 ## Running it
 
@@ -74,7 +75,7 @@ src/
                 Pager, PageTransition, ProjectDialog
   data/         content.ts, every string a visitor reads
   hooks/        useReducedMotion
-  lib/          theme.ts, routes.ts
+  lib/          routes.ts
 public/
   shots/        Real screenshots of the live projects
   og.png        Social card, regenerate if the positioning line changes
@@ -93,14 +94,19 @@ so an image fills its box with nothing cropped and no bars around it. Card
 height is governed by card **width**, never by a height cap on the image. A
 height cap is what was silently cropping them before.
 
-**The work rail** slides on its own. The track holds two copies of the set and
-wraps at the halfway mark, which lands on an identical frame, so the loop has no
-seam. It stops on hover, on focus, while a dialog is open, when the tab is
-hidden, and under reduced motion. Below `lg` it collapses to a column.
+**The work rail** slides continuously and never repeats. The track is
+translated left a fraction of a pixel per frame, and once the leading card has
+passed the edge it is sent to the back by rewriting its flex `order`, with the
+same width taken off the offset. Each project appears once.
 
-`scrollLeft` rounds to whole pixels. Adding a sub-pixel drift to the value read
-back off the element rounds straight down again and the rail never moves, so the
-position is accumulated as a float.
+`order` rather than rotating a React array is deliberate: a style write lands in
+the same frame as the transform, whereas rotating state leaves the DOM a render
+behind and jumps a card width on every recycle.
+
+Cards stretch to a common height, so any space left above the footer gets filled
+with content rather than the card being shrunk. It stops on hover, on focus,
+while a dialog is open, when the tab is hidden, and under reduced motion. Below
+`lg` it collapses to a column.
 
 **Case studies live in `ProjectDialog`,** not on the card. That is deliberate:
 an earlier version folded them behind a disclosure and hid them entirely on
