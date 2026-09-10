@@ -31,7 +31,7 @@ export default function Hero() {
 
           <h1
             tabIndex={-1}
-            className="h-hero font-display leading-[1.02] tracking-tight text-ink outline-none"
+            className="h-hero font-display leading-[1.1] text-ink outline-none"
           >
             <MaskText text={profile.name} immediate delay={0.08} />
           </h1>

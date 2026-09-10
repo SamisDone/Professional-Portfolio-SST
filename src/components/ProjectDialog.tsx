@@ -153,7 +153,7 @@ export default function ProjectDialog({
             <div className="flex flex-col p-5 sm:p-7 md:border-l md:border-rule">
               <h2
                 id="case-title"
-                className="font-display text-xl leading-tight tracking-tight text-ink sm:text-2xl"
+                className="font-display text-xl leading-tight text-ink sm:text-2xl"
               >
                 {project.title}
               </h2>

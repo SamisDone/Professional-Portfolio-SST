@@ -39,8 +39,9 @@ These were all explicit. Do not quietly undo them.
 5. **Horizontal scrolling on desktop where it helps**, but mobile responsive.
 6. **Fonts**, in order of instruction: not Instrument Serif, then not Geist
    ("identical to my boyfriend's"), then IBM Plex ("so freaking ugly"), then
-   Plus Jakarta, then finally **Climate Crisis for headings and Bricolage
-   Grotesque for text**, from zips supplied in the project root.
+   Plus Jakarta, then Climate Crisis for headings, and now **Lobster Two for
+   headings with Bricolage Grotesque for text**. All from zips supplied in the
+   project root; the Lobster Two files are in the three-family zip.
 7. **Colour**, in order: not the blue gradient, then espresso and baby pink,
    then dark green and strong red and bright white, then three Pantone
    references, then finally the **five hex values** now in use. And used
@@ -134,6 +135,14 @@ file fails to parse and Vercel rejects the whole deployment with "invalid
 vercel.json file provided". It has to be written `\\.`, which decodes to the
 `\.` the regex wants. Run the file through a JSON parser before pushing it.
 
+**A joined script needs the type settings undone, not just the family swapped.**
+Climate Crisis was a wide slab and every heading carried `tracking-tight` and
+leading near 1.0 to suit it. Both are wrong for Lobster Two: negative tracking
+collides the joins, and the deep descenders hit the next line. All fifteen
+`tracking-tight` classes came off, leading went to 1.1 and 1.18, and the mask
+boxes in `MaskText` were opened to 0.2em. The face is also far narrower, so the
+heading clamps had to grow or every heading under-filled its column by half.
+
 **Narrowing a rail card does not always shorten it.** The screenshot shrinks,
 but the stack chips underneath wrap onto another row and take the height
 straight back. At 1280x720 a card went from 265px wide to 250px and got
@@ -155,9 +164,10 @@ real figures or the project's actual capabilities. Never a mocked-up interface.
 **No em-dashes anywhere in the copy.** Deliberate. Verified as zero on every
 route.
 
-**Headings are short phrases.** Climate Crisis is very wide and long sentences
-in it wrap to three lines and swallow the screen. Where a heading needs more,
-the sentence goes underneath as a standfirst in Bricolage.
+**Headings are short phrases.** This began under Climate Crisis, which was very
+wide, and it holds under Lobster Two for a different reason: a joined script is
+harder to read at length than a grotesque. Where a heading needs more, the
+sentence goes underneath as a standfirst in Bricolage.
 
 ---
 
@@ -228,6 +238,8 @@ were run against the production build with Playwright:
 - Under `prefers-reduced-motion` the page still renders and the rail becomes
   manually scrollable rather than a frozen strip.
 - Zero em-dashes in the rendered text.
+- No heading computes to a weight other than 400. Only Lobster Two Regular is
+  shipped, so anything asking for bold gets a synthetic one.
 - No console errors.
 
 `scripts/capture-shots.mjs` re-shoots the project screenshots.

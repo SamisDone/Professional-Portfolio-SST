@@ -1,14 +1,21 @@
 /*
  * The two families, self-hosted from the files in the design handoff rather
- * than pulled from a package. Both are the variable builds, subset to Latin
- * and converted to woff2: Bricolage went 398kB to 149kB, Climate Crisis 3.5MB
- * to 46kB, which is the difference between shipping them and not.
+ * than pulled from a package, subset to Latin and converted to woff2:
+ * Bricolage went 398kB to 149kB, Lobster Two 116kB to 47kB.
+ *
+ * Only the Regular is shipped. Nothing on the page asks a heading for bold,
+ * and the Bold file is another 47kB for nothing. If a heading ever does need
+ * it, add the second face rather than letting the browser smear a synthetic
+ * one over a script face.
+ *
+ * The subset keeps every layout feature, because Lobster Two joins its
+ * letters through `calt` and `liga`. Strip those and the script comes apart.
  *
  * Licences sit beside them in src/fonts as required by the OFL.
  */
 @font-face {
-  font-family: "Climate Crisis";
-  src: url("./fonts/ClimateCrisis.woff2") format("woff2");
+  font-family: "Lobster Two";
+  src: url("./fonts/LobsterTwo.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
@@ -253,13 +260,13 @@ body.dialog-open {
 }
 
 .h-section {
-  font-size: clamp(1.3rem, 1.5vw + 1.35vh, 2.3rem);
-  line-height: 1.08;
+  font-size: clamp(1.45rem, 1.75vw + 1.6vh, 2.85rem);
+  line-height: 1.18;
 }
 
 .h-hero {
-  font-size: clamp(1.9rem, 3.2vw + 2.1vh, 4.5rem);
-  line-height: 1.02;
+  font-size: clamp(2.1rem, 3.8vw + 2.5vh, 5.5rem);
+  line-height: 1.1;
 }
 
 .page-pad {
@@ -278,10 +285,10 @@ body.dialog-open {
     padding-block: clamp(0.6rem, 1.7vh, 1.2rem);
   }
   .h-section {
-    font-size: clamp(1.15rem, 1.1vw + 1.05vh, 1.65rem);
+    font-size: clamp(1.25rem, 1.3vw + 1.25vh, 2rem);
   }
   .h-hero {
-    font-size: clamp(1.7rem, 2.4vw + 1.5vh, 3rem);
+    font-size: clamp(1.8rem, 2.55vw + 1.55vh, 3.5rem);
   }
   .stack-gap {
     gap: clamp(0.5rem, 1.3vh, 1rem);

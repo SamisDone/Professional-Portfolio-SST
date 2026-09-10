@@ -150,7 +150,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
     return (
       <figure className="m-0">
         <figcaption className="mb-3">
-          <h3 className="font-display text-base leading-tight tracking-tight text-ink">
+          <h3 className="font-display text-base leading-tight text-ink">
             The grades, including the dip
           </h3>
           <p className="mt-1.5 text-[13.5px] leading-snug text-muted">
@@ -170,7 +170,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
       <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <div className="grid gap-8 md:grid-cols-12">
           <Reveal className="md:col-span-5">
-            <h2 className="max-w-[16ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+            <h2 className="max-w-[16ch] h-section font-display leading-[1.18] text-ink">
               <MaskText text="The grades." />
             </h2>
             <p className="mt-2 max-w-[42ch] text-[14px] leading-snug text-muted">

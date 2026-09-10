@@ -16,7 +16,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
     <section id="research" className="scroll-mt-16 border-b border-rule">
       <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[22ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+          <h2 className="max-w-[22ch] h-section font-display leading-[1.18] text-ink">
             <MaskText text="Research." />
           </h2>
           <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
@@ -54,7 +54,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                               {m.kind}
                             </span>
-                            <h4 className="mt-2 flex items-start gap-2 font-display text-[15px] leading-tight tracking-tight text-ink sm:text-base">
+                            <h4 className="mt-2 flex items-start gap-2 font-display text-[15px] leading-tight text-ink sm:text-base">
                               <span className={m.href ? "group-hover:underline" : ""}>
                                 {m.title}
                               </span>

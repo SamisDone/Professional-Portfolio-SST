@@ -8,7 +8,7 @@ export default function About() {
       <div className="mx-auto grid max-w-shell gap-8 section-pad px-5 sm:px-8 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <Reveal>
-            <h2 className="max-w-[18ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+            <h2 className="max-w-[18ch] h-section font-display leading-[1.18] text-ink">
               <MaskText text="Build, then ask why." />
             </h2>
           </Reveal>

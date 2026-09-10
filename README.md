@@ -36,19 +36,32 @@ Yellow is the text accent at 12.0, coral at 5.7.
 
 ## Type
 
-Climate Crisis for headings, h1 through h3. Bricolage Grotesque for everything
-else. Both self-hosted from the files in `src/fonts`, taken from the variable
-builds in the design handoff rather than a package, subset to Latin and
-converted to woff2. Bricolage went 398kB to 149kB, Climate Crisis 3.5MB to
-46kB, which is the difference between shipping them and not. The OFL licences
-sit beside them as the licence requires.
+Lobster Two for headings, h1 through h3. Bricolage Grotesque for everything
+else. Both self-hosted from the files in `src/fonts`, taken from the design
+handoff rather than a package, subset to Latin and converted to woff2:
+Bricolage went 398kB to 149kB, Lobster Two 116kB to 47kB. The OFL licences sit
+beside them as the licence requires.
+
+Only Lobster Two's Regular is shipped. Every heading on the page computes to
+weight 400, and the Bold file is another 47kB for nothing. If a heading ever
+needs bold, add the second face rather than letting the browser smear a
+synthetic one over a script.
 
 Bricolage's file defaults to ExtraBold at 96pt optical size, so the `@font-face`
 has to declare `font-weight: 200 800` or every word on the page renders at 800.
 
-Climate Crisis is extremely wide, so headings are short phrases. Long sentences
-in it wrap to three lines and swallow the screen. Where a heading needs more,
-the sentence goes underneath as a standfirst in Libre Franklin.
+**Lobster Two is a joined script, and that governs three things.** Its letters
+connect through the `calt` and `liga` features, so the subset keeps every
+layout feature; strip them and the script comes apart. It takes no negative
+tracking, so no heading carries one. And its ascenders and descenders are deep,
+so headings are set at 1.1 to 1.18 rather than the near-solid leading a slab
+face tolerates, and the mask boxes in `MaskText` clear 0.2em below the baseline
+so a descender is not shaved off.
+
+Headings are still short phrases. That began as a constraint of the previous
+face, which was extremely wide, and it survives because a script is harder to
+read at length than a grotesque. Where a heading needs more, the sentence goes
+underneath as a standfirst in Bricolage.
 
 ## Structure
 

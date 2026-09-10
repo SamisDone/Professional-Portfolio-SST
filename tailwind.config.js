@@ -17,7 +17,7 @@ export default {
       },
       fontFamily: {
         sans: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],
-        display: ["'Climate Crisis'", "'Bricolage Grotesque'", "sans-serif"],
+        display: ["'Lobster Two'", "'Bricolage Grotesque'", "cursive"],
         // `font-mono` labels keep their tracking but take Bricolage, so the
         // page only ever uses the two families from the handoff.
         mono: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],

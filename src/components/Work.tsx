@@ -76,7 +76,7 @@ function Card({
           with the frames either side of it. */}
       <div className="mb-2.5 flex min-h-[2.4em] items-baseline gap-3">
         <span className="text-[12px] text-accent">{String(n).padStart(2, "0")}</span>
-        <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
+        <h3 className="font-display text-base leading-tight text-ink sm:text-lg">
           {project.title}
         </h3>
       </div>
@@ -137,7 +137,7 @@ function IndexBand() {
     <div className="index-band mx-auto max-w-shell px-5 pb-4 sm:px-8">
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-rule pt-3">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h3 className="font-display text-base leading-none tracking-tight text-ink">
+          <h3 className="font-display text-base leading-none text-ink">
             Everything else
           </h3>
           <p className="text-[13px] leading-none text-muted">
@@ -281,7 +281,7 @@ export default function Work() {
             <div>
               <h2
                 tabIndex={-1}
-                className="h-section font-display leading-[1.06] tracking-tight text-ink outline-none"
+                className="h-section font-display leading-[1.18] text-ink outline-none"
               >
                 <MaskText text="Projects that stand out." />
               </h2>

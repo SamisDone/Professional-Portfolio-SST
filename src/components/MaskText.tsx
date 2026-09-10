@@ -44,7 +44,7 @@ export default function MaskText({
           key={`${word}-${i}`}
           aria-hidden
           // The box has to clear descenders, or the mask shaves them off.
-          className="inline-block overflow-hidden pb-[0.12em] align-bottom"
+          className="inline-block overflow-hidden pb-[0.2em] align-bottom"
         >
           <motion.span
             className="inline-block"
