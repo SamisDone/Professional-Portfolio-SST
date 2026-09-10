@@ -69,7 +69,7 @@ export default function PageTransition() {
           ))}
 
           <motion.span
-            className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center text-[clamp(2rem,7vw,4.5rem)] font-semibold tracking-tightest text-on-accent"
+            className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center h-hero font-display tracking-tight text-on-accent"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: [0, 0, 1, 1, 0], y: [28, 22, 0, 0, -22] }}
             transition={{

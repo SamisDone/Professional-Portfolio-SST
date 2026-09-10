@@ -66,6 +66,12 @@ export type Project = {
   /** Real screenshot of the running product. No mockups, no illustrations. */
   shot?: string;
   shotAlt?: string;
+  /**
+   * Every shot is stored at 16:10 so every frame in the rail is the same
+   * shape. The frame matches that exactly: nothing is cropped at render time
+   * and there are never bars around an image.
+   */
+  shotRatio?: string;
   problem: string;
   approach: string;
   outcome: string;

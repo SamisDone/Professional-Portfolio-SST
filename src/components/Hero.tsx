@@ -31,19 +31,19 @@ export default function Hero() {
 
           <h1
             tabIndex={-1}
-            className="text-[clamp(2.4rem,6.6vw,4.5rem)] font-medium leading-[1] tracking-tightest text-ink outline-none"
+            className="h-hero font-display leading-[1.02] tracking-tight text-ink outline-none"
           >
-            <MaskText text={profile.name} immediate delay={0.15} />
+            <MaskText text={profile.name} immediate delay={0.08} />
           </h1>
 
           <motion.p
-            {...rise(0, 0.95)}
+            {...rise(0, 0.42)}
             className="mt-6 max-w-[46ch] text-[17px] leading-relaxed text-muted sm:text-lg"
           >
             {profile.positioning}
           </motion.p>
 
-          <motion.div {...rise(1, 0.95)} className="mt-7 flex flex-wrap gap-3">
+          <motion.div {...rise(1, 0.42)} className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/work"
               className="group inline-flex items-center gap-2.5 bg-accent-solid px-6 py-3.5 font-mono text-sm text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
@@ -68,8 +68,8 @@ export default function Hero() {
         </div>
 
         <motion.div
-          {...rise(2, 0.95)}
-          className="flex flex-col gap-7 self-end border-t border-rule pt-8 md:col-span-4 md:border-l md:border-t-0 md:pl-8 md:pt-0"
+          {...rise(2, 0.42)}
+          className="hero-aside flex flex-col gap-7 self-end border-t border-rule pt-8 md:col-span-4 md:border-l md:border-t-0 md:pl-8 md:pt-0"
         >
           <Attribution />
           <dl className="flex flex-col gap-5 font-mono text-[13px]">

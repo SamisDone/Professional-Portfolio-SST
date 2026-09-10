@@ -8,7 +8,7 @@ export default function NotFoundPage() {
         <p className="font-mono text-[13px] uppercase tracking-[0.2em] text-accent">
           404
         </p>
-        <h1 className="mt-6 max-w-[18ch] text-[clamp(2rem,5vw,3.5rem)] font-medium leading-[1.05] tracking-tightest text-ink">
+        <h1 className="mt-6 max-w-[18ch] text-[clamp(2rem,5vw,3.5rem)] font-display leading-[1.06] tracking-tight text-ink">
           That page does not exist.
         </h1>
         <div className="mt-10">

@@ -150,7 +150,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
     return (
       <figure className="m-0">
         <figcaption className="mb-3">
-          <h3 className="text-lg font-semibold tracking-tight text-ink">
+          <h3 className="font-display text-base leading-tight tracking-tight text-ink">
             The grades, including the dip
           </h3>
           <p className="mt-1.5 text-[13.5px] leading-snug text-muted">
@@ -167,12 +167,15 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
 
   return (
     <section className="border-b border-rule">
-      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <div className="grid gap-8 md:grid-cols-12">
           <Reveal className="md:col-span-5">
-            <h2 className="max-w-[16ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              <MaskText text="The grades, including the dip." />
+            <h2 className="max-w-[16ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+              <MaskText text="The grades." />
             </h2>
+            <p className="mt-2 max-w-[42ch] text-[14px] leading-snug text-muted">
+              Including the dip.
+            </p>
             <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
               {trajectoryNote}
             </p>

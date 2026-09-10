@@ -13,10 +13,15 @@ export default {
         accent: "hsl(var(--accent))",
         "accent-solid": "hsl(var(--accent-solid))",
         "on-accent": "hsl(var(--on-accent))",
+        violet: "hsl(var(--violet))",
+        coral: "hsl(var(--coral))",
       },
       fontFamily: {
-        sans: ["'Plus Jakarta Sans Variable'", "system-ui", "sans-serif"],
-        mono: ["'JetBrains Mono Variable'", "ui-monospace", "monospace"],
+        sans: ["'Libre Franklin Variable'", "system-ui", "sans-serif"],
+        display: ["'Climate Crisis Variable'", "'Libre Franklin Variable'", "sans-serif"],
+        // Existing `font-mono` labels keep their spacing but drop to Libre
+        // Franklin, so the page only ever uses the two specified families.
+        mono: ["'Libre Franklin Variable'", "system-ui", "sans-serif"],
       },
       // One radius scale, near-sharp. A technical document, not a card deck.
       borderRadius: { none: "0", sm: "2px", DEFAULT: "3px", md: "3px", lg: "4px" },

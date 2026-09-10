@@ -2,17 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { SunIcon, MoonIcon, ListIcon, XIcon } from "@phosphor-icons/react";
+import { SunIcon, MoonIcon, ListIcon, XIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
+import { ROUTES } from "../lib/routes";
 import { applyTheme, storedTheme, defaultTheme, type Theme } from "../lib/theme";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
-const LINKS = [
-  { label: "Work", to: "/work" },
-  { label: "Experience", to: "/experience" },
-  { label: "Research", to: "/research" },
-  { label: "About", to: "/about" },
-];
+/**
+ * Derived from the same list the arrow keys walk, so the nav order and the
+ * paging order can never drift apart. Home is the wordmark, so it is dropped.
+ *
+ * The CV used to sit inline after About, which made it read as the next
+ * section even though it is a PDF download and the arrow key went to the
+ * contact page instead. It now lives with the theme toggle as a utility.
+ */
+const LINKS = ROUTES.filter((r) => r.path !== "/");
 
 export default function Header() {
   // Resolved once on mount rather than pushed in from an effect.
@@ -93,8 +97,8 @@ export default function Header() {
         <nav className="hidden items-center gap-7 sm:flex">
           {LINKS.map((l) => (
             <NavLink
-              key={l.to}
-              to={l.to}
+              key={l.path}
+              to={l.path}
               className={({ isActive }) =>
                 `nav-link font-mono text-[13px] transition-colors hover:text-ink ${
                   isActive ? "is-active text-ink" : "text-muted"
@@ -104,17 +108,18 @@ export default function Header() {
               {l.label}
             </NavLink>
           ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
           <a
             href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-link font-mono text-[13px] text-muted transition-colors hover:text-ink"
+            className="hidden items-center gap-1.5 border border-rule px-3 py-1.5 font-mono text-[12px] text-ink transition-colors hover:border-accent sm:inline-flex"
           >
             CV
+            <ArrowUpRightIcon size={12} weight="bold" />
           </a>
-        </nav>
-
-        <div className="flex items-center gap-1">
           <button
             ref={toggleRef}
             onClick={toggle}
@@ -123,12 +128,6 @@ export default function Header() {
           >
             {theme === "dark" ? <SunIcon size={17} /> : <MoonIcon size={17} />}
           </button>
-          <Link
-            to="/contact"
-            className="hidden bg-accent-solid px-4 py-2 font-mono text-[13px] text-on-accent transition-transform hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] sm:block"
-          >
-            Get in touch
-          </Link>
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -152,8 +151,8 @@ export default function Header() {
           <div className="mx-auto flex max-w-shell flex-col px-5 py-2">
             {LINKS.map((l) => (
               <NavLink
-                key={l.to}
-                to={l.to}
+                key={l.path}
+                to={l.path}
                 className={({ isActive }) =>
                   `border-b border-rule py-3.5 text-left font-mono text-sm ${
                     isActive ? "text-accent" : "text-ink"
@@ -167,16 +166,10 @@ export default function Header() {
               href={profile.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-rule py-3.5 font-mono text-sm text-ink"
+              className="mb-3 mt-4 border border-rule px-4 py-3 text-center font-mono text-sm text-ink"
             >
-              CV
+              Download CV
             </a>
-            <Link
-              to="/contact"
-              className="mb-3 mt-4 bg-accent-solid px-4 py-3 text-center font-mono text-sm text-on-accent"
-            >
-              Get in touch
-            </Link>
           </div>
         </nav>
       )}

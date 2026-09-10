@@ -34,15 +34,20 @@ export default function Backdrop() {
       <motion.div
         {...drift([0, 120, -60, 0], [0, -80, 60, 0], 34)}
         className="absolute -left-[18vw] -top-[22vh] h-[70vh] w-[70vh] rounded-full opacity-[0.42] blur-[110px]"
-        style={{ background: "radial-gradient(circle, hsl(var(--accent)) 0%, transparent 68%)" }}
+        style={{ background: "radial-gradient(circle, hsl(var(--accent-solid)) 0%, transparent 68%)" }}
       />
       <motion.div
         {...drift([0, -100, 70, 0], [0, 70, -50, 0], 44)}
         className="absolute -bottom-[26vh] -right-[14vw] h-[78vh] w-[78vh] rounded-full opacity-[0.30] blur-[120px]"
-        style={{ background: "radial-gradient(circle, hsl(var(--ink)) 0%, transparent 68%)" }}
+        style={{ background: "radial-gradient(circle, hsl(var(--violet)) 0%, transparent 66%)" }}
       />
 
       <div className="backdrop-grid absolute inset-0" />
+      <motion.div
+        {...drift([0, 70, -40, 0], [0, 50, -70, 0], 39)}
+        className="absolute left-1/3 top-1/4 h-[52vh] w-[52vh] rounded-full opacity-[0.18] blur-[130px]"
+        style={{ background: "radial-gradient(circle, hsl(var(--coral)) 0%, transparent 70%)" }}
+      />
       <div className="backdrop-grain absolute inset-0" />
 
       {/* Keeps type legible over the brightest part of the fields. */}

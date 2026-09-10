@@ -3,52 +3,63 @@ import { proof } from "../data/content";
 import Reveal from "./Reveal";
 
 /**
- * A thin band of four claims with the receipt attached to each. It sits
- * directly under the hero because this is what a reviewer needs in the first
- * ten seconds, and every figure links to the thing that proves it.
+ * Four claims with the receipt attached to each, directly under the hero.
+ *
+ * Previously this was a full-bleed row whose cell borders ran past the page
+ * gutters, so the first and last claims sat in dead space and a hover tint on
+ * one cell made the row look like a half-selected table. It is now a plain
+ * four-column grid inside the shell: hairlines only between the columns, and
+ * hover moves the arrow and the value rather than filling the cell.
  */
 export default function Proof() {
   return (
-    <section className="border-b border-rule bg-raised">
+    <section className="border-t border-rule">
       <div className="mx-auto max-w-shell px-5 sm:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {proof.map((p, i) => {
-            const Tag = p.href ? "a" : "div";
+        <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {proof.map((item, i) => {
+            const Tag = item.href ? "a" : "div";
             return (
               <Reveal
-                key={p.label}
+                key={item.label}
                 index={i}
-                className={`border-rule ${i > 0 ? "border-t sm:border-t-0" : ""} ${
-                  i % 2 === 1 ? "sm:border-l" : ""
-                } ${i > 1 ? "sm:border-t lg:border-t-0" : ""} ${
-                  i === 2 ? "lg:border-l" : ""
-                }`}
+                className={[
+                  // Hairlines sit between columns, never on the outer edges.
+                  "border-rule",
+                  i > 0 ? "border-t sm:border-t-0" : "",
+                  i % 2 === 1 ? "sm:border-l" : "",
+                  i > 1 ? "sm:border-t" : "",
+                  "lg:border-t-0",
+                  i > 0 ? "lg:border-l" : "",
+                ].join(" ")}
               >
                 <Tag
-                  {...(p.href
-                    ? { href: p.href, target: "_blank", rel: "noopener noreferrer" }
+                  {...(item.href
+                    ? { href: item.href, target: "_blank", rel: "noopener noreferrer" }
                     : {})}
-                  className={`group flex h-full flex-col justify-between gap-3 py-7 sm:px-6 sm:first:pl-0 ${
-                    p.href ? "transition-colors hover:bg-paper" : ""
-                  }`}
+                  className={`group flex h-full flex-col gap-2 py-6 sm:py-7 ${
+                    i === 0 ? "lg:pr-6" : "lg:px-6"
+                  } ${i === proof.length - 1 ? "lg:pr-0" : ""}`}
                 >
-                  <span className="font-mono text-[2rem] leading-none text-accent">
-                    {p.value}
-                  </span>
-                  <span className="flex items-start gap-1.5 text-sm leading-snug text-muted">
-                    {p.label}
-                    {p.href && (
+                  <dt className="flex items-start justify-between gap-3">
+                    <span className="font-display text-[1.75rem] leading-none text-accent transition-transform duration-300 group-hover:-translate-y-0.5">
+                      {item.value}
+                    </span>
+                    {item.href && (
                       <ArrowUpRightIcon
-                        size={13}
-                        className="mt-0.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                        size={14}
+                        weight="bold"
+                        className="mt-1 shrink-0 text-muted transition-all duration-300 group-hover:-translate-y-0.5 group-hover:text-accent"
                       />
                     )}
-                  </span>
+                  </dt>
+                  <dd className="max-w-[28ch] text-[13.5px] leading-snug text-muted">
+                    {item.label}
+                  </dd>
                 </Tag>
               </Reveal>
             );
           })}
-        </div>
+        </dl>
       </div>
     </section>
   );

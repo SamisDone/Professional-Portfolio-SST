@@ -14,11 +14,14 @@ export default function Research({ aside }: { aside?: ReactNode }) {
 
   return (
     <section id="research" className="scroll-mt-16 border-b border-rule">
-      <div className="mx-auto max-w-shell px-5 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[22ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-            <MaskText text="Papers and competitions, the work that got reviewed." />
+          <h2 className="max-w-[22ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+            <MaskText text="Research." />
           </h2>
+          <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
+            Papers and competitions, the work that got reviewed.
+          </p>
         </Reveal>
 
         <div className="mt-7 grid gap-10 lg:grid-cols-12 lg:gap-14">
@@ -29,7 +32,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                 className="border-t border-ink/15 pt-5 first:border-ink/30 [&:not(:last-child)]:pb-7"
               >
               <div className="grid gap-4 md:grid-cols-12">
-                <h3 className="font-mono text-sm text-muted md:col-span-2">{year}</h3>
+                <h3 className="font-display text-sm text-accent md:col-span-2">{year}</h3>
 
                 <ul className="flex flex-col gap-5 md:col-span-10">
                   {research
@@ -51,7 +54,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                               {m.kind}
                             </span>
-                            <h4 className="mt-2 flex items-start gap-2 text-lg font-semibold leading-snug tracking-tight text-ink sm:text-xl">
+                            <h4 className="mt-2 flex items-start gap-2 font-display text-[15px] leading-tight tracking-tight text-ink sm:text-base">
                               <span className={m.href ? "group-hover:underline" : ""}>
                                 {m.title}
                               </span>

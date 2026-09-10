@@ -5,7 +5,7 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 type Props = {
   src: string;
   alt: string;
-  /** Tailwind aspect class. The skeleton uses the same box, so nothing shifts. */
+  /** CSS aspect-ratio matching the file, e.g. "16 / 10". */
   ratio?: string;
   priority?: boolean;
   className?: string;
@@ -23,7 +23,7 @@ type Props = {
 export default function Figure({
   src,
   alt,
-  ratio = "aspect-[16/10]",
+  ratio = "16 / 10",
   priority = false,
   className = "",
 }: Props) {
@@ -43,7 +43,8 @@ export default function Figure({
   return (
     <div
       ref={boxRef}
-      className={`relative overflow-hidden border border-rule bg-raised ${ratio} ${className}`}
+      style={{ aspectRatio: ratio }}
+      className={`relative overflow-hidden border border-rule bg-raised ${className}`}
     >
       {!revealed && (
         <div className="absolute inset-0 skeleton" aria-hidden="true">
@@ -84,7 +85,7 @@ export default function Figure({
           onLoad={() => setLoaded(true)}
           // An error should not strand the reader on a skeleton forever.
           onError={() => setLoaded(true)}
-          className="block h-full w-full object-cover object-top transition-transform duration-[900ms] ease-out hover:scale-[1.03]"
+          className="block h-full w-full object-cover object-center transition-transform duration-[900ms] ease-out hover:scale-[1.02]"
         />
       </motion.div>
     </div>

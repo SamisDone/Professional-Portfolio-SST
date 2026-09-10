@@ -11,11 +11,14 @@ import MaskText from "./MaskText";
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-16 border-b border-rule bg-raised">
-      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[20ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-            <MaskText text="Where I have been paid to build." />
+          <h2 className="max-w-[20ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+            <MaskText text="Paid work." />
           </h2>
+          <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
+            Where someone has paid me to build the thing.
+          </p>
         </Reveal>
 
         <ol className="mt-8 border-t border-ink/25 sm:mt-10">
@@ -30,7 +33,7 @@ export default function Experience() {
                 </div>
 
                 <div className="md:col-span-9">
-                  <h3 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+                  <h3 className="font-display text-lg leading-tight tracking-tight text-ink sm:text-xl">
                     {role.org}
                   </h3>
                   <p className="mt-1.5 font-mono text-[13px] text-accent">

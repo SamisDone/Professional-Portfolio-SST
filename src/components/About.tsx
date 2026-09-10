@@ -5,11 +5,11 @@ import MaskText from "./MaskText";
 export default function About() {
   return (
     <section id="about" className="scroll-mt-16 border-b border-rule">
-      <div className="mx-auto grid max-w-shell gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-12 lg:gap-16">
+      <div className="mx-auto grid max-w-shell gap-8 section-pad px-5 sm:px-8 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <Reveal>
-            <h2 className="max-w-[18ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              <MaskText text="Half of my time builds. The other half asks why." />
+            <h2 className="max-w-[18ch] h-section font-display leading-[1.06] tracking-tight text-ink">
+              <MaskText text="Build, then ask why." />
             </h2>
           </Reveal>
 

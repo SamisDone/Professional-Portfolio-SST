@@ -36,7 +36,7 @@ export default function MaskText({
       className={className}
       initial="hidden"
       {...animateProps}
-      transition={{ staggerChildren: 0.055, delayChildren: delay }}
+      transition={{ staggerChildren: 0.045, delayChildren: delay }}
       aria-label={text}
     >
       {words.map((word, i) => (
@@ -52,7 +52,7 @@ export default function MaskText({
               hidden: { y: "108%" },
               shown: { y: 0 },
             }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             {word}
             {i < words.length - 1 ? "\u00A0" : ""}

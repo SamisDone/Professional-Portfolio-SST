@@ -17,11 +17,11 @@ export default function OtherWork() {
 
   return (
     <section className="border-b border-rule bg-raised">
-      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <h2 className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              <MaskText text="Everything else on the shelf." />
+            <h2 className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-display leading-[1.06] tracking-tight text-ink">
+              <MaskText text="Everything else." />
             </h2>
             <a
               href={profile.github}
@@ -50,7 +50,7 @@ export default function OtherWork() {
                     <span className="font-mono text-[12px] text-muted">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-xl font-medium tracking-tight text-ink sm:text-2xl">
+                    <span className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
                       {p.title}
                     </span>
                     <span className="col-span-2 mt-1.5 font-mono text-[12px] text-muted sm:col-span-1 sm:mt-0">
@@ -96,7 +96,7 @@ export default function OtherWork() {
 
                         <div className="flex flex-col gap-5 sm:col-span-5">
                           {p.shot && (
-                            <Figure src={p.shot} alt={p.shotAlt ?? ""} />
+                            <Figure src={p.shot} alt={p.shotAlt ?? ""} ratio={p.shotRatio} />
                           )}
                           <p className="font-mono text-[12px] leading-relaxed text-muted">
                             {p.stack.join(", ")}

@@ -32,7 +32,7 @@ export default function Page({
         delay: reduced ? 0 : 0.34,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className={`flex flex-1 flex-col pb-20 sm:pb-24 ${center ? "justify-center" : ""}`}
+      className={`flex flex-1 flex-col page-pad ${center ? "justify-center" : ""}`}
     >
       {children}
     </motion.main>

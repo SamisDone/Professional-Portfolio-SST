@@ -72,11 +72,11 @@ export default function Contact() {
 
   return (
     <section id="contact" className="scroll-mt-16">
-      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <h2 className="max-w-[14ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
+              <h2 className="max-w-[14ch] h-section font-display leading-[1.06] tracking-tight text-ink">
                 <MaskText text="Get in touch." />
               </h2>
               <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">

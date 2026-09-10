@@ -56,12 +56,12 @@ function Case({ project, n }: { project: Project; n: number }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <article className="flex flex-col">
-      <div className="mb-2.5 flex items-baseline gap-3">
+    <article className="flex h-full flex-col">
+      <div className="mb-2.5 flex min-h-[2.5em] items-baseline gap-3">
         <span className="font-mono text-[12px] text-accent">
           {String(n).padStart(2, "0")}
         </span>
-        <h3 className="text-lg font-semibold tracking-tight text-ink sm:text-xl">
+        <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
           {project.title}
         </h3>
       </div>
@@ -69,19 +69,21 @@ function Case({ project, n }: { project: Project; n: number }) {
       <Figure
         src={project.shot!}
         alt={project.shotAlt ?? ""}
-        ratio="aspect-[21/9]"
+        ratio={project.shotRatio}
         priority
       />
 
-      <p className="mt-3.5 text-[14.5px] leading-snug text-ink">{project.summary}</p>
-      <div className="mt-2.5">
+      <p data-card-summary className="mt-3.5 text-[14.5px] leading-snug text-ink">
+        {project.summary}
+      </p>
+      <div data-card-meta className="mt-2.5">
         <Meta project={project} />
       </div>
 
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="group mt-3.5 flex items-center justify-between gap-3 border-t border-rule pt-2.5 text-left"
+        className="group mt-3.5 flex min-h-[2.4rem] items-center justify-between gap-3 border-t border-rule pt-2.5 text-left"
       >
         <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
           {open ? "Hide the reasoning" : "Why it works this way"}
@@ -118,7 +120,8 @@ function Case({ project, n }: { project: Project; n: number }) {
         )}
       </AnimatePresence>
 
-      <div className="mt-4">
+      {/* mt-auto pins the actions to the foot of every card. */}
+      <div className="mt-auto pt-4">
         <Links project={project} />
       </div>
     </article>
@@ -128,8 +131,8 @@ function Case({ project, n }: { project: Project; n: number }) {
 /** The last slide: everything that is not one of the five. */
 function IndexSlide() {
   return (
-    <article className="flex h-full flex-col justify-center border border-rule bg-raised/60 p-7 backdrop-blur-sm">
-      <h3 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+    <article className="index-slide flex h-full flex-col justify-center border border-rule bg-raised/60 p-6 backdrop-blur-sm">
+      <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
         Everything else
       </h3>
       <p className="mt-2 text-[15px] leading-relaxed text-muted">
@@ -216,10 +219,13 @@ export default function Work() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2
               tabIndex={-1}
-              className="max-w-[20ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink outline-none"
+              className="max-w-[20ch] h-section font-display leading-[1.06] tracking-tight text-ink outline-none"
             >
-              <MaskText text="Five builds, and why each one works the way it does." />
+              <MaskText text="Five builds." />
             </h2>
+            <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
+              And why each one works the way it does.
+            </p>
 
             {/* Rail controls, only where the rail exists. */}
             <div className="hidden items-center gap-2 lg:flex">
@@ -250,21 +256,21 @@ export default function Work() {
         data-arrow-surface
         role="region"
         aria-label="Featured projects. Scrolls sideways on wide screens; use the arrow buttons or scroll."
-        className="work-rail mt-7 flex flex-col gap-8 px-5 pb-16 sm:mt-16 sm:px-8 sm:pb-20 lg:flex-row lg:snap-x lg:snap-mandatory lg:items-start lg:gap-10 lg:overflow-x-auto lg:pb-0"
+        className="work-rail mt-7 flex flex-col gap-8 px-5 pb-16 sm:mt-16 sm:px-8 sm:pb-20 lg:flex-row lg:snap-x lg:snap-mandatory lg:items-stretch lg:gap-10 lg:overflow-x-auto lg:pb-0"
       >
         {featured.map((project, i) => (
           <div
             key={project.slug}
             data-case
-            className="lg:w-[min(40vw,480px)] lg:shrink-0 lg:snap-start"
+            className="lg:shrink-0 lg:snap-start"
           >
-            <Reveal index={i}>
+            <Reveal index={i} className="h-full">
               <Case project={project} n={i + 1} />
             </Reveal>
           </div>
         ))}
-        <div className="lg:w-[min(34vw,400px)] lg:shrink-0 lg:snap-start">
-          <Reveal index={featured.length}>
+        <div className="index-card lg:shrink-0 lg:snap-start">
+          <Reveal index={featured.length} className="h-full">
             <IndexSlide />
           </Reveal>
         </div>
