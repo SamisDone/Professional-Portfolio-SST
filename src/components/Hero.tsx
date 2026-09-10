@@ -2,19 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import HlsBackgroundVideo from "./HlsBackgroundVideo";
 import { profile } from "../data/content";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 export default function Hero() {
   const [roleIndex, setRoleIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
+    if (reduced) return;
     const id = window.setInterval(() => {
       setRoleIndex((i) => (i + 1) % profile.roles.length);
-    }, 2000);
+    }, 2400);
     return () => window.clearInterval(id);
-  }, []);
+  }, [reduced]);
 
   useEffect(() => {
+    if (reduced) return;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.fromTo(
@@ -36,16 +40,16 @@ export default function Hero() {
       );
     }, containerRef);
     return () => ctx.revert();
-  }, []);
+  }, [reduced]);
 
   return (
     <section
       id="hero"
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden flex items-center justify-center"
+      className="relative min-h-[100svh] w-full overflow-hidden flex items-center justify-center"
     >
       <HlsBackgroundVideo />
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/45" />
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-bg to-transparent" />
 
       <div className="relative z-10 flex flex-col items-center text-center px-6">
@@ -57,15 +61,24 @@ export default function Hero() {
           {profile.name}
         </h1>
 
-        <p className="blur-in text-base md:text-lg text-text-primary/80 mb-2">
-          A{" "}
-          <span
-            key={roleIndex}
-            className="font-display italic text-text-primary animate-role-fade-in inline-block"
-          >
-            {profile.roles[roleIndex]}
-          </span>{" "}
-          based in Bangladesh.
+        <p className="blur-in text-base md:text-lg text-text-primary/80 mb-3 flex items-baseline justify-center gap-[0.28em]">
+          <span>A</span>
+          <span className="inline-grid justify-items-center">
+            {/* Every role occupies the same grid cell, so the box is as wide as
+                the longest word and the sentence never reflows mid-rotation. */}
+            {profile.roles.map((role, i) => (
+              <span
+                key={role}
+                aria-hidden={i !== roleIndex}
+                className={`col-start-1 row-start-1 font-display italic text-text-primary text-xl md:text-2xl leading-none transition-opacity duration-500 ${
+                  i === roleIndex ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {role}
+              </span>
+            ))}
+          </span>
+          <span>based in Bangladesh.</span>
         </p>
 
         <p className="blur-in text-sm md:text-base text-muted max-w-md mb-12">
@@ -84,7 +97,7 @@ export default function Hero() {
               style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
             />
             <span className="relative z-10 flex items-center rounded-full text-sm px-7 py-3.5 bg-text-primary text-bg group-hover:bg-bg group-hover:text-text-primary transition-colors duration-300">
-              See Works
+              See my work
             </span>
           </button>
           <a
@@ -100,7 +113,7 @@ export default function Hero() {
               style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
             />
             <span className="relative z-10 flex items-center rounded-full text-sm px-7 py-3.5 border-2 border-stroke group-hover:border-bg bg-bg text-text-primary transition-colors duration-300">
-              Reach out...
+              Get in touch
             </span>
           </a>
         </div>

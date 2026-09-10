@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { markIntroSeen } from "../lib/intro";
 
-const WORDS = ["Design", "Create", "Inspire"];
-const DURATION = 2700;
+// Tied to what she actually does, rather than the generic
+// "Design / Create / Inspire" agency filler this used to show.
+const WORDS = ["Build", "Research", "Ship"];
+const DURATION = 1400;
 
 type Props = {
   onComplete: () => void;
@@ -15,15 +18,16 @@ export default function LoadingScreen({ onComplete }: Props) {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    markIntroSeen();
+
     const tick = (t: number) => {
       if (startRef.current === null) startRef.current = t;
-      const elapsed = t - startRef.current;
-      const progress = Math.min(elapsed / DURATION, 1);
+      const progress = Math.min((t - startRef.current) / DURATION, 1);
       setCount(Math.floor(progress * 100));
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
-        window.setTimeout(onComplete, 400);
+        window.setTimeout(onComplete, 220);
       }
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -33,20 +37,24 @@ export default function LoadingScreen({ onComplete }: Props) {
   useEffect(() => {
     const id = window.setInterval(() => {
       setWordIndex((i) => (i + 1) % WORDS.length);
-    }, 900);
+    }, 420);
     return () => window.clearInterval(id);
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-bg flex flex-col justify-between overflow-hidden">
+    <div
+      className="fixed inset-0 z-[9999] bg-bg flex flex-col justify-between overflow-hidden"
+      role="status"
+      aria-label="Loading"
+    >
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="pt-8 pl-6 md:pt-10 md:pl-10"
       >
         <span className="text-xs text-muted uppercase tracking-[0.3em]">
-          Portfolio
+          Samonwita Sarker
         </span>
       </motion.div>
 
@@ -54,10 +62,10 @@ export default function LoadingScreen({ onComplete }: Props) {
         <AnimatePresence mode="wait">
           <motion.div
             key={WORDS[wordIndex]}
-            initial={{ y: 20, opacity: 0 }}
+            initial={{ y: 14, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            exit={{ y: -14, opacity: 0 }}
+            transition={{ duration: 0.24, ease: "easeOut" }}
             className="text-4xl md:text-6xl lg:text-7xl font-display italic text-text-primary/80"
           >
             {WORDS[wordIndex]}

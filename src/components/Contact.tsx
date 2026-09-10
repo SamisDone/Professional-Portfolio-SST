@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { AnimatePresence, motion } from "framer-motion";
 import HlsBackgroundVideo from "./HlsBackgroundVideo";
 import { profile } from "../data/content";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 // FormSubmit.co needs no signup or API key — it just emails whatever hits
 // this endpoint to profile.email. The very first submission ever sent to a
@@ -36,7 +37,7 @@ function validateForm(form: { name: string; email: string; message: string }): F
   return errors;
 }
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({ id, message }: { id: string; message?: string }) {
   return (
     <AnimatePresence>
       {message && (
@@ -45,6 +46,8 @@ function FieldError({ message }: { message?: string }) {
           animate={{ opacity: 1, y: 0, height: "auto" }}
           exit={{ opacity: 0, y: -4, height: 0 }}
           transition={{ duration: 0.2 }}
+          id={id}
+          role="alert"
           className="text-xs text-red-400 mt-1.5 pl-1"
         >
           {message}
@@ -58,11 +61,15 @@ export default function Contact() {
   const marqueeRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState(false);
+  const reduced = useReducedMotion();
+
+  // Validation is derived during render once the form has been submitted
+  // once, rather than pushed into state from an effect.
+  const errors: FieldErrors = touched ? validateForm(form) : {};
 
   useEffect(() => {
-    if (!marqueeRef.current) return;
+    if (!marqueeRef.current || reduced) return;
     const ctx = gsap.context(() => {
       gsap.to(marqueeRef.current, {
         xPercent: -50,
@@ -72,7 +79,7 @@ export default function Contact() {
       });
     });
     return () => ctx.revert();
-  }, []);
+  }, [reduced]);
 
   // Auto-dismiss success banner after 8 seconds
   useEffect(() => {
@@ -81,18 +88,10 @@ export default function Contact() {
     return () => window.clearTimeout(id);
   }, [status]);
 
-  // Re-validate on field changes after first submit attempt
-  useEffect(() => {
-    if (touched) {
-      setErrors(validateForm(form));
-    }
-  }, [form, touched]);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const fieldErrors = validateForm(form);
-    setErrors(fieldErrors);
     setTouched(true);
 
     if (Object.keys(fieldErrors).length > 0) return;
@@ -116,7 +115,6 @@ export default function Contact() {
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
       setTouched(false);
-      setErrors({});
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -137,7 +135,7 @@ export default function Contact() {
     >
       <div className="absolute inset-0">
         <div className="absolute inset-0 scale-y-[-1]">
-          <HlsBackgroundVideo />
+          <HlsBackgroundVideo posterOnly />
         </div>
         <div className="absolute inset-0 bg-black/60" />
       </div>
@@ -249,43 +247,66 @@ export default function Contact() {
               </AnimatePresence>
 
               <div>
-                <label className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block">
+                <label
+                  htmlFor="contact-name"
+                  className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block"
+                >
                   Name
                 </label>
                 <input
+                  id="contact-name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
                   value={form.name}
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                   placeholder="Your name"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "contact-name-error" : undefined}
                   className={inputCls("name")}
                 />
-                <FieldError message={errors.name} />
+                <FieldError id="contact-name-error" message={errors.name} />
               </div>
               <div>
-                <label className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block">
+                <label
+                  htmlFor="contact-email"
+                  className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block"
+                >
                   Email
                 </label>
                 <input
+                  id="contact-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                   placeholder="you@example.com"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "contact-email-error" : undefined}
                   className={inputCls("email")}
                 />
-                <FieldError message={errors.email} />
+                <FieldError id="contact-email-error" message={errors.email} />
               </div>
               <div>
-                <label className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block">
+                <label
+                  htmlFor="contact-message"
+                  className="text-xs text-muted uppercase tracking-[0.2em] mb-2 block"
+                >
                   Message
                 </label>
                 <textarea
+                  id="contact-message"
+                  name="message"
                   rows={4}
                   value={form.message}
                   onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   placeholder="What's on your mind?"
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? "contact-message-error" : undefined}
                   className={`${inputCls("message")} resize-none`}
                 />
-                <FieldError message={errors.message} />
+                <FieldError id="contact-message-error" message={errors.message} />
               </div>
 
               <button

@@ -20,6 +20,9 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Reserve the scrollbar so locking body scroll for a modal doesn't shift
+     the page sideways underneath it. */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -110,4 +113,51 @@ body.menu-open {
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--stroke));
   border-radius: 999px;
+}
+
+/* Keyboard focus. The project cards, the nav pills and the form controls all
+   suppressed the default outline, which left tab navigation invisible. */
+:focus-visible {
+  outline: 2px solid #9dbbd9;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Off-screen until tabbed to — the first stop for a keyboard user. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  z-index: 10000;
+  transform: translate(-50%, -200%);
+  background: hsl(var(--text));
+  color: hsl(var(--bg));
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
+/*
+ * Honour the OS-level motion preference. The React components already skip
+ * their GSAP timelines and infinite loops; this catches the purely decorative
+ * CSS animations and any transition the components don't own.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

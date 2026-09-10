@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { profile } from "../data/content";
 
+// Every major section is reachable from here. The research and publication
+// record used to be scroll-only, which meant the strongest credentials on the
+// page were the hardest ones to find.
 const LINKS = [
-  { label: "Home", id: "hero" },
   { label: "Work", id: "work" },
+  { label: "About", id: "about" },
+  { label: "Research", id: "research" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("hero");
+  const [active, setActive] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -55,8 +59,8 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 px-4">
         <div
-          className={`inline-flex items-center rounded-full backdrop-blur-md border border-white/10 bg-surface px-2 py-2 transition-shadow duration-300 ${
-            scrolled ? "shadow-md shadow-black/10" : ""
+          className={`inline-flex items-center rounded-full backdrop-blur-xl border border-white/10 bg-surface/80 px-2 py-2 transition-shadow duration-300 ${
+            scrolled ? "shadow-lg shadow-black/40" : ""
           }`}
         >
           <button
@@ -79,7 +83,7 @@ export default function Navbar() {
               <button
                 key={link.id}
                 onClick={() => scrollToId(link.id)}
-                className="relative text-xs sm:text-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2"
+                className="relative text-xs sm:text-sm rounded-full px-3 py-1.5 sm:py-2"
               >
                 {active === link.id && (
                   <motion.span
@@ -103,7 +107,7 @@ export default function Navbar() {
               href={profile.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative text-xs sm:text-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-muted hover:text-text-primary hover:bg-stroke/50"
+              className="relative text-xs sm:text-sm rounded-full px-3 py-1.5 sm:py-2 text-muted hover:text-text-primary hover:bg-stroke/50"
             >
               Resume
             </a>

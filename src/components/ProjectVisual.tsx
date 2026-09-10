@@ -1,14 +1,23 @@
+import { useId } from "react";
 import type { ProjectArt } from "../data/content";
 
 type Props = {
   art: ProjectArt;
   className?: string;
+  /**
+   * When true the visual stretches to fill its positioned parent. This has to
+   * be a prop rather than an `absolute` class passed in through `className`:
+   * Tailwind emits `.relative` after `.absolute`, so a wrapper carrying both
+   * resolves to `relative`, its absolutely-positioned children stop
+   * contributing height, and the whole artwork collapses to a zero-height box.
+   * That is exactly the bug that made every project card render empty.
+   */
+  fill?: boolean;
 };
 
 // Small inline line-art motifs, one per project — no stock imagery, so each
 // card gets a visual that's actually about the thing it's describing.
-function Glyph({ art }: { art: ProjectArt }) {
-  const gid = `grad-${art}`;
+function Glyph({ art, gid }: { art: ProjectArt; gid: string }) {
   const stroke = `url(#${gid})`;
 
   switch (art) {
@@ -51,7 +60,7 @@ function Glyph({ art }: { art: ProjectArt }) {
             strokeLinejoin="round"
             fill="none"
           />
-          <circle cx="100" cy="100" r="4" fill="url(#grad-riphours)" />
+          <circle cx="100" cy="100" r="4" fill={stroke} />
         </>
       );
     case "pierra":
@@ -110,7 +119,7 @@ function Glyph({ art }: { art: ProjectArt }) {
               rx="3"
               stroke={stroke}
               strokeWidth="1.5"
-              fill={i === 0 ? "url(#grad-tabsaver)" : "none"}
+              fill={i === 0 ? stroke : "none"}
               opacity={i === 0 ? 0.9 : 0.5}
             />
           ))}
@@ -139,7 +148,7 @@ function Glyph({ art }: { art: ProjectArt }) {
               width="20"
               height={h}
               rx="2"
-              fill="url(#grad-financetracker)"
+              fill={stroke}
               opacity={0.25 + i * 0.12}
             />
           ))}
@@ -191,7 +200,7 @@ function Glyph({ art }: { art: ProjectArt }) {
               width="12"
               height={h}
               rx="2"
-              fill={i === 2 || i === 5 ? "url(#grad-sortnplay)" : "none"}
+              fill={i === 2 || i === 5 ? stroke : "none"}
               stroke={stroke}
               strokeWidth="2"
               opacity={i === 2 || i === 5 ? 0.9 : 0.4}
@@ -212,7 +221,7 @@ function Glyph({ art }: { art: ProjectArt }) {
           />
           <path
             d="M106 54 L88 108 L102 108 L94 148 L128 92 L112 92 Z"
-            fill="url(#grad-microops)"
+            fill={stroke}
             stroke={stroke}
             strokeWidth="1.5"
             strokeLinejoin="round"
@@ -223,14 +232,22 @@ function Glyph({ art }: { art: ProjectArt }) {
   }
 }
 
-export default function ProjectVisual({ art, className = "" }: Props) {
-  const gid = `grad-${art}`;
+export default function ProjectVisual({ art, className = "", fill = false }: Props) {
+  // Unique per mounted instance. The "More Projects" columns render each
+  // project twice to fake an infinite loop, and duplicate SVG gradient ids
+  // would make the second copy reference the first copy's definition.
+  const gid = `grad-${art}-${useId().replace(/[:]/g, "")}`;
+
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div
+      className={`${fill ? "absolute inset-0" : "relative"} overflow-hidden ${className}`}
+      aria-hidden="true"
+    >
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "radial-gradient(circle at 30% 20%, hsl(0 0% 14%) 0%, hsl(0 0% 6%) 70%)",
+          backgroundImage:
+            "radial-gradient(circle at 30% 20%, hsl(0 0% 16%) 0%, hsl(0 0% 6%) 70%)",
         }}
       />
       <div
@@ -244,14 +261,23 @@ export default function ProjectVisual({ art, className = "" }: Props) {
         viewBox="0 0 200 200"
         className="absolute inset-0 w-full h-full"
         preserveAspectRatio="xMidYMid meet"
+        role="presentation"
       >
         <defs>
           <linearGradient id={gid} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#89AACC" />
+            <stop offset="0%" stopColor="#9DBBD9" />
             <stop offset="100%" stopColor="#4E85BF" />
           </linearGradient>
         </defs>
-        <Glyph art={art} />
+        {/* Pulled up and scaled in from the centre of the viewBox so the motif
+            sits in the clear upper band of a card rather than colliding with
+            the title and tech tags that sit over its lower third. */}
+        <g
+          transform="translate(100 80) scale(0.72) translate(-100 -100)"
+          style={{ filter: "drop-shadow(0 0 14px rgba(120, 165, 210, 0.3))" }}
+        >
+          <Glyph art={art} gid={gid} />
+        </g>
       </svg>
     </div>
   );

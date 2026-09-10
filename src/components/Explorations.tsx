@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { AnimatePresence, motion } from "framer-motion";
 import { moreProjects, type Project } from "../data/content";
 import ProjectVisual from "./ProjectVisual";
+import ProjectModal from "./ProjectModal";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,26 +19,36 @@ function ProjectCard({
   project,
   rotate,
   onSelect,
+  fluid = false,
 }: {
   project: Project;
   rotate: number;
   onSelect: (p: Project) => void;
+  /** Fill the grid cell instead of using the marquee's fixed card width. */
+  fluid?: boolean;
 }) {
   return (
-    <div style={{ transform: `rotate(${rotate}deg)` }} className="pointer-events-auto">
+    <div
+      style={{ transform: `rotate(${rotate}deg)` }}
+      className={`pointer-events-auto ${fluid ? "w-full" : ""}`}
+    >
       <button
         onClick={() => onSelect(project)}
-        className="group relative block aspect-square w-[140px] sm:w-[190px] md:w-[220px] rounded-2xl overflow-hidden bg-surface border border-stroke text-left shadow-xl shadow-black/40 transition-transform duration-300 hover:scale-105 hover:rotate-0"
+        aria-label={`Read the ${project.title} case study`}
+        className={`group relative block aspect-square rounded-2xl overflow-hidden bg-surface border border-stroke text-left shadow-xl shadow-black/40 transition-transform duration-300 hover:scale-105 hover:rotate-0 ${
+          fluid ? "w-full" : "w-[140px] sm:w-[190px] md:w-[220px]"
+        }`}
       >
         <ProjectVisual
+          fill
           art={project.art}
-          className="absolute inset-0 opacity-70 group-hover:opacity-95 transition-opacity duration-300"
+          className="opacity-85 group-hover:opacity-100 transition-opacity duration-300"
         />
         <div
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(0deg, hsl(0 0% 4% / 0.92) 0%, hsl(0 0% 4% / 0.35) 55%, transparent 78%)",
+              "linear-gradient(0deg, hsl(0 0% 4% / 0.94) 0%, hsl(0 0% 4% / 0.5) 52%, hsl(0 0% 4% / 0.08) 80%)",
           }}
         />
         <div className="relative z-10 h-full flex flex-col justify-between p-4 sm:p-5">
@@ -48,7 +59,7 @@ function ProjectCard({
             <h3 className="font-display italic text-lg sm:text-xl text-text-primary mb-1">
               {project.title}
             </h3>
-            <p className="hidden sm:block text-[11px] text-muted line-clamp-2">
+            <p className="hidden sm:block text-[11px] text-text-primary/60 line-clamp-2">
               {project.description}
             </p>
           </div>
@@ -102,12 +113,51 @@ function AutoScrollColumn({
   );
 }
 
+const heading = (
+  <>
+    <div className="flex items-center gap-3 mb-4">
+      <span className="w-8 h-px bg-stroke" />
+      <span className="text-xs text-muted uppercase tracking-[0.3em]">
+        More Projects
+      </span>
+    </div>
+    <h2 className="text-4xl md:text-6xl font-display leading-[1.05] text-text-primary mb-4 drop-shadow-[0_2px_24px_rgba(0,0,0,0.9)]">
+      Beyond the <span className="italic">bento grid</span>
+    </h2>
+    <p className="text-sm md:text-base text-text-primary/65 max-w-md mb-6 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+      Extensions, simulators, and hackathon builds. Every card opens its own
+      short case study.
+    </p>
+  </>
+);
+
+function GithubLink() {
+  return (
+    <a
+      href="https://github.com/SamisDone"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="pointer-events-auto group relative inline-flex rounded-full"
+    >
+      <span
+        className="absolute -inset-[1.5px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
+      />
+      <span className="relative z-10 inline-flex items-center gap-2 rounded-full border border-stroke bg-bg px-5 py-2.5 text-sm text-text-primary">
+        View GitHub <span aria-hidden>↗</span>
+      </span>
+    </a>
+  );
+}
+
 export default function Explorations() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<Project | null>(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
+    if (reduced) return;
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: sectionRef.current,
@@ -119,13 +169,40 @@ export default function Explorations() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [reduced]);
+
+  // Reduced motion: no pin, no infinite scroll, no rotation. Same content as a
+  // plain responsive grid, which is the version that actually reads faster.
+  if (reduced) {
+    return (
+      <section id="more-projects" className="bg-bg py-16 md:py-24">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16">
+          <div className="mb-10">{heading}</div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+            {moreProjects.map((p) => (
+              <ProjectCard
+                key={p.title}
+                project={p}
+                rotate={0}
+                onSelect={setSelected}
+                fluid
+              />
+            ))}
+          </div>
+          <div className="mt-10">
+            <GithubLink />
+          </div>
+        </div>
+        <ProjectModal project={selected} onClose={() => setSelected(null)} />
+      </section>
+    );
+  }
 
   return (
     <section
       id="more-projects"
       ref={sectionRef}
-      className="relative min-h-[200vh] md:min-h-[300vh] bg-bg"
+      className="relative min-h-[200vh] md:min-h-[240vh] bg-bg"
     >
       <div ref={contentRef} className="relative h-screen w-full overflow-hidden">
         {/* Two columns auto-scroll top-to-bottom on an infinite loop,
@@ -154,105 +231,18 @@ export default function Explorations() {
           </div>
         </div>
 
+        {/* Soft edges so cards dissolve at the top and bottom of the viewport
+            instead of being sliced off by the pin boundary. */}
+        <div className="absolute inset-x-0 top-0 h-28 z-20 pointer-events-none bg-gradient-to-b from-bg to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-28 z-20 pointer-events-none bg-gradient-to-t from-bg to-transparent" />
+
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="w-8 h-px bg-stroke" />
-            <span className="text-xs text-muted uppercase tracking-[0.3em]">
-              More Projects
-            </span>
-          </div>
-          <h2 className="text-4xl md:text-6xl font-display leading-[1.05] text-text-primary mb-4 drop-shadow-[0_2px_24px_rgba(0,0,0,0.8)]">
-            Beyond the <span className="italic">bento grid</span>
-          </h2>
-          <p className="text-sm md:text-base text-muted max-w-md mb-6 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-            Extensions, simulators, and hackathon builds — the rest of the
-            shelf.
-          </p>
-          <a
-            href="https://github.com/SamisDone"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto group relative inline-flex rounded-full"
-          >
-            <span
-              className="absolute -inset-[1.5px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
-            />
-            <span className="relative z-10 inline-flex items-center gap-2 rounded-full border border-stroke bg-bg px-5 py-2.5 text-sm text-text-primary">
-              View GitHub <span aria-hidden>↗</span>
-            </span>
-          </a>
+          {heading}
+          <GithubLink />
         </div>
       </div>
 
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
-            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center px-6"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-md w-full rounded-3xl bg-surface border border-stroke overflow-hidden"
-            >
-              <ProjectVisual art={selected.art} className="h-40 w-full" />
-              <div className="p-8">
-                <span className="text-xs text-muted uppercase tracking-[0.2em]">
-                  {selected.category}
-                </span>
-                <h3 className="font-display italic text-3xl text-text-primary mt-2 mb-3">
-                  {selected.title}
-                </h3>
-                <p className="text-sm text-muted mb-5">{selected.description}</p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {selected.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[10px] uppercase tracking-wide text-muted border border-stroke rounded-full px-2 py-1"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-3">
-                  <a
-                    href={selected.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center rounded-full border border-stroke px-4 py-2.5 text-sm text-text-primary hover:bg-stroke/40 transition-colors"
-                  >
-                    Code
-                  </a>
-                  {selected.live && (
-                    <a
-                      href={selected.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 text-center rounded-full bg-text-primary text-bg px-4 py-2.5 text-sm hover:opacity-90 transition-opacity"
-                    >
-                      Live
-                    </a>
-                  )}
-                </div>
-              </div>
-              <button
-                onClick={() => setSelected(null)}
-                aria-label="Close"
-                className="absolute top-4 right-4 text-white hover:text-white/70"
-              >
-                ✕
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ProjectModal project={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { featuredProjects } from "../data/content";
+import { featuredProjects, type Project } from "../data/content";
 import ProjectVisual from "./ProjectVisual";
+import ProjectModal from "./ProjectModal";
 
 const SPANS = ["md:col-span-7", "md:col-span-5", "md:col-span-5", "md:col-span-7"];
 const ASPECTS = ["aspect-[4/3]", "aspect-square", "aspect-square", "aspect-[4/3]"];
@@ -10,11 +12,13 @@ const fadeUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const },
+    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const },
   },
 };
 
 export default function SelectedWorks() {
+  const [selected, setSelected] = useState<Project | null>(null);
+
   return (
     <section id="work" className="bg-bg py-12 md:py-16">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16">
@@ -36,8 +40,8 @@ export default function SelectedWorks() {
               Featured <span className="italic">projects</span>
             </h2>
             <p className="text-sm md:text-base text-muted max-w-md mt-4">
-              A selection of projects I've worked on, from published Chrome
-              extensions to full-stack platforms.
+              Four builds with the reasoning behind them. Open any card for the
+              problem it solves, what I built, and where it runs.
             </p>
           </div>
 
@@ -63,39 +67,49 @@ export default function SelectedWorks() {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
           {featuredProjects.map((project, i) => (
-            <motion.a
-              href={project.live ?? project.repo}
-              target="_blank"
-              rel="noopener noreferrer"
+            <motion.button
+              type="button"
+              onClick={() => setSelected(project)}
+              aria-label={`Read the ${project.title} case study`}
               key={project.title}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-80px" }}
               variants={fadeUp}
               transition={{ delay: i * 0.05 }}
-              className={`group relative overflow-hidden rounded-3xl bg-surface border border-stroke ${SPANS[i]} ${ASPECTS[i]}`}
+              className={`group relative overflow-hidden rounded-3xl bg-surface border border-stroke text-left ${SPANS[i]} ${ASPECTS[i]}`}
             >
               <ProjectVisual
+                fill
                 art={project.art}
-                className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                className="transition-transform duration-500 group-hover:scale-105"
               />
               <div
                 className="absolute inset-0"
                 style={{
                   backgroundImage:
-                    "linear-gradient(0deg, hsl(0 0% 4% / 0.85) 0%, hsl(0 0% 4% / 0.15) 45%, transparent 65%)",
+                    "linear-gradient(0deg, hsl(0 0% 4% / 0.92) 0%, hsl(0 0% 4% / 0.55) 38%, hsl(0 0% 4% / 0.1) 70%)",
                 }}
               />
 
               <div className="relative z-10 h-full flex flex-col justify-between p-6 md:p-8">
-                <span className="text-xs text-muted uppercase tracking-[0.2em]">
-                  {project.category}
-                </span>
+                <div className="flex items-start justify-between gap-4">
+                  <span className="text-xs text-muted uppercase tracking-[0.2em]">
+                    {project.category}
+                  </span>
+                  {project.live && (
+                    <span className="shrink-0 text-[10px] uppercase tracking-[0.15em] text-emerald-300/90 border border-emerald-400/25 bg-emerald-400/10 rounded-full px-2.5 py-1">
+                      Live
+                    </span>
+                  )}
+                </div>
                 <div>
                   <h3 className="font-display italic text-2xl md:text-3xl text-text-primary mb-2">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-muted max-w-xs">{project.description}</p>
+                  <p className="text-sm text-text-primary/70 max-w-sm">
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {project.tech.map((t) => (
                       <span
@@ -109,17 +123,19 @@ export default function SelectedWorks() {
                 </div>
               </div>
 
-              <div className="absolute inset-0 bg-bg/70 opacity-0 group-hover:opacity-100 backdrop-blur-lg transition-opacity duration-300 flex items-center justify-center">
+              <div className="absolute inset-0 bg-bg/70 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 backdrop-blur-lg transition-opacity duration-300 flex items-center justify-center">
                 <span className="relative rounded-full p-[1.5px] animated-gradient-border">
-                  <span className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm text-black">
-                    View — <span className="font-display italic">{project.title}</span>
+                  <span className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm text-black font-medium">
+                    Read the case study
                   </span>
                 </span>
               </div>
-            </motion.a>
+            </motion.button>
           ))}
         </div>
       </div>
+
+      <ProjectModal project={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
