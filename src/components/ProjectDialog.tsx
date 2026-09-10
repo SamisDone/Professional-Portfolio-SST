@@ -103,12 +103,33 @@ export default function ProjectDialog({
             className="relative my-auto grid w-full max-w-4xl gap-0 border border-rule bg-raised shadow-2xl shadow-black/50 md:grid-cols-2"
           >
             <div className="bg-surface-2/25 p-4 sm:p-5">
-              <Figure
-                src={project.shot!}
-                alt={project.shotAlt ?? ""}
-                ratio={project.shotRatio}
-                priority
-              />
+              {project.shot ? (
+                <Figure
+                  src={project.shot}
+                  alt={project.shotAlt ?? ""}
+                  ratio={project.shotRatio}
+                  priority
+                />
+              ) : (
+                <dl
+                  style={{ aspectRatio: "16 / 10" }}
+                  className="grid grid-cols-2 gap-px border border-rule bg-rule"
+                >
+                  {(project.figures ?? []).slice(0, 4).map((figure) => (
+                    <div
+                      key={figure.label}
+                      className="flex flex-col items-center justify-center gap-1.5 bg-raised"
+                    >
+                      <dt className="font-display text-2xl leading-none text-accent">
+                        {figure.value}
+                      </dt>
+                      <dd className="text-[12px] leading-none text-muted">
+                        {figure.label}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
               <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-muted">
                 <span className="text-ink">{project.kind}</span>
                 <span aria-hidden className="h-3 w-px bg-rule" />

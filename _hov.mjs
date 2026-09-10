@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:1440,height:900}});
+await p.goto('http://localhost:5200/work',{waitUntil:'networkidle'});
+await p.waitForTimeout(2500);
+const read=()=>p.evaluate(()=>{const m=getComputedStyle(document.querySelector('.work-rail > div')).transform;
+  const n=m.match(/matrix\(1, 0, 0, 1, (-?[\d.]+)/); return n?parseFloat(n[1]):0;});
+const box=await p.evaluate(()=>{const r=document.querySelector('.work-rail').getBoundingClientRect();
+  return {x:Math.round(r.x+r.width/2), y:Math.round(r.y+r.height/2)};});
+console.log('rail centre', box);
+await p.mouse.move(box.x, box.y);
+await p.waitForTimeout(2500);
+const h1=await read(); await p.waitForTimeout(2500); const h2=await read();
+console.log('while hovering a card: moved', Math.abs(h2-h1).toFixed(2)+'px in 2.5s ->', Math.abs(h2-h1)<1 ? 'PAUSED' : 'still moving');
+await p.mouse.move(10,10); await p.waitForTimeout(2000);
+const r1=await read(); await p.waitForTimeout(2500); const r2=await read();
+console.log('after leaving: moved', Math.abs(r2-r1).toFixed(2)+'px ->', Math.abs(r2-r1)>5 ? 'RESUMED' : 'still paused');
+await b.close();

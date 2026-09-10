@@ -7,8 +7,39 @@ import Figure from "./Figure";
 import ProjectDialog from "./ProjectDialog";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
-// Pixels per frame at 60fps. Slow enough to read a title as it passes.
-const DRIFT = 0.4;
+/**
+ * Pixels per second, not per frame. A per-frame step ties the speed to the
+ * refresh rate, and anywhere the loop runs below 60fps the rail crawls: it was
+ * measuring 2.7 px/sec, which is 147 seconds per card and reads as static.
+ */
+const DRIFT_PER_SECOND = 42;
+
+/**
+ * Stands in for the screenshot on work that has no interface to photograph,
+ * such as a trained model. These are the measured figures from the project's
+ * own results, in the same box a shot would occupy, rather than a mocked-up
+ * screen pretending to be a product.
+ */
+function Figures({ figures }: { figures: { value: string; label: string }[] }) {
+  return (
+    <div
+      style={{ aspectRatio: "16 / 10" }}
+      className="grid grid-cols-2 gap-px border border-rule bg-rule"
+    >
+      {figures.slice(0, 4).map((figure) => (
+        <div
+          key={figure.label}
+          className="flex flex-col items-center justify-center gap-1 bg-raised"
+        >
+          <span className="font-display text-lg leading-none text-accent">
+            {figure.value}
+          </span>
+          <span className="text-[11px] leading-none text-muted">{figure.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Card({
   project,
@@ -34,12 +65,16 @@ function Card({
         </h3>
       </div>
 
-      <Figure
-        src={project.shot!}
-        alt={project.shotAlt ?? ""}
-        ratio={project.shotRatio}
-        priority
-      />
+      {project.shot ? (
+        <Figure
+          src={project.shot}
+          alt={project.shotAlt ?? ""}
+          ratio={project.shotRatio}
+          priority
+        />
+      ) : (
+        <Figures figures={project.figures ?? []} />
+      )}
 
       <p className="mt-3 text-[14px] leading-snug text-ink">{project.summary}</p>
 
@@ -140,10 +175,18 @@ export default function Work() {
   const reduced = useReducedMotion();
 
   const halted = paused || reduced || open !== null;
+  // Read inside the frame loop so pausing never tears the loop down. The
+  // effect used to depend on `halted`, so every hover ran its cleanup, wiped
+  // the transform and reset `head` to zero, losing the recycle position.
+  const haltedRef = useRef(halted);
+  useEffect(() => {
+    haltedRef.current = halted;
+  }, [halted]);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+    if (reduced) return;
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
 
     const cards = Array.from(track.children) as HTMLElement[];
@@ -161,9 +204,19 @@ export default function Work() {
     applyOrder();
 
     let frame = 0;
-    const step = () => {
-      if (!halted) offsetRef.current += DRIFT;
-      // Ease toward whatever the arrows last asked for.
+    let last = performance.now();
+
+    const step = (now: number) => {
+      // Clamped, so a backgrounded tab returning does not jump the rail by
+      // however many seconds it was away.
+      const elapsed = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      // The drift advances the target and the offset chases it. Advancing the
+      // offset instead left the easing pulling back toward a target that never
+      // moved, so the two cancelled at about three pixels and the rail sat
+      // still. That was the bug that made the projects look frozen.
+      if (!haltedRef.current) targetRef.current += DRIFT_PER_SECOND * elapsed;
       offsetRef.current += (targetRef.current - offsetRef.current) * 0.12;
 
       const leadWidth = cards[head].offsetWidth + gap;
@@ -186,7 +239,7 @@ export default function Work() {
         card.style.order = "";
       });
     };
-  }, [halted]);
+  }, [reduced]);
 
   useEffect(() => {
     const onVisibility = () => setPaused(document.hidden);
@@ -246,7 +299,11 @@ export default function Work() {
         onMouseLeave={() => setPaused(false)}
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
-        className="work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-6 lg:overflow-hidden lg:pb-6"
+        className={`work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-6 lg:pb-6 ${
+          // With the drift off there is nothing to bring the later cards into
+          // view, so the rail has to be scrollable by hand instead.
+          reduced ? "lg:overflow-x-auto" : "lg:overflow-hidden"
+        }`}
       >
         <div
           ref={trackRef}

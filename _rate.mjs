@@ -1,0 +1,22 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:1440,height:900}});
+await p.goto('http://localhost:5200/work',{waitUntil:'networkidle'});
+await p.waitForTimeout(2500);
+const read=()=>p.evaluate(()=>{const m=getComputedStyle(document.querySelector('.work-rail > div')).transform;
+  const n=m.match(/matrix\(1, 0, 0, 1, (-?[\d.]+)/); return n?parseFloat(n[1]):0;});
+const a=await read(); await p.waitForTimeout(4000); const c=await read();
+const rate=Math.abs(c-a)/4;
+console.log(`drift rate: ${rate.toFixed(1)} px/sec`);
+const cardW=await p.evaluate(()=>{const c=document.querySelector('[data-case]');
+  const g=parseFloat(getComputedStyle(document.querySelector('.work-rail > div')).columnGap||'0');
+  return c.offsetWidth+g;});
+console.log(`card + gap: ${Math.round(cardW)}px -> ${(cardW/rate).toFixed(1)}s per card, ${((cardW*11)/rate/60).toFixed(1)} min per full cycle`);
+// pause check
+await p.mouse.move(700,480); await p.waitForTimeout(300);
+const h1=await read(); await p.waitForTimeout(1800); const h2=await read();
+console.log('paused on hover:', Math.abs(h2-h1) < 1.5, `(moved ${Math.abs(h2-h1).toFixed(2)}px)`);
+await p.mouse.move(20,20); await p.waitForTimeout(1500);
+const r1=await read(); await p.waitForTimeout(1500); const r2=await read();
+console.log('resumes after leaving:', Math.abs(r2-r1) > 5);
+await b.close();

@@ -72,6 +72,11 @@ export type Project = {
    * and there are never bars around an image.
    */
   shotRatio?: string;
+  /**
+   * For work with no screenshot to take, such as a model. Real measured
+   * figures shown in place of the frame, never a mocked-up interface.
+   */
+  figures?: { value: string; label: string }[];
   problem: string;
   approach: string;
   outcome: string;
@@ -105,26 +110,6 @@ export const featured: Project[] = [
       "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
   },
   {
-    slug: "medihub",
-    title: "MediHub",
-    kind: "AI healthcare platform",
-    year: "2026",
-    summary:
-      "Hospital management with Gemini-backed symptom routing and three separate roles.",
-    stack: ["React", "Node.js", "Firebase", "Gemini API"],
-    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
-    live: "https://ai-powered-hospital-management-syst.vercel.app/",
-    liveLabel: "Open the demo",
-    shot: "/shots/medihub.jpg",
-    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
-    problem:
-      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. Front desks also spend real time routing walk-in patients to the right department by hand.",
-    approach:
-      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. Symptom intake goes to the Gemini API behind a structured prompt that returns a ranked department, deliberately framed as routing and not as diagnosis.",
-    outcome:
-      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
-  },
-  {
     slug: "riphours",
     title: "RIPHours",
     kind: "Chrome extension",
@@ -146,23 +131,24 @@ export const featured: Project[] = [
       "Published and installable today. The zero-request claim is the kind you can check yourself in the network panel.",
   },
   {
-    slug: "tabsaver",
-    title: "TabSaver",
-    kind: "Chrome extension",
-    year: "2025",
+    slug: "medihub",
+    title: "MediHub",
+    kind: "AI healthcare platform",
+    year: "2026",
     summary:
-      "Restores a whole working session, tab groups intact, in one click.",
-    stack: ["JavaScript", "Chrome APIs"],
-    repo: "https://github.com/SamisDone/TabSaver-2.0",
-    live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
-    liveLabel: "Chrome Web Store",
-    shot: "/shots/tabsaver.jpg",
-    shotAlt: "The TabSaver panel listing a saved session and its tab count.",
+      "Hospital management with Gemini-backed symptom routing and three separate roles.",
+    stack: ["React", "Node.js", "Firebase", "Gemini API"],
+    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
+    live: "https://ai-powered-hospital-management-syst.vercel.app/",
+    liveLabel: "Open the demo",
+    shot: "/shots/medihub.jpg",
+    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
     problem:
-      "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful in the first place.",
+      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. Front desks also spend real time routing walk-in patients to the right department by hand.",
     approach:
-      "A session is captured as a structured snapshot that preserves tab groups rather than a flat list of URLs, so restoring puts the workspace back the way it was. Sessions are named, searchable and exportable, which is what makes it usable past the first week.",
-    outcome: "Published on the Chrome Web Store alongside RIPHours.",
+      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. Symptom intake goes to the Gemini API behind a structured prompt that returns a ranked department, deliberately framed as routing and not as diagnosis.",
+    outcome:
+      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
   },
   {
     slug: "pierra",
@@ -184,6 +170,25 @@ export const featured: Project[] = [
     outcome: "Delivered and running as the firm's production site.",
   },
   {
+    slug: "tabsaver",
+    title: "TabSaver",
+    kind: "Chrome extension",
+    year: "2025",
+    summary:
+      "Restores a whole working session, tab groups intact, in one click.",
+    stack: ["JavaScript", "Chrome APIs"],
+    repo: "https://github.com/SamisDone/TabSaver-2.0",
+    live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
+    liveLabel: "Chrome Web Store",
+    shot: "/shots/tabsaver.jpg",
+    shotAlt: "The TabSaver panel listing a saved session and its tab count.",
+    problem:
+      "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful in the first place.",
+    approach:
+      "A session is captured as a structured snapshot that preserves tab groups rather than a flat list of URLs, so restoring puts the workspace back the way it was. Sessions are named, searchable and exportable, which is what makes it usable past the first week.",
+    outcome: "Published on the Chrome Web Store alongside RIPHours.",
+  },
+  {
     slug: "resumeforge",
     title: "ResumeForge",
     kind: "Free tool",
@@ -202,24 +207,25 @@ export const featured: Project[] = [
       "Editing and preview render from the same state, so the page you are looking at is the page you get. Export runs entirely in the browser, which means no account, no upload, and no copy of your resume sitting on someone else's server.",
     outcome: "Deployed and free to use, with no sign-up in the way.",
   },
+];
+
+/** The rest of the shelf. A compact index, not a second grid of cards. */
+export const otherWork: Project[] = [
   {
-    slug: "glitch",
-    title: "Glitch Breach",
-    kind: "Browser game",
+    slug: "anomlite",
+    title: "AnomLite",
+    kind: "Deep learning research",
     year: "2026",
     summary:
-      "A cyberpunk typing game: fix corrupted terminal commands before the clock runs out.",
-    stack: ["JavaScript", "Local storage"],
-    repo: "https://github.com/SamisDone/GLITCH-BREACH",
-    live: "https://glitch-breach-sam.netlify.app/",
-    liveLabel: "Play it",
-    shot: "/shots/glitch.jpg",
-    shotAlt: "The Glitch Breach game screen, a green-on-black terminal interface.",
+      "A hybrid model for multiclass crime detection in surveillance video, small enough to run on constrained hardware.",
+    stack: ["PyTorch", "MobileNetV2", "LSTM"],
+    repo: "https://github.com/SamisDone/Violence-Detection",
     problem:
-      "Typing games mostly test speed on ordinary prose. Almost none of them make you read what you are typing closely enough to spot what is wrong with it.",
+      "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
     approach:
-      "Sixty-odd corrupted shell commands, and the player has to type the corrected version before the timer runs out. Three difficulty levels change the clock rather than the words, a combo multiplier rewards streaks, and answering faster scores higher, so speed and accuracy are both worth something.",
-    outcome: "Deployed and playable, with a leaderboard and three lives per run.",
+      "MobileNetV2 handles the spatial features and an LSTM handles the temporal ones, which keeps the whole network to roughly 11 million parameters. Trained on the UCF-Crime dataset across 14 classes, from abuse and arson through to normal video.",
+    outcome:
+      "79 percent accuracy, 0.97 ROC AUC and a 0.75 macro F1, at a size that suits real-time deployment on constrained devices.",
   },
   {
     slug: "sortnplay",
@@ -238,6 +244,24 @@ export const featured: Project[] = [
     approach:
       "No framework and no animation library, so every comparison and swap is a deliberate DOM write on a timed loop. Running all three over the same input makes the difference in their access patterns the thing you actually watch.",
     outcome: "Deployed and used as a teaching aid.",
+  },
+  {
+    slug: "pixelart",
+    title: "Pixel Art Pad",
+    kind: "Drawing tool",
+    year: "2026",
+    summary: "A pixel grid with pen, eraser and flood fill, exporting straight to an image.",
+    stack: ["JavaScript", "Canvas"],
+    repo: "https://github.com/SamisDone/Pixel-Art-App",
+    live: "https://pixelartweb.netlify.app/",
+    liveLabel: "Open the pad",
+    shot: "/shots/pixelart.jpg",
+    shotAlt: "The Pixel Art Pad, a drawing grid with a colour palette and tools.",
+    problem:
+      "Drawing pixel art in a general image editor means fighting antialiasing and a canvas that does not think in cells.",
+    approach:
+      "No framework and no libraries. The grid is the data structure, the tools write into it directly, and flood fill walks neighbours from the clicked cell. Grid size switches between 16, 24, 32 and 48 squares, and export writes the grid out as an image.",
+    outcome: "Deployed, with pen, eraser, fill, four grid sizes and image export.",
   },
   {
     slug: "hangman",
@@ -259,42 +283,23 @@ export const featured: Project[] = [
     outcome: "Deployed and playable, on a programming and technology word list.",
   },
   {
-    slug: "pixelart",
-    title: "Pixel Art Pad",
-    kind: "Drawing tool",
-    year: "2026",
-    summary: "A pixel grid with pen, eraser and flood fill, exporting straight to an image.",
-    stack: ["JavaScript", "Canvas"],
-    repo: "https://github.com/SamisDone/Pixel-Art-App",
-    live: "https://pixelartweb.netlify.app/",
-    liveLabel: "Open the pad",
-    shot: "/shots/pixelart.jpg",
-    shotAlt: "The Pixel Art Pad, a drawing grid with a colour palette and tools.",
-    problem:
-      "Drawing pixel art in a general image editor means fighting antialiasing and a canvas that does not think in cells.",
-    approach:
-      "No framework and no libraries. The grid is the data structure, the tools write into it directly, and flood fill walks neighbours from the clicked cell. Grid size switches between 16, 24, 32 and 48 squares, and export writes the grid out as an image.",
-    outcome: "Deployed, with pen, eraser, fill, four grid sizes and image export.",
-  },
-];
-
-/** The rest of the shelf. A compact index, not a second grid of cards. */
-export const otherWork: Project[] = [
-  {
-    slug: "anomlite",
-    title: "AnomLite",
-    kind: "Deep learning research",
+    slug: "glitch",
+    title: "Glitch Breach",
+    kind: "Browser game",
     year: "2026",
     summary:
-      "A hybrid model for multiclass crime detection in surveillance video, small enough to run on constrained hardware.",
-    stack: ["PyTorch", "MobileNetV2", "LSTM"],
-    repo: "https://github.com/SamisDone/Violence-Detection",
+      "A cyberpunk typing game: fix corrupted terminal commands before the clock runs out.",
+    stack: ["JavaScript", "Local storage"],
+    repo: "https://github.com/SamisDone/GLITCH-BREACH",
+    live: "https://glitch-breach-sam.netlify.app/",
+    liveLabel: "Play it",
+    shot: "/shots/glitch.jpg",
+    shotAlt: "The Glitch Breach game screen, a green-on-black terminal interface.",
     problem:
-      "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
+      "Typing games mostly test speed on ordinary prose. Almost none of them make you read what you are typing closely enough to spot what is wrong with it.",
     approach:
-      "MobileNetV2 handles the spatial features and an LSTM handles the temporal ones, which keeps the whole network to roughly 11 million parameters. Trained on the UCF-Crime dataset across 14 classes, from abuse and arson through to normal video.",
-    outcome:
-      "79 percent accuracy, 0.97 ROC AUC and a 0.75 macro F1, at a size that suits real-time deployment on constrained devices.",
+      "Sixty-odd corrupted shell commands, and the player has to type the corrected version before the timer runs out. Three difficulty levels change the clock rather than the words, a combo multiplier rewards streaks, and answering faster scores higher, so speed and accuracy are both worth something.",
+    outcome: "Deployed and playable, with a leaderboard and three lives per run.",
   },
   {
     slug: "task-scheduling",
