@@ -29,3 +29,6 @@ dist-ssr
 
 # Local probe scripts
 _*.mjs
+
+# Font source archives, kept locally
+*.zip

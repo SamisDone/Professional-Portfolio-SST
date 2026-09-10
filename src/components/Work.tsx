@@ -20,24 +20,40 @@ const DRIFT_PER_SECOND = 42;
  * own results, in the same box a shot would occupy, rather than a mocked-up
  * screen pretending to be a product.
  */
-function Figures({ figures }: { figures: { value: string; label: string }[] }) {
+function Figures({ project }: { project: Project }) {
+  if (project.figures?.length) {
+    return (
+      <div
+        style={{ aspectRatio: "16 / 10" }}
+        className="grid grid-cols-2 gap-px border border-rule bg-rule"
+      >
+        {project.figures.slice(0, 4).map((figure) => (
+          <div
+            key={figure.label}
+            className="flex flex-col items-center justify-center gap-1 bg-raised"
+          >
+            <span className="font-display text-lg leading-none text-accent">
+              {figure.value}
+            </span>
+            <span className="text-[11px] leading-none text-muted">{figure.label}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div
+    <ul
       style={{ aspectRatio: "16 / 10" }}
-      className="grid grid-cols-2 gap-px border border-rule bg-rule"
+      className="flex flex-col justify-center gap-2.5 border border-rule bg-raised px-4"
     >
-      {figures.slice(0, 4).map((figure) => (
-        <div
-          key={figure.label}
-          className="flex flex-col items-center justify-center gap-1 bg-raised"
-        >
-          <span className="font-display text-lg leading-none text-accent">
-            {figure.value}
-          </span>
-          <span className="text-[11px] leading-none text-muted">{figure.label}</span>
-        </div>
+      {(project.highlights ?? []).slice(0, 4).map((item) => (
+        <li key={item} className="relative pl-4 text-[12px] leading-snug text-muted">
+          <span aria-hidden className="absolute left-0 top-[0.55em] h-px w-2.5 bg-accent" />
+          {item}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -73,7 +89,7 @@ function Card({
           priority
         />
       ) : (
-        <Figures figures={project.figures ?? []} />
+        <Figures project={project} />
       )}
 
       <p className="mt-3 text-[14px] leading-snug text-ink">{project.summary}</p>

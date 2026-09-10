@@ -1,3 +1,28 @@
+/*
+ * The two families, self-hosted from the files in the design handoff rather
+ * than pulled from a package. Both are the variable builds, subset to Latin
+ * and converted to woff2: Bricolage went 398kB to 149kB, Climate Crisis 3.5MB
+ * to 46kB, which is the difference between shipping them and not.
+ *
+ * Licences sit beside them in src/fonts as required by the OFL.
+ */
+@font-face {
+  font-family: "Climate Crisis";
+  src: url("./fonts/ClimateCrisis.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("./fonts/BricolageGrotesque.woff2") format("woff2");
+  /* The file defaults to ExtraBold at 96pt optical size, so the ranges have to
+     be declared or every word renders at 800. */
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -44,6 +69,8 @@ html {
 
 body {
   margin: 0;
+  font-weight: 400;
+  font-optical-sizing: auto;
   background: hsl(var(--paper));
   color: hsl(var(--ink));
   font-synthesis: none;

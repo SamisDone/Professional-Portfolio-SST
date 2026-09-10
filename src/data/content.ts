@@ -73,10 +73,12 @@ export type Project = {
    */
   shotRatio?: string;
   /**
-   * For work with no screenshot to take, such as a model. Real measured
-   * figures shown in place of the frame, never a mocked-up interface.
+   * For work with no screenshot to take. Real measured figures, or the
+   * capabilities the project actually has, shown in place of the frame. Never
+   * a mocked-up interface standing in for a real one.
    */
   figures?: { value: string; label: string }[];
+  highlights?: string[];
   problem: string;
   approach: string;
   outcome: string;
@@ -108,6 +110,22 @@ export const featured: Project[] = [
       "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
     outcome:
       "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
+  },
+  {
+    slug: "kandesk",
+    title: "KanDesk",
+    kind: "Task manager",
+    year: "2026",
+    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
+    stack: ["React", "Tailwind CSS", "TanStack Router"],
+    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
+    shot: "/shots/kandesk.jpg",
+    shotAlt: "The KanDesk landing page above its three-column board.",
+    problem:
+      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+    approach:
+      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
+    outcome: "Working board with the full task lifecycle and protected routing in place.",
   },
   {
     slug: "riphours",
@@ -151,6 +169,22 @@ export const featured: Project[] = [
       "Deployed and publicly reachable, with the full role-separated flow working end to end.",
   },
   {
+    slug: "stockmaster",
+    title: "StockMaster",
+    kind: "Inventory tracker",
+    year: "2025",
+    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    repo: "https://github.com/SamisDone/StockMaster",
+    shot: "/shots/stockmaster.jpg",
+    shotAlt: "The StockMaster landing page for its inventory management system.",
+    problem:
+      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
+    approach:
+      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
+    outcome: "Working application with the component library and state layer built out.",
+  },
+  {
     slug: "pierra",
     title: "PIERRA",
     kind: "Client work",
@@ -168,6 +202,28 @@ export const featured: Project[] = [
     approach:
       "Both languages are first class. Copy is lifted into a shared layer keyed by locale rather than duplicated per page, so the gallery, the testimonial carousel and the booking form all stay in step when either language changes.",
     outcome: "Delivered and running as the firm's production site.",
+  },
+  {
+    slug: "finpulse",
+    title: "FinPulse",
+    kind: "Personal finance app",
+    year: "2026",
+    summary:
+      "Income, expenses, budgets and savings goals, with the security work actually done.",
+    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
+    repo: "https://github.com/SamisDone/FinPulse",
+    highlights: [
+      "Parameterised queries throughout, via PDO",
+      "CSRF tokens on every form",
+      "Rate-limited login",
+      "Budgets, goals and charted reports",
+    ],
+    problem:
+      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
+    approach:
+      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
+    outcome:
+      "Complete application covering tracking, budgeting, goals and reporting.",
   },
   {
     slug: "tabsaver",
@@ -317,36 +373,6 @@ export const otherWork: Project[] = [
     outcome: "A like-for-like comparison across every paradigm on one workload.",
   },
   {
-    slug: "kandesk",
-    title: "KanDesk",
-    kind: "Task manager",
-    year: "2026",
-    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
-    stack: ["React", "Tailwind CSS", "TanStack Router"],
-    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
-    problem:
-      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
-    approach:
-      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
-    outcome: "Working board with the full task lifecycle and protected routing in place.",
-  },
-  {
-    slug: "finpulse",
-    title: "FinPulse",
-    kind: "Personal finance app",
-    year: "2026",
-    summary:
-      "Income, expenses, budgets and savings goals, with the security work actually done.",
-    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
-    repo: "https://github.com/SamisDone/FinPulse",
-    problem:
-      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
-    approach:
-      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
-    outcome:
-      "Complete application covering tracking, budgeting, goals and reporting.",
-  },
-  {
     slug: "page-replacement",
     title: "Page Replacement Algorithms",
     kind: "OS algorithms",
@@ -359,20 +385,6 @@ export const otherWork: Project[] = [
     approach:
       "Each policy implemented from scratch in C++ and run over shared reference strings so the fault counts can be compared directly.",
     outcome: "Runnable comparison of the standard replacement policies.",
-  },
-  {
-    slug: "stockmaster",
-    title: "StockMaster",
-    kind: "Inventory tracker",
-    year: "2025",
-    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    repo: "https://github.com/SamisDone/StockMaster",
-    problem:
-      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
-    approach:
-      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
-    outcome: "Working application with the component library and state layer built out.",
   },
   {
     slug: "roundrobin",

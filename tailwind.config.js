@@ -16,11 +16,11 @@ export default {
         "accent-2": "hsl(var(--accent-2))",
       },
       fontFamily: {
-        sans: ["'Libre Franklin Variable'", "system-ui", "sans-serif"],
-        display: ["'Climate Crisis Variable'", "'Libre Franklin Variable'", "sans-serif"],
-        // Existing `font-mono` labels keep their spacing but drop to Libre
-        // Franklin, so the page only ever uses the two specified families.
-        mono: ["'Libre Franklin Variable'", "system-ui", "sans-serif"],
+        sans: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],
+        display: ["'Climate Crisis'", "'Bricolage Grotesque'", "sans-serif"],
+        // `font-mono` labels keep their tracking but take Bricolage, so the
+        // page only ever uses the two families from the handoff.
+        mono: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],
       },
       // One radius scale, near-sharp. A technical document, not a card deck.
       borderRadius: { none: "0", sm: "2px", DEFAULT: "3px", md: "3px", lg: "4px" },

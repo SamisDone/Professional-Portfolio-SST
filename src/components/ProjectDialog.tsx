@@ -128,6 +128,16 @@ export default function ProjectDialog({
                       </dd>
                     </div>
                   ))}
+                  {!project.figures?.length &&
+                    (project.highlights ?? []).slice(0, 4).map((item) => (
+                      <div
+                        key={item}
+                        className="col-span-2 flex items-baseline gap-2.5 bg-raised px-4 py-2"
+                      >
+                        <span aria-hidden className="h-px w-2.5 shrink-0 translate-y-[-0.35em] bg-accent" />
+                        <dd className="text-[13px] leading-snug text-muted">{item}</dd>
+                      </div>
+                    ))}
                 </dl>
               )}
               <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-muted">
