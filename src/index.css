@@ -409,11 +409,6 @@ body.dialog-open {
 
 /* 1280x720 is the shortest screen worth supporting, and the rail is the one
    place still a little over on it. */
-@media (max-height: 730px) {
-  .work-rail [data-case] dl {
-    display: none;
-  }
-}
 
 /*
  * The rail card's width sets the height of its screenshot, because the frame
@@ -448,14 +443,19 @@ body.dialog-open {
   }
 }
 
-/* 1280x720. Rail cards keep the title, the shot and the links; the summary and
-   the metadata line come off, and the index slide shows its first three. */
-@media (max-height: 760px) {
-  [data-card-summary],
-  [data-card-meta] {
-    display: none;
+
+@media (max-height: 780px) {
+  .work-rail {
+    padding-bottom: 0.5rem;
   }
-  .index-slide li:nth-child(n + 4) {
+  .work-rail [data-case] > div > button,
+  .index-slide {
+    padding: 0.75rem;
+  }
+  .index-slide li {
+    padding-block: 0.3rem;
+  }
+  .work-rail [data-case] p {
     display: none;
   }
 }
