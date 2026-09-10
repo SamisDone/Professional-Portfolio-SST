@@ -26,20 +26,30 @@ export default function PageTransition() {
   const { pathname } = useLocation();
   const reduced = useReducedMotion();
   const [showing, setShowing] = useState<string | null>(null);
-  const first = useRef(true);
+  // Seeded with the entry path, so the first load gets no curtain: the boot
+  // shell in index.html already covers that moment.
+  const [seen, setSeen] = useState(pathname);
 
+  // Adjusted during render rather than from an effect. The curtain is a
+  // reaction to the location changing, not a synchronisation with anything
+  // outside React, so an effect would only cost an extra render pass.
+  if (pathname !== seen) {
+    setSeen(pathname);
+    setShowing(reduced ? null : pathname);
+  }
+
+  // A timer rather than onAnimationComplete, which did not fire dependably for
+  // a keyframed track and left the curtain mounted. Scheduling is exactly what
+  // an effect is for, and the state change happens in the callback, not
+  // synchronously during the effect.
   useEffect(() => {
-    // No curtain on first load; the boot shell already covers that moment.
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    if (reduced) return;
-
-    setShowing(pathname);
-    const id = window.setTimeout(() => setShowing(null), (TOTAL + 0.25) * 1000);
+    if (!showing) return;
+    const id = window.setTimeout(
+      () => setShowing(null),
+      (TOTAL + PANELS * 0.045 + 0.1) * 1000,
+    );
     return () => window.clearTimeout(id);
-  }, [pathname, reduced]);
+  }, [showing]);
 
   if (reduced) return null;
 

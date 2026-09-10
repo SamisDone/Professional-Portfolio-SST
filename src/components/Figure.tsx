@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
 type Props = {
@@ -30,7 +30,6 @@ export default function Figure({
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(boxRef, { once: true, amount: 0.25 });
   const reduced = useReducedMotion();
 
   // An image restored from cache can finish before React attaches onLoad.
@@ -38,7 +37,10 @@ export default function Figure({
     if (imgRef.current?.complete) setLoaded(true);
   }, []);
 
-  const revealed = loaded && (inView || reduced);
+  // Reveals as soon as the pixels are there, rather than waiting to be
+  // scrolled into view. The work rail slides on its own, so an in-view gate
+  // left cards sitting as skeletons while their image was already decoded.
+  const revealed = loaded;
 
   return (
     <div

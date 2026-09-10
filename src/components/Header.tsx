@@ -40,7 +40,13 @@ export default function Header() {
     return () => document.body.classList.remove("dialog-open");
   }, [open]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  // Adjusted during render, not from an effect: closing the menu is a
+  // reaction to the route changing, not a synchronisation with the DOM.
+  const [seen, setSeen] = useState(pathname);
+  if (pathname !== seen) {
+    setSeen(pathname);
+    setOpen(false);
+  }
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";

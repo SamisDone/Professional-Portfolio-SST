@@ -8,40 +8,48 @@ Not deployed yet. See Deployment below.
 ## The idea
 
 Explainable AI attributes a prediction back to the features that caused it, and
-a debater attaches evidence to every claim. The site is built the same way:
-every project states its problem, what was built, and the outcome, on the page
-rather than behind a click, and every number in the strip under the hero links
-to the thing that proves it.
+a debater attaches evidence to every claim. The site works the same way: every
+project states its problem, what was built and the outcome, and every figure in
+the strip under the hero links to the thing that proves it.
 
-Dark green ground, strong red accent, bright white text. Green is the default
-for everyone rather than a dark-mode variant, because the palette is the brand
-and most systems report light. The header toggle inverts it to a white ground
-with green ink, using the same three colours, and remembers the choice.
+## Colour
 
-Red needs two tokens. One red cannot both read as text on dark green and carry
-white text as a button fill, since lighter helps the first and hurts the second.
-`--accent` is the lighter red for type and marks, `--accent-solid` the deeper
-red for fills.
+Five colours: `#3F194D` plum, `#68097E` violet, `#C91C7A` magenta, `#E8675C`
+coral, `#FFCA06` yellow.
 
-## Stack
+Plum is the surface, and a darker cut of the same hue is the page ground so
+text has contrast headroom. Magenta carries the actions. Yellow is the text
+accent. Violet and coral drive the two drifting fields in the backdrop.
 
-React 19 and TypeScript on Vite, styled with Tailwind 3, routed with React
-Router. Motion is `framer-motion`. Type is Plus Jakarta Sans and JetBrains Mono,
-self-hosted through Fontsource. Icons are Phosphor.
+Two things worth not undoing. Magenta reads at only 3.5 to 1 against the ground,
+so it is never used for type: it is a fill, with near-white on top at 5.3 to 1.
+And the light theme is the same five colours inverted, not a separate palette.
+
+## Type
+
+Climate Crisis for headings, h1 through h3. Libre Franklin for everything else.
+Both self-hosted through Fontsource.
+
+Climate Crisis is extremely wide, so headings are short phrases. Long sentences
+in it wrap to three lines and swallow the screen. Where a heading needs more,
+the sentence goes underneath as a standfirst in Libre Franklin.
+
+## Structure
 
 Six routes, one per section: `/`, `/work`, `/experience`, `/research`,
-`/about`, `/contact`. Every page is sized to fit one screen, so a section is a
-screen rather than a scroll.
+`/about`, `/contact`, plus a 404.
 
-**Left and right arrow keys** walk the sections in reading order, and the same
-two moves sit at the bottom edge as buttons so the shortcut is discoverable.
-The handler stands down inside form fields and inside anything marked
-`data-arrow-surface`, which is how the work rail keeps the arrows for its own
-horizontal scrolling.
+**Every page fits one screen.** Verified from 1920x1080 down to 1280x720. The
+vertical rhythm clamps against `vh` as well as `vw`, and `index.css` carries
+`max-height` blocks that compress further on short laptops.
 
-Navigating runs five panels that sweep up across the screen in a stagger, hold
-while the route swaps behind them, then carry on and peel off the top. The name
-of the section being entered sits in the hold.
+**Left and right arrow keys** walk the sections in reading order, with the same
+two moves at the bottom edge as buttons so the shortcut is discoverable. The
+handler stands down inside form fields and while a dialog is open.
+
+The header nav is generated from the same `ROUTES` list the arrows walk, so the
+two orders cannot drift apart. The CV is a download, not a section, so it sits
+with the theme toggle rather than inline where it would read as the next step.
 
 ## Running it
 
@@ -58,29 +66,52 @@ npm run lint     # oxlint
 ```
 src/
   pages/        One per route, each composing section components
-  components/   Sections, plus Figure, Reveal, MaskText, PageTransition
+  components/   Sections, plus Figure, Reveal, MaskText, Backdrop,
+                Pager, PageTransition, ProjectDialog
   data/         content.ts, every string a visitor reads
   hooks/        useReducedMotion
-  lib/          theme.ts
+  lib/          theme.ts, routes.ts
 public/
   shots/        Real screenshots of the live projects
   og.png        Social card, regenerate if the positioning line changes
+scripts/
+  capture-shots.mjs
 ```
-
-All copy is in `src/data/content.ts`. Adding a project means adding one object
-there; if it has a live URL, capture a screenshot into `public/shots` and set
-`shot`.
 
 ## Notes for future edits
 
 **Screenshots, not illustrations.** Project imagery is a real capture of the
-running product. If a project has no live deployment it gets no image rather
-than a mockup, which is why StockMaster and TabSaver sit in the secondary index.
+running product. A project with no live deployment gets no image rather than a
+mockup, which is why StockMaster and the rest sit in the index card.
+
+Every shot is stored at 16:10 and each frame is locked to the file's own ratio,
+so an image fills its box with nothing cropped and no bars around it. Card
+height is governed by card **width**, never by a height cap on the image. A
+height cap is what was silently cropping them before.
+
+**The work rail** slides on its own. The track holds two copies of the set and
+wraps at the halfway mark, which lands on an identical frame, so the loop has no
+seam. It stops on hover, on focus, while a dialog is open, when the tab is
+hidden, and under reduced motion. Below `lg` it collapses to a column.
+
+`scrollLeft` rounds to whole pixels. Adding a sub-pixel drift to the value read
+back off the element rounds straight down again and the rail never moves, so the
+position is accumulated as a float.
+
+**Case studies live in `ProjectDialog`,** not on the card. That is deliberate:
+an earlier version folded them behind a disclosure and hid them entirely on
+short screens, which cut the substance to save height. Keep them in the dialog.
 
 **Loading.** Two skeleton layers, both shaped like the content they replace. The
-boot shell is inlined in `index.html` so it paints before the bundles arrive and
-is cleared when React mounts. `Figure` holds a skeleton in the image's own box
-until the file decodes, so nothing reflows.
+boot shell is inlined in `index.html` so it paints before the bundles arrive.
+`Figure` holds a skeleton in the image's own box until the file decodes.
+
+**Motion.** Everything checks `useReducedMotion` or sits behind the
+`prefers-reduced-motion` block in `index.css`.
+
+A framer-motion trap worth knowing: a bare four-number `ease` array next to a
+keyframe track is parsed as one easing per segment, not as a cubic bezier, and
+the animation silently refuses to run. Use a named easing on keyframed tracks.
 
 **Absolute URLs.** The canonical link, the Open Graph tags and `sitemap.xml`
 need the deployed origin, because Open Graph crawlers do not resolve relative
@@ -88,23 +119,14 @@ paths. All three are stamped at build time from one value. `index.html` carries
 a `__SITE_URL__` token, and `robots.txt` and `sitemap.xml` are generated by the
 `site-url` plugin in `vite.config.ts`.
 
-**The work rail.** On screens at `lg` and up the five case studies run sideways
-in a native scroll-snap rail, because the five are peers and a vertical stack
-makes whatever sits last read as least important. It is real overflow, not a
-scroll hijack, so page scrolling still behaves. Below `lg` it collapses to a
-column; a sideways rail of long-form text on a phone is a trap. The rail gutter
-lives in `index.css` rather than a Tailwind class, because a nested `calc()`
-inside `max()` did not survive the class parser.
-
-**Backdrop.** `Backdrop.tsx` paints three fixed layers behind everything: two
-large fields of colour on long drift loops, a hairline grid, and grain. Only the
-two fields ever change, and they move by transform alone.
-
-**Motion.** Everything checks `useReducedMotion` or sits behind the
-`prefers-reduced-motion` block in `index.css`. The curtain, reveals, the masked
-headings, the chart draw and the skeleton sweep all stop.
-
 **No em-dashes.** Deliberate, throughout the copy.
+
+## Still to do
+
+- The Fleet AI entry in `src/data/content.ts` says only that it was contract
+  work for a US-based AI company, because that is all the CV gave. It needs two
+  or three lines about what was actually done there.
+- Deploy, then set the origin.
 
 ## Deployment
 
@@ -112,14 +134,12 @@ Configured for Vercel via `vercel.json`, which adds the SPA rewrite, immutable
 caching for hashed assets, and basic security headers. `public/_redirects`
 covers the equivalent fallback on Netlify.
 
-The site's own origin resolves in this order:
+The origin resolves in this order:
 
 1. `VITE_SITE_URL`, if set. Use this for a custom domain.
 2. `VERCEL_PROJECT_PRODUCTION_URL` on Vercel, or `URL` on Netlify. Both hosts
    set these automatically, so a normal deploy needs no configuration.
 3. A placeholder, with a build warning.
-
-To deploy on Vercel:
 
 ```bash
 npm i -g vercel

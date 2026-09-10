@@ -38,7 +38,7 @@ function Card({
         src={project.shot!}
         alt={project.shotAlt ?? ""}
         ratio={project.shotRatio}
-        priority={n <= 2}
+        priority
       />
 
       <p className="mt-3 line-clamp-2 text-[14px] leading-snug text-ink">
