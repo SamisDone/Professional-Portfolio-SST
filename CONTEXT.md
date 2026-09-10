@@ -128,6 +128,12 @@ height cap on the image is what crops it.
 size.** The `@font-face` must declare `font-weight: 200 800` or every word on
 the page renders at 800.
 
+**A regex in `vercel.json` needs its backslashes doubled.** The SPA rewrite
+source is a regex inside a JSON string, and JSON has no `\.` escape, so the
+file fails to parse and Vercel rejects the whole deployment with "invalid
+vercel.json file provided". It has to be written `\\.`, which decodes to the
+`\.` the regex wants. Run the file through a JSON parser before pushing it.
+
 **Narrowing a rail card does not always shorten it.** The screenshot shrinks,
 but the stack chips underneath wrap onto another row and take the height
 straight back. At 1280x720 a card went from 265px wide to 250px and got
