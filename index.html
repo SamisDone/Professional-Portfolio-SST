@@ -17,20 +17,12 @@
       content="CSE undergraduate at CUET building full-stack products with React, Node.js and PostgreSQL. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
     />
     <meta name="author" content="Samonwita Sarker" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9e9e6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121211" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
-    <!-- Fonts: preconnect so the display face isn't blocked behind DNS + TLS. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- The hero still frame, fetched before the JS bundle parses. -->
-    <link
-      rel="preload"
-      as="image"
-      href="https://image.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g/thumbnail.jpg?width=1280&time=2"
-    />
 
     <!-- Open Graph: what LinkedIn, Slack and iMessage render for the link. -->
     <meta property="og:type" content="website" />
@@ -91,9 +83,65 @@
         ]
       }
     </script>
+
+    <!--
+      Boot shell. Inlined so it paints before the CSS and JS bundles arrive,
+      and shaped like the real header and hero so the first frame is the page
+      arriving rather than a blank sheet. React clears #root when it mounts.
+    -->
+    <style>
+      :root { --boot-paper:#e9e9e6; --boot-rule:#cfcfc9; --boot-bar:#d3d3cc; }
+      @media (prefers-color-scheme: dark) {
+        :root { --boot-paper:#121211; --boot-rule:#2f2f2c; --boot-bar:#2b2b28; }
+      }
+      html { background: var(--boot-paper); }
+      #boot { animation: boot-in .35s ease-out both; }
+      #boot .bar { display:block; background:var(--boot-bar); border-radius:2px; }
+      #boot .shimmer { position:relative; overflow:hidden; }
+      #boot .shimmer::after {
+        content:""; position:absolute; inset:0; transform:translateX(-100%);
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+        animation:boot-sweep 1.5s ease-in-out infinite;
+      }
+      @keyframes boot-sweep { to { transform:translateX(100%); } }
+      @keyframes boot-in { from { opacity:0 } }
+      @media (prefers-reduced-motion: reduce) {
+        #boot, #boot .shimmer::after { animation:none; }
+        #boot .shimmer::after { display:none; }
+      }
+    </style>
   </head>
   <body class="bg-bg text-text-primary font-body">
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot" aria-hidden="true">
+        <div style="border-bottom:1px solid var(--boot-rule);height:64px">
+          <div style="max-width:1240px;margin:0 auto;padding:0 32px;height:100%;display:flex;align-items:center;justify-content:space-between">
+            <span class="bar shimmer" style="width:74px;height:12px"></span>
+            <span class="bar shimmer" style="width:112px;height:34px"></span>
+          </div>
+        </div>
+        <div style="max-width:1240px;margin:0 auto;padding:80px 32px 0;display:flex;gap:32px">
+          <div style="flex:1 1 66%;min-width:0">
+            <span class="bar shimmer" style="width:148px;height:12px"></span>
+            <span class="bar shimmer" style="width:min(690px,96%);height:78px;margin-top:30px"></span>
+            <span class="bar shimmer" style="width:min(560px,88%);height:18px;margin-top:34px"></span>
+            <span class="bar shimmer" style="width:min(310px,52%);height:18px;margin-top:12px"></span>
+            <div style="display:flex;gap:12px;margin-top:44px">
+              <span class="bar shimmer" style="width:174px;height:52px"></span>
+              <span class="bar shimmer" style="width:124px;height:52px"></span>
+            </div>
+          </div>
+          <div style="flex:0 1 30%;min-width:0;padding-left:32px;border-left:1px solid var(--boot-rule);align-self:flex-end;padding-bottom:6px">
+            <span class="bar shimmer" style="width:62px;height:11px"></span>
+            <span class="bar shimmer" style="width:172px;height:13px;margin-top:9px"></span>
+            <span class="bar shimmer" style="width:44px;height:11px;margin-top:26px"></span>
+            <span class="bar shimmer" style="width:196px;height:13px;margin-top:9px"></span>
+            <span class="bar shimmer" style="width:52px;height:11px;margin-top:26px"></span>
+            <span class="bar shimmer" style="width:238px;height:13px;margin-top:9px"></span>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

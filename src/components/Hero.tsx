@@ -1,129 +1,84 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import HlsBackgroundVideo from "./HlsBackgroundVideo";
+import { motion } from "framer-motion";
+import { ArrowDownIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
 export default function Hero() {
-  const [roleIndex, setRoleIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const reduced = useReducedMotion();
-
-  useEffect(() => {
-    if (reduced) return;
-    const id = window.setInterval(() => {
-      setRoleIndex((i) => (i + 1) % profile.roles.length);
-    }, 2400);
-    return () => window.clearInterval(id);
-  }, [reduced]);
-
-  useEffect(() => {
-    if (reduced) return;
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.fromTo(
-        ".name-reveal",
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1.2, delay: 0.1 },
-      ).fromTo(
-        ".blur-in",
-        { opacity: 0, filter: "blur(10px)", y: 20 },
-        {
-          opacity: 1,
-          filter: "blur(0px)",
-          y: 0,
-          duration: 1,
-          stagger: 0.1,
-          delay: 0.3,
-        },
-        "<",
-      );
-    }, containerRef);
-    return () => ctx.revert();
-  }, [reduced]);
+  const rise = (i: number) => ({
+    initial: reduced ? false : { opacity: 0, y: 22 },
+    animate: { opacity: 1, y: 0 },
+    transition: {
+      duration: reduced ? 0 : 0.7,
+      delay: reduced ? 0 : 0.05 + i * 0.08,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  });
 
   return (
-    <section
-      id="hero"
-      ref={containerRef}
-      className="relative min-h-[100svh] w-full overflow-hidden flex items-center justify-center"
-    >
-      <HlsBackgroundVideo />
-      <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-bg to-transparent" />
-
-      <div className="relative z-10 flex flex-col items-center text-center px-6">
-        <span className="blur-in text-xs text-muted uppercase tracking-[0.3em] mb-8">
-          {profile.eyebrow}
-        </span>
-
-        <h1 className="name-reveal text-5xl md:text-8xl lg:text-9xl font-display italic leading-[0.9] tracking-tight text-text-primary mb-6">
-          {profile.name}
-        </h1>
-
-        <p className="blur-in text-base md:text-lg text-text-primary/80 mb-3 flex items-baseline justify-center gap-[0.28em]">
-          <span>A</span>
-          <span className="inline-grid justify-items-center">
-            {/* Every role occupies the same grid cell, so the box is as wide as
-                the longest word and the sentence never reflows mid-rotation. */}
-            {profile.roles.map((role, i) => (
-              <span
-                key={role}
-                aria-hidden={i !== roleIndex}
-                className={`col-start-1 row-start-1 font-display italic text-text-primary text-xl md:text-2xl leading-none transition-opacity duration-500 ${
-                  i === roleIndex ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                {role}
-              </span>
-            ))}
-          </span>
-          <span>based in Bangladesh.</span>
-        </p>
-
-        <p className="blur-in text-sm md:text-base text-muted max-w-md mb-12">
-          {profile.description}
-        </p>
-
-        <div className="blur-in inline-flex gap-4">
-          <button
-            onClick={() =>
-              document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="group relative rounded-full transition-transform duration-300 hover:scale-105"
+    <section id="top" className="border-b border-rule">
+      <div className="mx-auto grid max-w-shell gap-10 px-5 pb-16 pt-20 sm:px-8 md:grid-cols-12 md:gap-8 md:pb-24 md:pt-24">
+        <div className="md:col-span-8">
+          <motion.p
+            {...rise(0)}
+            className="mb-7 font-mono text-[13px] uppercase tracking-[0.2em] text-accent"
           >
-            <span
-              className="absolute -inset-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
-            />
-            <span className="relative z-10 flex items-center rounded-full text-sm px-7 py-3.5 bg-text-primary text-bg group-hover:bg-bg group-hover:text-text-primary transition-colors duration-300">
-              See my work
-            </span>
-          </button>
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="group relative rounded-full transition-transform duration-300 hover:scale-105"
-          >
-            <span
-              className="absolute -inset-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ backgroundImage: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)" }}
-            />
-            <span className="relative z-10 flex items-center rounded-full text-sm px-7 py-3.5 border-2 border-stroke group-hover:border-bg bg-bg text-text-primary transition-colors duration-300">
-              Get in touch
-            </span>
-          </a>
-        </div>
-      </div>
+            {profile.standfirst}
+          </motion.p>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10">
-        <span className="text-xs text-muted uppercase tracking-[0.2em]">Scroll</span>
-        <div className="relative w-px h-10 bg-stroke overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-3 bg-text-primary/70 animate-scroll-down" />
+          <motion.h1
+            {...rise(1)}
+            className="max-w-[13ch] text-[clamp(2.75rem,8vw,5.5rem)] font-medium leading-[0.95] tracking-tightest text-ink"
+          >
+            {profile.name}
+          </motion.h1>
+
+          <motion.p
+            {...rise(2)}
+            className="mt-7 max-w-[46ch] text-lg leading-relaxed text-muted sm:text-xl"
+          >
+            {profile.positioning}
+          </motion.p>
+
+          <motion.div {...rise(3)} className="mt-10 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() =>
+                document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="group inline-flex items-center gap-2.5 bg-ink px-6 py-3.5 font-mono text-sm text-paper transition-opacity hover:opacity-85 active:scale-[0.98]"
+            >
+              See the work
+              <ArrowDownIcon size={15} weight="bold" />
+            </button>
+            <a
+              href={profile.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 border border-rule px-6 py-3.5 font-mono text-sm text-ink transition-colors hover:border-ink active:scale-[0.98]"
+            >
+              Résumé
+              <ArrowUpRightIcon size={15} weight="bold" />
+            </a>
+          </motion.div>
         </div>
+
+        {/* The evidence column. Mono, right-aligned on desktop, so the hero is
+            a split rather than the centred stack every portfolio opens with. */}
+        <motion.dl
+          {...rise(4)}
+          className="flex flex-col gap-5 self-end border-t border-rule pt-6 font-mono text-[13px] md:col-span-4 md:border-l md:border-t-0 md:pl-8 md:pt-2"
+        >
+          {[
+            ["Based in", profile.location],
+            ["Focus", "Full-stack, explainable AI"],
+            ["Status", "Open to internships and research"],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <dt className="text-muted">{k}</dt>
+              <dd className="mt-1 text-ink">{v}</dd>
+            </div>
+          ))}
+        </motion.dl>
       </div>
     </section>
   );

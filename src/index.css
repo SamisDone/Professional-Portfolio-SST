@@ -1,16 +1,40 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Light is the default. Almost every developer portfolio is dark, so paper is
+ * the single cheapest way for this one not to look like the others, and real
+ * product screenshots read better against it. Dark mode follows the system
+ * setting and can be overridden by the toggle in the header.
+ */
 :root {
-  --bg: 0 0% 4%;
-  --surface: 0 0% 8%;
-  --text: 0 0% 96%;
-  --muted: 0 0% 53%;
-  --stroke: 0 0% 12%;
-  --accent: 0 0% 96%;
+  --paper: 60 5% 91%;
+  --raised: 60 8% 95%;
+  --ink: 60 6% 9%;
+  --muted: 50 3% 36%;
+  --rule: 55 5% 80%;
+  --accent: 11 65% 45%;
+}
+
+:root[data-theme="dark"] {
+  --paper: 60 3% 7%;
+  --raised: 60 3% 11%;
+  --ink: 60 6% 91%;
+  --muted: 50 4% 60%;
+  --rule: 55 4% 19%;
+  --accent: 14 85% 61%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: 60 3% 7%;
+    --raised: 60 3% 11%;
+    --ink: 60 6% 91%;
+    --muted: 50 4% 60%;
+    --rule: 55 4% 19%;
+    --accent: 14 85% 61%;
+  }
 }
 
 * {
@@ -19,145 +43,105 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
-  /* Reserve the scrollbar so locking body scroll for a modal doesn't shift
-     the page sideways underneath it. */
-  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+  background: hsl(var(--paper));
+  color: hsl(var(--ink));
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Lock body scroll when mobile menu is open */
-body.menu-open {
-  overflow: hidden;
 }
 
 ::selection {
-  background: hsl(var(--text) / 0.9);
-  color: hsl(var(--bg));
+  background: hsl(var(--accent));
+  color: hsl(var(--paper));
 }
 
-.accent-gradient {
-  background-image: linear-gradient(90deg, #89aacc 0%, #4e85bf 100%);
-}
-
-.animated-gradient-border {
-  background-image: linear-gradient(
-    90deg,
-    #89aacc 0%,
-    #4e85bf 50%,
-    #89aacc 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-shift 6s ease infinite;
-}
-
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
-
-@keyframes scroll-down {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(200%);
-  }
-}
-
-@keyframes role-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-scroll-down {
-  animation: scroll-down 1.5s ease-in-out infinite;
-}
-
-.animate-role-fade-in {
-  animation: role-fade-in 0.4s ease-out;
-}
-
-/* Thin, unobtrusive scrollbar to match the dark aesthetic */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: hsl(var(--bg));
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--stroke));
-  border-radius: 999px;
-}
-
-/* Keyboard focus. The project cards, the nav pills and the form controls all
-   suppressed the default outline, which left tab navigation invisible. */
 :focus-visible {
-  outline: 2px solid #9dbbd9;
+  outline: 2px solid hsl(var(--accent));
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
-/* Off-screen until tabbed to — the first stop for a keyboard user. */
+/* Off-screen until tabbed to. First stop for a keyboard user. */
 .skip-link {
   position: fixed;
   top: 0.75rem;
   left: 50%;
-  z-index: 10000;
-  transform: translate(-50%, -200%);
-  background: hsl(var(--text));
-  color: hsl(var(--bg));
-  padding: 0.65rem 1.25rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: transform 0.2s ease;
+  z-index: 100;
+  transform: translate(-50%, -220%);
+  background: hsl(var(--ink));
+  color: hsl(var(--paper));
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8125rem;
+  transition: transform 0.18s ease;
 }
 .skip-link:focus {
   transform: translate(-50%, 0);
 }
 
-/*
- * Honour the OS-level motion preference. The React components already skip
- * their GSAP timelines and infinite loops; this catches the purely decorative
- * CSS animations and any transition the components don't own.
- */
+body.dialog-open {
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  }
+}
+
+/* Loading skeletons. Same box as the content they stand in for. */
+.skeleton {
+  background: hsl(var(--raised));
+}
+.skeleton-bar {
+  display: block;
+  background: hsl(var(--rule));
+  opacity: 0.75;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--paper) / 0.55) 50%,
+    transparent 100%
+  );
+  animation: skeleton-sweep 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* The boot shell in index.html, removed once React paints. */
+#boot {
+  animation: boot-fade 0.3s ease-out both;
+}
+@keyframes boot-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+    display: none;
   }
 }
