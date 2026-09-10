@@ -1,30 +1,47 @@
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Proof from "./components/Proof";
-import Work from "./components/Work";
-import Research from "./components/Research";
-import About from "./components/About";
-import Trajectory from "./components/Trajectory";
-import OtherWork from "./components/OtherWork";
-import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+import PageTransition, { RouteEffects } from "./components/PageTransition";
+import HomePage from "./pages/HomePage";
+import WorkPage from "./pages/WorkPage";
+import ExperiencePage from "./pages/ExperiencePage";
+import ResearchPage from "./pages/ResearchPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
+function Routed() {
+  const location = useLocation();
+
+  return (
+    // mode="wait" so the old page unmounts before the new one arrives, which is
+    // what keeps the swap hidden behind the curtain.
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/work" element={<WorkPage />} />
+        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/research" element={<ResearchPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 export default function App() {
   return (
-    <>
-      <a href="#work" className="skip-link">
+    <BrowserRouter>
+      <a href="#main" className="skip-link">
         Skip to main content
       </a>
+      <RouteEffects />
+      <PageTransition />
       <Header />
-      <main>
-        <Hero />
-        <Proof />
-        <Work />
-        <Research />
-        <About />
-        <Trajectory />
-        <OtherWork />
-        <Contact />
-      </main>
-    </>
+      <Routed />
+      <Footer />
+    </BrowserRouter>
   );
 }

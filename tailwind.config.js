@@ -11,10 +11,12 @@ export default {
         muted: "hsl(var(--muted))",
         rule: "hsl(var(--rule))",
         accent: "hsl(var(--accent))",
+        "accent-solid": "hsl(var(--accent-solid))",
+        "on-accent": "hsl(var(--on-accent))",
       },
       fontFamily: {
-        sans: ["'Geist Variable'", "system-ui", "sans-serif"],
-        mono: ["'Geist Mono Variable'", "ui-monospace", "monospace"],
+        sans: ["'IBM Plex Sans Variable'", "system-ui", "sans-serif"],
+        mono: ["'IBM Plex Mono'", "ui-monospace", "monospace"],
       },
       // One radius scale, near-sharp. A technical document, not a card deck.
       borderRadius: { none: "0", sm: "2px", DEFAULT: "3px", md: "3px", lg: "4px" },

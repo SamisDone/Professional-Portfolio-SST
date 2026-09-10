@@ -1,5 +1,6 @@
 import { about, profile } from "../data/content";
 import Reveal from "./Reveal";
+import MaskText from "./MaskText";
 
 export default function About() {
   return (
@@ -8,7 +9,7 @@ export default function About() {
         <div className="lg:col-span-7">
           <Reveal>
             <h2 className="max-w-[18ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              Half of my time builds. The other half asks why.
+              <MaskText text="Half of my time builds. The other half asks why." />
             </h2>
           </Reveal>
 
@@ -26,7 +27,7 @@ export default function About() {
                 href={profile.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-ink px-6 py-3 font-mono text-[13px] text-paper transition-opacity hover:opacity-85 active:scale-[0.98]"
+                className="bg-accent-solid px-6 py-3 font-mono text-[13px] text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
               >
                 Download the CV
               </a>

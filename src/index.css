@@ -3,38 +3,36 @@
 @tailwind utilities;
 
 /*
- * Light is the default. Almost every developer portfolio is dark, so paper is
- * the single cheapest way for this one not to look like the others, and real
- * product screenshots read better against it. Dark mode follows the system
- * setting and can be overridden by the toggle in the header.
+ * Dark green ground, strong red accent, bright white text. Green is the
+ * default for everyone rather than a dark-mode variant, because the palette is
+ * the brand here and most systems report light. The toggle inverts it to white
+ * ground with green ink, using the same three colours, and remembers.
+ *
+ * Red needs two tokens. One red cannot both read as text on dark green and
+ * carry white text as a button fill: lighter helps the first and hurts the
+ * second. So --accent is the lighter red used for type and marks, and
+ * --accent-solid is the deeper red used for fills, always with --on-accent.
  */
 :root {
-  --paper: 60 5% 91%;
-  --raised: 60 8% 95%;
-  --ink: 60 6% 9%;
-  --muted: 50 3% 36%;
-  --rule: 55 5% 80%;
-  --accent: 11 65% 45%;
+  --paper: 158 32% 8%;
+  --raised: 158 26% 12%;
+  --ink: 0 0% 100%;
+  --muted: 155 10% 70%;
+  --rule: 158 18% 21%;
+  --accent: 4 80% 60%;
+  --accent-solid: 2 74% 44%;
+  --on-accent: 0 0% 100%;
 }
 
-:root[data-theme="dark"] {
-  --paper: 60 3% 7%;
-  --raised: 60 3% 11%;
-  --ink: 60 6% 91%;
-  --muted: 50 4% 60%;
-  --rule: 55 4% 19%;
-  --accent: 14 85% 61%;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: 60 3% 7%;
-    --raised: 60 3% 11%;
-    --ink: 60 6% 91%;
-    --muted: 50 4% 60%;
-    --rule: 55 4% 19%;
-    --accent: 14 85% 61%;
-  }
+:root[data-theme="light"] {
+  --paper: 150 20% 98%;
+  --raised: 152 18% 95%;
+  --ink: 158 40% 11%;
+  --muted: 155 12% 34%;
+  --rule: 150 14% 86%;
+  --accent: 2 74% 44%;
+  --accent-solid: 2 78% 40%;
+  --on-accent: 150 20% 98%;
 }
 
 * {
@@ -64,6 +62,14 @@ body {
 :focus-visible {
   outline: 2px solid hsl(var(--accent));
   outline-offset: 3px;
+}
+
+/* Headings are focused programmatically after a route change so screen reader
+   and keyboard users land on the new page. That move should not paint a focus
+   ring, which would read as an error to everyone else. */
+[tabindex="-1"]:focus,
+[tabindex="-1"]:focus-visible {
+  outline: none;
 }
 
 /* Off-screen until tabbed to. First stop for a keyboard user. */
@@ -143,5 +149,96 @@ body.dialog-open {
   .skeleton::after {
     animation: none;
     display: none;
+  }
+}
+
+/*
+ * Theme switch. Both snapshots are held still and the incoming one is clipped
+ * by the circle animated in Header.tsx, so the new theme wipes out of the
+ * button instead of the page blinking.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* Nav links draw an accent rule as the pointer arrives. */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: hsl(var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  .nav-link::after {
+    transition: none;
+  }
+}
+
+/* The current section keeps its rule drawn. */
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+
+/* The work rail. Thin scrollbar in the brand colours, and snapping is only
+   armed at the breakpoint where the rail is actually horizontal. */
+.work-rail {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--rule)) transparent;
+}
+.work-rail::-webkit-scrollbar {
+  height: 8px;
+}
+.work-rail::-webkit-scrollbar-track {
+  background: transparent;
+}
+.work-rail::-webkit-scrollbar-thumb {
+  background: hsl(var(--rule));
+}
+.work-rail::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent));
+}
+
+/*
+ * Rail gutters. Real CSS rather than Tailwind arbitrary values, because the
+ * nested calc() inside max() did not survive the class parser and the first
+ * card ended up flush to the viewport edge instead of on the page gutter.
+ */
+@media (min-width: 1024px) {
+  /* Doubled class so this beats the sm:px-8 utility on the same element.
+     Tailwind emits its responsive utilities after this file's own rules. */
+  .work-rail.work-rail {
+    padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
+    scroll-padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
+  }
+  /* A scroll container drops its trailing padding, so the tail is an element. */
+  .work-rail::after {
+    content: "";
+    flex: 0 0 calc(max(0px, (100vw - 1240px) / 2) + 2rem);
   }
 }

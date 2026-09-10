@@ -11,8 +11,13 @@ export function storedTheme(): Theme | null {
   }
 }
 
-export function systemTheme(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+/**
+ * Espresso unless the visitor has chosen otherwise. Not derived from
+ * prefers-color-scheme: the palette is the brand here, and most systems report
+ * light, which would leave most visitors never seeing it.
+ */
+export function defaultTheme(): Theme {
+  return "dark";
 }
 
 export function applyTheme(theme: Theme): void {

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 type Props = {
   src: string;
@@ -10,12 +12,13 @@ type Props = {
 };
 
 /**
- * A screenshot with a skeleton in its place until the file decodes.
+ * A screenshot that holds a skeleton in its own box until the file decodes,
+ * then wipes up into place.
  *
- * The placeholder is the same box as the final image, not a spinner, so the
- * page never reflows and the reader can already see where the picture will be.
- * The bars inside echo a browser chrome and a heading, which is roughly what
- * every one of these screenshots actually contains.
+ * The wipe rather than a fade because these are the evidence on the page, and
+ * a reveal that uncovers the image top to bottom reads as presenting it. The
+ * skeleton is the same box as the final image, so nothing reflows, and the
+ * wipe only runs once both the pixels have arrived and the box is on screen.
  */
 export default function Figure({
   src,
@@ -26,17 +29,23 @@ export default function Figure({
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const boxRef = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(boxRef, { once: true, amount: 0.25 });
+  const reduced = useReducedMotion();
 
   // An image restored from cache can finish before React attaches onLoad.
   useEffect(() => {
     if (imgRef.current?.complete) setLoaded(true);
   }, []);
 
+  const revealed = loaded && (inView || reduced);
+
   return (
     <div
+      ref={boxRef}
       className={`relative overflow-hidden border border-rule bg-raised ${ratio} ${className}`}
     >
-      {!loaded && (
+      {!revealed && (
         <div className="absolute inset-0 skeleton" aria-hidden="true">
           <div className="flex h-full flex-col gap-3 p-4 sm:p-6">
             <div className="flex items-center gap-2">
@@ -54,21 +63,30 @@ export default function Figure({
         </div>
       )}
 
-      <img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        loading={priority ? "eager" : "lazy"}
-        decoding={priority ? "sync" : "async"}
-        width={1400}
-        height={875}
-        onLoad={() => setLoaded(true)}
-        // Errors should not strand the reader on a skeleton forever.
-        onError={() => setLoaded(true)}
-        className={`relative block h-full w-full object-cover object-top transition-[opacity,transform] duration-700 ease-out hover:scale-[1.02] ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
-      />
+      <motion.div
+        className="h-full w-full"
+        initial={reduced ? false : { clipPath: "inset(100% 0 0 0)", scale: 1.04 }}
+        animate={
+          revealed
+            ? { clipPath: "inset(0% 0 0 0)", scale: 1 }
+            : { clipPath: "inset(100% 0 0 0)", scale: 1.04 }
+        }
+        transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding={priority ? "sync" : "async"}
+          width={1400}
+          height={875}
+          onLoad={() => setLoaded(true)}
+          // An error should not strand the reader on a skeleton forever.
+          onError={() => setLoaded(true)}
+          className="block h-full w-full object-cover object-top transition-transform duration-[900ms] ease-out hover:scale-[1.03]"
+        />
+      </motion.div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { ArrowUpRightIcon } from "@phosphor-icons/react";
-import { milestones } from "../data/content";
+import { research } from "../data/content";
 import Reveal from "./Reveal";
+import MaskText from "./MaskText";
 
 /**
  * A ledger, not a stack of cards. Year in the margin, claim in the body, the
@@ -8,14 +9,14 @@ import Reveal from "./Reveal";
  * than a hairline under every row.
  */
 export default function Research() {
-  const years = [...new Set(milestones.map((m) => m.year))];
+  const years = [...new Set(research.map((m) => m.year))];
 
   return (
-    <section id="research" className="scroll-mt-16 border-b border-rule bg-raised">
+    <section id="research" className="scroll-mt-16 border-b border-rule">
       <div className="mx-auto max-w-shell px-5 py-16 sm:px-8 sm:py-24">
         <Reveal>
           <h2 className="max-w-[22ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-            Research, competitions and the work that got reviewed.
+            <MaskText text="Papers and competitions, the work that got reviewed." />
           </h2>
         </Reveal>
 
@@ -29,7 +30,7 @@ export default function Research() {
                 <h3 className="font-mono text-sm text-muted md:col-span-2">{year}</h3>
 
                 <ul className="flex flex-col gap-8 md:col-span-10">
-                  {milestones
+                  {research
                     .filter((m) => m.year === year)
                     .map((m, i) => {
                       const Tag = m.href ? "a" : "div";

@@ -1,55 +1,60 @@
 import { motion } from "framer-motion";
-import { ArrowDownIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
+import { Link } from "react-router-dom";
+import { ArrowRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import MaskText from "./MaskText";
+import Attribution from "./Attribution";
 
 export default function Hero() {
   const reduced = useReducedMotion();
-  const rise = (i: number) => ({
-    initial: reduced ? false : { opacity: 0, y: 22 },
+  const rise = (i: number, base = 0) => ({
+    initial: reduced ? false : { opacity: 0, y: 18 },
     animate: { opacity: 1, y: 0 },
     transition: {
       duration: reduced ? 0 : 0.7,
-      delay: reduced ? 0 : 0.05 + i * 0.08,
+      delay: reduced ? 0 : base + i * 0.08,
       ease: [0.16, 1, 0.3, 1] as const,
     },
   });
 
   return (
     <section id="top" className="border-b border-rule">
-      <div className="mx-auto grid max-w-shell gap-10 px-5 pb-16 pt-20 sm:px-8 md:grid-cols-12 md:gap-8 md:pb-24 md:pt-24">
+      <div className="mx-auto grid max-w-shell gap-12 px-5 pb-16 pt-16 sm:px-8 sm:pt-20 md:grid-cols-12 md:gap-10 md:pb-20">
         <div className="md:col-span-8">
           <motion.p
             {...rise(0)}
-            className="mb-7 font-mono text-[13px] uppercase tracking-[0.2em] text-accent"
+            className="mb-8 font-mono text-[13px] uppercase tracking-[0.2em] text-accent"
           >
             {profile.standfirst}
           </motion.p>
 
-          <motion.h1
-            {...rise(1)}
-            className="max-w-[13ch] text-[clamp(2.75rem,8vw,5.5rem)] font-medium leading-[0.95] tracking-tightest text-ink"
+          <h1
+            tabIndex={-1}
+            className="text-[clamp(2.5rem,7.6vw,5.25rem)] font-medium leading-[1] tracking-tightest text-ink outline-none"
           >
-            {profile.name}
-          </motion.h1>
+            <MaskText text={profile.name} immediate delay={0.15} />
+          </h1>
 
           <motion.p
-            {...rise(2)}
-            className="mt-7 max-w-[46ch] text-lg leading-relaxed text-muted sm:text-xl"
+            {...rise(0, 0.95)}
+            className="mt-10 max-w-[46ch] text-lg leading-relaxed text-muted sm:text-xl"
           >
             {profile.positioning}
           </motion.p>
 
-          <motion.div {...rise(3)} className="mt-10 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() =>
-                document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="group inline-flex items-center gap-2.5 bg-ink px-6 py-3.5 font-mono text-sm text-paper transition-opacity hover:opacity-85 active:scale-[0.98]"
+          <motion.div {...rise(1, 0.95)} className="mt-9 flex flex-wrap gap-3">
+            <Link
+              to="/work"
+              className="group inline-flex items-center gap-2.5 bg-accent-solid px-6 py-3.5 font-mono text-sm text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
             >
               See the work
-              <ArrowDownIcon size={15} weight="bold" />
-            </button>
+              <ArrowRightIcon
+                size={15}
+                weight="bold"
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
             <a
               href={profile.resumeUrl}
               target="_blank"
@@ -62,23 +67,24 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* The evidence column. Mono, right-aligned on desktop, so the hero is
-            a split rather than the centred stack every portfolio opens with. */}
-        <motion.dl
-          {...rise(4)}
-          className="flex flex-col gap-5 self-end border-t border-rule pt-6 font-mono text-[13px] md:col-span-4 md:border-l md:border-t-0 md:pl-8 md:pt-2"
+        <motion.div
+          {...rise(2, 0.95)}
+          className="flex flex-col gap-10 self-end border-t border-rule pt-8 md:col-span-4 md:border-l md:border-t-0 md:pl-8 md:pt-0"
         >
-          {[
-            ["Based in", profile.location],
-            ["Focus", "Full-stack, explainable AI"],
-            ["Status", "Open to internships and research"],
-          ].map(([k, v]) => (
-            <div key={k}>
-              <dt className="text-muted">{k}</dt>
-              <dd className="mt-1 text-ink">{v}</dd>
-            </div>
-          ))}
-        </motion.dl>
+          <Attribution />
+          <dl className="flex flex-col gap-5 font-mono text-[13px]">
+            {[
+              ["Based in", profile.location],
+              ["Focus", "Full-stack, explainable AI"],
+              ["Status", "Open to internships and research"],
+            ].map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-muted">{k}</dt>
+                <dd className="mt-1 text-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </motion.div>
       </div>
     </section>
   );

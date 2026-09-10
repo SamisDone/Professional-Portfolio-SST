@@ -72,8 +72,8 @@ export type Project = {
 };
 
 /**
- * The four that carry the most weight, and the four with a running product to
- * show. StockMaster moved to the secondary index because it has no live
+ * The five that carry the most weight, and the five with a running product to
+ * show. StockMaster stays in the secondary index because it has no live
  * deployment, and a case row here without a real screenshot would be a hole.
  */
 export const featured: Project[] = [
@@ -117,6 +117,25 @@ export const featured: Project[] = [
       "The extension makes no network requests at all. State lives in chrome.storage.sync so it follows you between devices without a backend, the idle API stops the clock when you step away so the totals stay honest, and per-site budgets are enforced as a hard block rather than a dismissible nudge.",
     outcome:
       "Published and installable today. The zero-request claim is the kind you can check yourself in the network panel.",
+  },
+  {
+    slug: "tabsaver",
+    title: "TabSaver",
+    kind: "Chrome extension",
+    year: "2025",
+    summary:
+      "Restores a whole working session, tab groups intact, in one click.",
+    stack: ["JavaScript", "Chrome APIs"],
+    repo: "https://github.com/SamisDone/TabSaver-2.0",
+    live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
+    liveLabel: "Chrome Web Store",
+    shot: "/shots/tabsaver.jpg",
+    shotAlt: "The TabSaver panel listing a saved session and its tab count.",
+    problem:
+      "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful in the first place.",
+    approach:
+      "A session is captured as a structured snapshot that preserves tab groups rather than a flat list of URLs, so restoring puts the workspace back the way it was. Sessions are named, searchable and exportable, which is what makes it usable past the first week.",
+    outcome: "Published on the Chrome Web Store alongside RIPHours.",
   },
   {
     slug: "pierra",
@@ -173,22 +192,6 @@ export const otherWork: Project[] = [
     approach:
       "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
     outcome: "Working application with the component library and state layer built out.",
-  },
-  {
-    slug: "tabsaver",
-    title: "TabSaver",
-    kind: "Chrome extension",
-    year: "2025",
-    summary: "Restores a whole working session, tab groups included, in one click.",
-    stack: ["JavaScript", "Chrome APIs"],
-    repo: "https://github.com/SamisDone/TabSaver-2.0",
-    live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
-    liveLabel: "Chrome Web Store",
-    problem:
-      "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful.",
-    approach:
-      "Sessions are captured as a structured snapshot that preserves tab groups rather than a flat URL list, so restoring puts the workspace back the way it was.",
-    outcome: "Published on the Chrome Web Store.",
   },
   {
     slug: "sortnplay",
@@ -254,14 +257,15 @@ export const otherWork: Project[] = [
 
 export type Milestone = {
   year: string;
-  kind: "Publication" | "Competition" | "Experience";
+  kind: "Publication" | "Competition";
   title: string;
   venue: string;
   note: string;
   href?: string;
 };
 
-export const milestones: Milestone[] = [
+/** Academic output only. Employment is a separate section. */
+export const research: Milestone[] = [
   {
     year: "2026",
     kind: "Publication",
@@ -279,18 +283,42 @@ export const milestones: Milestone[] = [
     href: "https://openreview.net/forum?id=ZnWQpLP5Mc",
   },
   {
-    year: "2026",
-    kind: "Experience",
-    title: "Generalist, independent contractor",
-    venue: "Fleet AI, Inc.",
-    note: "Remote contract work for a US-based AI company, May to August.",
-  },
-  {
     year: "2025",
     kind: "Competition",
     title: "Finalist, PoliMemeDecode Datathon",
     venue: "CUET CSE Fest",
     note: "Multimodal classification of political memes, combining the image and the text signal.",
+  },
+];
+
+export type Role = {
+  org: string;
+  role: string;
+  period: string;
+  location: string;
+  points: string[];
+  href?: string;
+};
+
+export const experience: Role[] = [
+  {
+    org: "Fleet AI, Inc.",
+    role: "Generalist, independent contractor",
+    period: "May to August 2026",
+    location: "Remote",
+    points: [
+      "Contract work for a US-based AI company, delivered remotely from Bangladesh.",
+    ],
+  },
+  {
+    org: "Freelance",
+    role: "Web developer",
+    period: "2025",
+    location: "Contract",
+    points: [
+      "Built and shipped the production site for PIERRA, a Montreal exterior design firm, in English and French.",
+      "Taken from brief to deployed site as my first paid engagement.",
+    ],
   },
 ];
 

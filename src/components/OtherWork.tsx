@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRightIcon, PlusIcon, MinusIcon } from "@phosphor-icons/react";
 import { otherWork, profile } from "../data/content";
 import Reveal from "./Reveal";
+import MaskText from "./MaskText";
 import Figure from "./Figure";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -20,7 +21,7 @@ export default function OtherWork() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              Everything else on the shelf.
+              <MaskText text="Everything else on the shelf." />
             </h2>
             <a
               href={profile.github}
@@ -106,7 +107,7 @@ export default function OtherWork() {
                                 href={p.live}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-ink px-4 py-2.5 font-mono text-[13px] text-paper transition-opacity hover:opacity-85"
+                                className="inline-flex items-center gap-2 bg-accent-solid px-4 py-2.5 font-mono text-[13px] text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0"
                               >
                                 {p.liveLabel ?? "Open"}
                                 <ArrowUpRightIcon size={13} weight="bold" />

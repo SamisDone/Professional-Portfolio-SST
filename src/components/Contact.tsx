@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircleIcon, WarningCircleIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
 import Reveal from "./Reveal";
+import MaskText from "./MaskText";
 
 // FormSubmit needs no signup and no API key. It forwards whatever hits this
 // endpoint to profile.email. The very first message sent to a given address
@@ -76,7 +77,7 @@ export default function Contact() {
           <div className="lg:col-span-5">
             <Reveal>
               <h2 className="max-w-[14ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-                Get in touch.
+                <MaskText text="Get in touch." />
               </h2>
               <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
                 I am looking for internships and research collaborations. If you
@@ -222,7 +223,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="self-start bg-ink px-7 py-3.5 font-mono text-sm text-paper transition-opacity hover:opacity-85 active:scale-[0.98] disabled:opacity-50"
+                className="self-start bg-accent-solid px-7 py-3.5 font-mono text-sm text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {status === "sending" ? "Sending" : "Send message"}
               </button>
@@ -231,12 +232,6 @@ export default function Contact() {
         </div>
       </div>
 
-      <div className="border-t border-rule">
-        <div className="mx-auto flex max-w-shell flex-col gap-2 px-5 py-7 font-mono text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>{profile.name}, {profile.location}</p>
-          <p>Built with React and Tailwind. Type set in Geist.</p>
-        </div>
-      </div>
     </section>
   );
 }

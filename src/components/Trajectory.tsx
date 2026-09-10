@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { cgpaHistory, trajectoryNote } from "../data/content";
 import Reveal from "./Reveal";
+import MaskText from "./MaskText";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
 const W = 900;
@@ -34,7 +35,7 @@ export default function Trajectory() {
         <div className="grid gap-8 md:grid-cols-12">
           <Reveal className="md:col-span-5">
             <h2 className="max-w-[16ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
-              The grades, including the dip.
+              <MaskText text="The grades, including the dip." />
             </h2>
             <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
               {trajectoryNote}
