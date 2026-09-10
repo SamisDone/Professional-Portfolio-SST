@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
-      SITE_URL: change these five absolute URLs together if the site moves to a
-      custom domain. They must be absolute — Open Graph crawlers do not resolve
-      relative paths, which is why a relative image silently yields a blank card.
+      __SITE_URL__ is replaced at build time from VITE_SITE_URL (see
+      vite.config.ts). These have to be absolute: Open Graph crawlers do not
+      resolve relative paths, so a relative image silently yields a blank card.
     -->
-    <link rel="canonical" href="https://samonwita.vercel.app/" />
+    <link rel="canonical" href="__SITE_URL__/" />
 
     <title>Samonwita Sarker — Full-Stack Developer &amp; AI Researcher</title>
     <meta
@@ -35,7 +35,7 @@
     <!-- Open Graph: what LinkedIn, Slack and iMessage render for the link. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Samonwita Sarker" />
-    <meta property="og:url" content="https://samonwita.vercel.app/" />
+    <meta property="og:url" content="__SITE_URL__/" />
     <meta
       property="og:title"
       content="Samonwita Sarker — Full-Stack Developer &amp; AI Researcher"
@@ -44,7 +44,7 @@
       property="og:description"
       content="CSE '27 at CUET. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
     />
-    <meta property="og:image" content="https://samonwita.vercel.app/og.png" />
+    <meta property="og:image" content="__SITE_URL__/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -61,7 +61,7 @@
       name="twitter:description"
       content="CSE '27 at CUET. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
     />
-    <meta name="twitter:image" content="https://samonwita.vercel.app/og.png" />
+    <meta name="twitter:image" content="__SITE_URL__/og.png" />
 
     <!-- Structured data, so a search result can show the role and affiliation. -->
     <script type="application/ld+json">
@@ -69,7 +69,7 @@
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Samonwita Sarker",
-        "url": "https://samonwita.vercel.app/",
+        "url": "__SITE_URL__/",
         "email": "mailto:sarker.samonwita@gmail.com",
         "jobTitle": "Full-Stack Developer and AI Researcher",
         "alumniOf": {
