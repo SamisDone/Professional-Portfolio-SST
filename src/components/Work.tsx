@@ -122,43 +122,45 @@ function Card({
   );
 }
 
-/** The tail of the rail: everything that is not one of the highlighted builds. */
-function IndexCard() {
+/**
+ * The rest of the shelf, as a count and a link rather than a list.
+ *
+ * Two decisions, both deliberate. It is not a slide in the rail: it is an
+ * index, not a project, and standing in the same row of frames it read as
+ * though it were a ninth build. And it names nothing. Of the eleven behind
+ * this link, four are browser toys and four are coursework, and setting those
+ * names beside the eight builds above argues against the work rather than for
+ * it. Anyone who wants that depth is one click from all of it.
+ */
+function IndexBand() {
   return (
-    <article className="index-slide flex h-full flex-col justify-center border border-rule bg-raised/50 p-5 backdrop-blur-sm">
-      <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
-        Everything else
-      </h3>
-      <p className="mt-1.5 text-[12px] text-muted">
-        {otherWork.length} more, from a crime-detection model to OS algorithms.
-      </p>
-      <ul className="mt-4 flex flex-col">
-        {otherWork.slice(0, 6).map((project) => (
-          <li key={project.slug} className="border-t border-rule py-2.5">
-            <a
-              href={project.live ?? project.repo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-baseline justify-between gap-3"
-            >
-              <span className="text-[14px] text-ink group-hover:text-accent-2">
-                {project.title}
-              </span>
-              <span className="shrink-0 text-[11px] text-muted">{project.kind}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      <a
-        href={profile.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-5 inline-flex w-fit items-center gap-2 bg-accent-solid px-4 py-2.5 text-[13px] text-on-accent transition-transform hover:-translate-y-[2px]"
-      >
-        All repositories
-        <ArrowUpRightIcon size={13} weight="bold" />
-      </a>
-    </article>
+    <div className="index-band mx-auto max-w-shell px-5 pb-4 sm:px-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-rule pt-3">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h3 className="font-display text-base leading-none tracking-tight text-ink">
+            Everything else
+          </h3>
+          <p className="text-[13px] leading-none text-muted">
+            {otherWork.length} more on GitHub, from a crime-detection model to OS
+            scheduling algorithms and browser toys.
+          </p>
+        </div>
+
+        <a
+          href={profile.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 text-[13px] text-accent-2"
+        >
+          All repositories
+          <ArrowUpRightIcon
+            size={13}
+            weight="bold"
+            className="transition-transform group-hover:-translate-y-0.5"
+          />
+        </a>
+      </div>
+    </div>
   );
 }
 
@@ -315,7 +317,7 @@ export default function Work() {
         onMouseLeave={() => setPaused(false)}
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
-        className={`work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-6 lg:pb-6 ${
+        className={`work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-5 ${
           // With the drift off there is nothing to bring the later cards into
           // view, so the rail has to be scrollable by hand instead.
           reduced ? "lg:overflow-x-auto" : "lg:overflow-hidden"
@@ -332,13 +334,12 @@ export default function Work() {
               </Reveal>
             </div>
           ))}
-          <div className="index-card lg:shrink-0">
-            <Reveal index={5} className="h-full">
-              <IndexCard />
-            </Reveal>
-          </div>
         </div>
       </div>
+
+      <Reveal>
+        <IndexBand />
+      </Reveal>
 
       <ProjectDialog project={open} onClose={() => setOpen(null)} />
     </section>

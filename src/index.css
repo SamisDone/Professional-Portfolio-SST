@@ -328,8 +328,7 @@ body.dialog-open {
 /* The work rail card and the research ledger are the last two blocks that do
    not fit a 720px-tall screen. */
 @media (max-height: 790px) {
-  .work-rail [data-case] h3,
-  .work-rail .lg\:w-\[min\(34vw\,400px\)\] h3 {
+  .work-rail [data-case] h3 {
     font-size: 1rem;
   }
   .work-rail [data-case] p {
@@ -356,29 +355,18 @@ body.dialog-open {
   }
 }
 
-/* The index slide runs taller than the case cards because of its list, so it
-   is the one that decides the rail's height on a short screen. */
-@media (max-height: 850px) {
-  .index-slide p {
-    display: none;
-  }
-  .index-slide li {
-    padding-block: 0.4rem;
-  }
-  .index-slide ul {
-    margin-top: 0.75rem;
-  }
-  .index-slide a[href*="github.com/SamisDone"] {
-    margin-top: 0.9rem;
-  }
-}
-
+/* The index band under the rail. It is the last block on the page, so it is
+   the one that gives ground first when the screen is short: the standfirst
+   goes, and the heading and the link close up on the rule above them. */
 @media (max-height: 790px) {
-  .index-slide li {
-    padding-block: 0.3rem;
+  .index-band {
+    padding-bottom: 0.5rem;
   }
-  .index-slide h3 {
-    font-size: 1rem;
+  .index-band > div {
+    padding-top: 0.625rem;
+  }
+  .index-band h3 {
+    font-size: 0.9375rem;
   }
 }
 
@@ -394,26 +382,22 @@ body.dialog-open {
  * @media, so the nested variants were silently dropped.
  */
 @media (min-width: 1024px) {
-  .work-rail [data-case],
-  .work-rail .index-card {
+  .work-rail [data-case] {
     width: min(36vw, 430px);
   }
 }
 @media (min-width: 1024px) and (max-height: 900px) {
-  .work-rail [data-case],
-  .work-rail .index-card {
+  .work-rail [data-case] {
     width: min(30vw, 360px);
   }
 }
 @media (min-width: 1024px) and (max-height: 820px) {
-  .work-rail [data-case],
-  .work-rail .index-card {
+  .work-rail [data-case] {
     width: min(24vw, 290px);
   }
 }
 @media (min-width: 1024px) and (max-height: 760px) {
-  .work-rail [data-case],
-  .work-rail .index-card {
+  .work-rail [data-case] {
     width: min(22vw, 265px);
   }
 }
@@ -423,25 +407,10 @@ body.dialog-open {
   .work-rail {
     padding-bottom: 0.5rem;
   }
-  .work-rail [data-case] > div > button,
-  .index-slide {
+  .work-rail [data-case] > div > button {
     padding: 0.75rem;
   }
-  .index-slide li {
-    padding-block: 0.3rem;
-  }
   .work-rail [data-case] p {
-    display: none;
-  }
-}
-
-/* The index card gained a standfirst and a longer list; on the shortest
-   screens it would otherwise set the height for every card beside it. */
-@media (max-height: 780px) {
-  .index-slide > p {
-    display: none;
-  }
-  .index-slide li:nth-child(n + 5) {
     display: none;
   }
 }

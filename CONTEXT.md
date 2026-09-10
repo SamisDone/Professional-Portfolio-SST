@@ -48,6 +48,8 @@ These were all explicit. Do not quietly undo them.
 8. **Projects**: more of them, drawn from the real GitHub account. No repeats
    in the sliding rail. Games and toys out of the standout rail. MediHub
    fourth, not second.
+9. **FinPulse off the rail**, and the "Everything else" index off the same row
+   as the projects. It is not a project and should not sit in a project frame.
 
 ---
 
@@ -69,6 +71,13 @@ Do not reintroduce these without asking.
   trade. They live in `ProjectDialog` now. Keep them there.
 - **Duplicating the project set** to make the slide loop seamlessly. Visible as
   repetition. The rail recycles instead.
+- **The index as a slide in the rail.** It was the last card in the track, and
+  in the same row of frames it read as a ninth project. It is a band under the
+  rail now, on the page gutter, plainly a different kind of thing.
+- **Naming the eleven in that band.** Built as a wrapped row of titles, then
+  cut. Four of them are browser toys and four are coursework, and those titles
+  standing next to the eight builds above argued against the work. The band
+  gives the count and the link and nothing else.
 
 ---
 
@@ -119,6 +128,11 @@ height cap on the image is what crops it.
 size.** The `@font-face` must declare `font-weight: 200 800` or every word on
 the page renders at 800.
 
+**Narrowing a rail card does not always shorten it.** The screenshot shrinks,
+but the stack chips underneath wrap onto another row and take the height
+straight back. At 1280x720 a card went from 265px wide to 250px and got
+*taller*. Measure before assuming the width ladder in `index.css` is the lever.
+
 ---
 
 ## Content rules
@@ -143,17 +157,20 @@ the sentence goes underneath as a standfirst in Bricolage.
 
 ## Current project inventory
 
-Nine in the sliding rail, eight of them with real screenshots:
+Eight in the sliding rail, every one of them with a real screenshot:
 
 `greenlight`, `kandesk`, `riphours`, `medihub`, `stockmaster`, `pierra`,
-`finpulse`, `tabsaver`, `resumeforge`
+`tabsaver`, `resumeforge`
 
-Ten in the index card on the same page:
+Eleven in `otherWork`, none of them named on the page. They are reached through
+the "All repositories" link in the band under the rail:
 
-`anomlite`, `sortnplay`, `pixelart`, `hangman`, `glitch`, `task-scheduling`,
-`page-replacement`, `roundrobin`, `financetracker`, `microops`
+`anomlite`, `finpulse`, `sortnplay`, `pixelart`, `hangman`, `glitch`,
+`task-scheduling`, `page-replacement`, `roundrobin`, `financetracker`,
+`microops`
 
-`finpulse` is the only rail card without a screenshot.
+The band is a single line and its only variable is `otherWork.length`, so
+moving a project between the two lists needs no copy change.
 
 ---
 
@@ -170,10 +187,11 @@ Ten in the index card on the same page:
    resolve.
 
 3. **FinPulse has no screenshot.** PHP against MySQL, and its free host times
-   out. Redeploy or run locally and capture.
+   out. It is in `otherWork` now, so nothing on the page is missing an image,
+   but a capture is what it would need to go back on the rail.
 
 4. **Team versus solo authorship.** Asked and left open. The copy is currently
-   neutral about who did what on each project. If any of the nine was
+   neutral about who did what on each project. If any of the eight was
    collaborative, it should say so explicitly rather than reading as solo work.
 
 5. **The old portfolio** at `samonwitaportfolio.netlify.app` still exists and
@@ -198,7 +216,9 @@ were run against the production build with Playwright:
 - No horizontal overflow at 390px.
 - Arrow keys walk forward and back through all six routes, and do not fire
   while a form field has focus or a dialog is open.
-- The rail's transform advances, stops on hover, and resumes on leave.
+- The rail's transform advances at about 40 px/sec, stops on hover, and resumes
+  on leave. Give the easing a second to settle before sampling a paused rail,
+  or the tail of the lerp reads as drift.
 - Under `prefers-reduced-motion` the page still renders and the rail becomes
   manually scrollable rather than a frozen strip.
 - Zero em-dashes in the rendered text.

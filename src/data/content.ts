@@ -204,28 +204,6 @@ export const featured: Project[] = [
     outcome: "Delivered and running as the firm's production site.",
   },
   {
-    slug: "finpulse",
-    title: "FinPulse",
-    kind: "Personal finance app",
-    year: "2026",
-    summary:
-      "Income, expenses, budgets and savings goals, with the security work actually done.",
-    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
-    repo: "https://github.com/SamisDone/FinPulse",
-    highlights: [
-      "Parameterised queries throughout, via PDO",
-      "CSRF tokens on every form",
-      "Rate-limited login",
-      "Budgets, goals and charted reports",
-    ],
-    problem:
-      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
-    approach:
-      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
-    outcome:
-      "Complete application covering tracking, budgeting, goals and reporting.",
-  },
-  {
     slug: "tabsaver",
     title: "TabSaver",
     kind: "Chrome extension",
@@ -282,6 +260,28 @@ export const otherWork: Project[] = [
       "MobileNetV2 handles the spatial features and an LSTM handles the temporal ones, which keeps the whole network to roughly 11 million parameters. Trained on the UCF-Crime dataset across 14 classes, from abuse and arson through to normal video.",
     outcome:
       "79 percent accuracy, 0.97 ROC AUC and a 0.75 macro F1, at a size that suits real-time deployment on constrained devices.",
+  },
+  {
+    slug: "finpulse",
+    title: "FinPulse",
+    kind: "Personal finance app",
+    year: "2026",
+    summary:
+      "Income, expenses, budgets and savings goals, with the security work actually done.",
+    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
+    repo: "https://github.com/SamisDone/FinPulse",
+    highlights: [
+      "Parameterised queries throughout, via PDO",
+      "CSRF tokens on every form",
+      "Rate-limited login",
+      "Budgets, goals and charted reports",
+    ],
+    problem:
+      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
+    approach:
+      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
+    outcome:
+      "Complete application covering tracking, budgeting, goals and reporting.",
   },
   {
     slug: "sortnplay",
