@@ -1,10 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-// IBM Plex: drawn for technical documentation, and the sans and mono are one
-// superfamily rather than two faces that happen to sit together.
-import "@fontsource-variable/ibm-plex-sans";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/jetbrains-mono";
 import "./index.css";
 import App from "./App.tsx";
 import { storedTheme } from "./lib/theme";

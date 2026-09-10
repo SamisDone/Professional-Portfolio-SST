@@ -1,12 +1,10 @@
 import Page from "../components/Page";
 import About from "../components/About";
-import Trajectory from "../components/Trajectory";
 
 export default function AboutPage() {
   return (
-    <Page title="About">
+    <Page title="About" center>
       <About />
-      <Trajectory />
     </Page>
   );
 }

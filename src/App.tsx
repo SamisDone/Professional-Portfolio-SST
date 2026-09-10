@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Header from "./components/Header";
+import Backdrop from "./components/Backdrop";
+import Pager from "./components/Pager";
 import Footer from "./components/Footer";
 import PageTransition, { RouteEffects } from "./components/PageTransition";
 import HomePage from "./pages/HomePage";
@@ -37,11 +39,16 @@ export default function App() {
       <a href="#main" className="skip-link">
         Skip to main content
       </a>
+      <Backdrop />
       <RouteEffects />
       <PageTransition />
-      <Header />
-      <Routed />
-      <Footer />
+      {/* Everything above the backdrop needs a stacking context of its own. */}
+      <div className="relative z-10 flex min-h-[100dvh] flex-col">
+        <Header />
+        <Routed />
+        <Footer />
+      </div>
+      <Pager />
     </BrowserRouter>
   );
 }

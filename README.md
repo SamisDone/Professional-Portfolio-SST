@@ -26,14 +26,22 @@ red for fills.
 ## Stack
 
 React 19 and TypeScript on Vite, styled with Tailwind 3, routed with React
-Router. Motion is `framer-motion`. Type is IBM Plex Sans and IBM Plex Mono,
-self-hosted through Fontsource, chosen because Plex was drawn for technical
-documentation and the sans and mono are one superfamily rather than two faces
-that happen to sit together. Icons are Phosphor.
+Router. Motion is `framer-motion`. Type is Plus Jakarta Sans and JetBrains Mono,
+self-hosted through Fontsource. Icons are Phosphor.
 
 Six routes, one per section: `/`, `/work`, `/experience`, `/research`,
-`/about`, `/contact`. Navigating runs a curtain wipe that carries the name of
-the section you are going to, and the route swaps behind it.
+`/about`, `/contact`. Every page is sized to fit one screen, so a section is a
+screen rather than a scroll.
+
+**Left and right arrow keys** walk the sections in reading order, and the same
+two moves sit at the bottom edge as buttons so the shortcut is discoverable.
+The handler stands down inside form fields and inside anything marked
+`data-arrow-surface`, which is how the work rail keeps the arrows for its own
+horizontal scrolling.
+
+Navigating runs five panels that sweep up across the screen in a stagger, hold
+while the route swaps behind them, then carry on and peel off the top. The name
+of the section being entered sits in the hold.
 
 ## Running it
 
@@ -87,6 +95,10 @@ scroll hijack, so page scrolling still behaves. Below `lg` it collapses to a
 column; a sideways rail of long-form text on a phone is a trap. The rail gutter
 lives in `index.css` rather than a Tailwind class, because a nested `calc()`
 inside `max()` did not survive the class parser.
+
+**Backdrop.** `Backdrop.tsx` paints three fixed layers behind everything: two
+large fields of colour on long drift loops, a hairline grid, and grain. Only the
+two fields ever change, and they move by transform alone.
 
 **Motion.** Everything checks `useReducedMotion` or sits behind the
 `prefers-reduced-motion` block in `index.css`. The curtain, reveals, the masked

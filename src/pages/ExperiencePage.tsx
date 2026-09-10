@@ -3,7 +3,7 @@ import Experience from "../components/Experience";
 
 export default function ExperiencePage() {
   return (
-    <Page title="Experience">
+    <Page title="Experience" center>
       <Experience />
     </Page>
   );

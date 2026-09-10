@@ -13,8 +13,8 @@ const BARS = [
   { w: 0.55, dir: 1 },
 ];
 
-const ROW = 13;
-const GAP = 7;
+const ROW = 10;
+const GAP = 6;
 const AXIS = 96;
 const W = 200;
 
@@ -32,7 +32,7 @@ export default function Attribution() {
     <figure className="m-0">
       <svg
         viewBox={`0 0 ${W} ${height}`}
-        className="h-auto w-full max-w-[240px]"
+        className="h-auto w-full max-w-[210px]"
         role="img"
         aria-label="An abstract feature-attribution diagram: bars extending either side of a centre axis."
       >
@@ -74,7 +74,7 @@ export default function Attribution() {
           );
         })}
       </svg>
-      <figcaption className="mt-3 font-mono text-[11px] leading-relaxed text-muted">
+      <figcaption className="mt-2.5 font-mono text-[11px] leading-relaxed text-muted">
         Feature attribution: what pushed a prediction up, what pulled it down.
       </figcaption>
     </figure>

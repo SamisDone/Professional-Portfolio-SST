@@ -4,8 +4,11 @@ import {
   ArrowRightIcon,
   ArrowUpRightIcon,
   GithubLogoIcon,
+  PlusIcon,
+  MinusIcon,
 } from "@phosphor-icons/react";
-import { featured, type Project } from "../data/content";
+import { featured, otherWork, profile, type Project } from "../data/content";
+import { AnimatePresence, motion } from "framer-motion";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
 import Figure from "./Figure";
@@ -30,7 +33,7 @@ function Links({ project }: { project: Project }) {
           href={project.live}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-accent-solid px-5 py-2.5 font-mono text-[13px] text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
+          className="inline-flex items-center gap-2 bg-accent-solid px-4 py-2 font-mono text-[12.5px] text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
         >
           {project.liveLabel ?? "Open"}
           <ArrowUpRightIcon size={14} weight="bold" />
@@ -40,7 +43,7 @@ function Links({ project }: { project: Project }) {
         href={project.repo}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 border border-rule px-5 py-2.5 font-mono text-[13px] text-ink transition-colors hover:border-ink active:scale-[0.98]"
+        className="inline-flex items-center gap-2 border border-rule px-4 py-2 font-mono text-[12.5px] text-ink transition-colors hover:border-ink active:scale-[0.98]"
       >
         <GithubLogoIcon size={15} />
         Source
@@ -50,13 +53,15 @@ function Links({ project }: { project: Project }) {
 }
 
 function Case({ project, n }: { project: Project; n: number }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <article className="flex h-full flex-col">
-      <div className="mb-4 flex items-baseline gap-3">
+    <article className="flex flex-col">
+      <div className="mb-2.5 flex items-baseline gap-3">
         <span className="font-mono text-[12px] text-accent">
           {String(n).padStart(2, "0")}
         </span>
-        <h3 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+        <h3 className="text-lg font-semibold tracking-tight text-ink sm:text-xl">
           {project.title}
         </h3>
       </div>
@@ -64,37 +69,98 @@ function Case({ project, n }: { project: Project; n: number }) {
       <Figure
         src={project.shot!}
         alt={project.shotAlt ?? ""}
-        ratio="aspect-[16/9]"
-        priority={n === 1}
+        ratio="aspect-[21/9]"
+        priority
       />
 
-      <p className="mt-4 max-w-measure text-[16px] leading-relaxed text-ink">
-        {project.summary}
-      </p>
-      <div className="mt-3.5">
+      <p className="mt-3.5 text-[14.5px] leading-snug text-ink">{project.summary}</p>
+      <div className="mt-2.5">
         <Meta project={project} />
       </div>
 
-      <dl className="mt-5 flex flex-col gap-3.5 border-t border-rule pt-4">
-        {[
-          ["Problem", project.problem],
-          ["What I built", project.approach],
-          ["Outcome", project.outcome],
-        ].map(([k, v]) => (
-          <div key={k}>
-            <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
-              {k}
-            </dt>
-            <dd className="max-w-measure text-[14.5px] leading-[1.6] text-muted">
-              {v}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="group mt-3.5 flex items-center justify-between gap-3 border-t border-rule pt-2.5 text-left"
+      >
+        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+          {open ? "Hide the reasoning" : "Why it works this way"}
+        </span>
+        <span aria-hidden className="text-muted transition-colors group-hover:text-accent">
+          {open ? <MinusIcon size={15} /> : <PlusIcon size={15} />}
+        </span>
+      </button>
 
-      <div className="mt-6">
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.dl
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-col gap-3 pt-4">
+              {[
+                ["Problem", project.problem],
+                ["What I built", project.approach],
+                ["Outcome", project.outcome],
+              ].map(([k, v]) => (
+                <div key={k}>
+                  <dt className="mb-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                    {k}
+                  </dt>
+                  <dd className="text-[14px] leading-[1.55] text-muted">{v}</dd>
+                </div>
+              ))}
+            </div>
+          </motion.dl>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4">
         <Links project={project} />
       </div>
+    </article>
+  );
+}
+
+/** The last slide: everything that is not one of the five. */
+function IndexSlide() {
+  return (
+    <article className="flex h-full flex-col justify-center border border-rule bg-raised/60 p-7 backdrop-blur-sm">
+      <h3 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+        Everything else
+      </h3>
+      <p className="mt-2 text-[15px] leading-relaxed text-muted">
+        Five more builds, from a scheduling simulator to a hackathon MVP.
+      </p>
+      <ul className="mt-6 flex flex-col">
+        {otherWork.map((p) => (
+          <li key={p.slug} className="border-t border-rule py-3">
+            <a
+              href={p.live ?? p.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-baseline justify-between gap-4"
+            >
+              <span className="text-[15px] text-ink group-hover:text-accent">
+                {p.title}
+              </span>
+              <span className="shrink-0 font-mono text-[11px] text-muted">{p.kind}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href={profile.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-6 inline-flex w-fit items-center gap-2 bg-accent-solid px-4 py-2 font-mono text-[12.5px] text-on-accent transition-transform hover:-translate-y-[2px]"
+      >
+        All repositories
+        <ArrowUpRightIcon size={14} weight="bold" />
+      </a>
     </article>
   );
 }
@@ -150,7 +216,7 @@ export default function Work() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2
               tabIndex={-1}
-              className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink outline-none"
+              className="max-w-[20ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink outline-none"
             >
               <MaskText text="Five builds, and why each one works the way it does." />
             </h2>
@@ -181,21 +247,27 @@ export default function Work() {
       <div
         ref={railRef}
         tabIndex={0}
+        data-arrow-surface
         role="region"
-        aria-label="Featured projects, scrolls sideways on wide screens"
-        className="work-rail mt-10 flex flex-col gap-16 px-5 pb-16 sm:mt-16 sm:px-8 sm:pb-20 lg:flex-row lg:snap-x lg:snap-mandatory lg:items-start lg:gap-10 lg:overflow-x-auto lg:pb-20"
+        aria-label="Featured projects. Scrolls sideways on wide screens; use the arrow buttons or scroll."
+        className="work-rail mt-7 flex flex-col gap-8 px-5 pb-16 sm:mt-16 sm:px-8 sm:pb-20 lg:flex-row lg:snap-x lg:snap-mandatory lg:items-start lg:gap-10 lg:overflow-x-auto lg:pb-0"
       >
         {featured.map((project, i) => (
           <div
             key={project.slug}
             data-case
-            className="lg:w-[min(46vw,540px)] lg:shrink-0 lg:snap-start"
+            className="lg:w-[min(40vw,480px)] lg:shrink-0 lg:snap-start"
           >
             <Reveal index={i}>
               <Case project={project} n={i + 1} />
             </Reveal>
           </div>
         ))}
+        <div className="lg:w-[min(34vw,400px)] lg:shrink-0 lg:snap-start">
+          <Reveal index={featured.length}>
+            <IndexSlide />
+          </Reveal>
+        </div>
       </div>
     </section>
   );

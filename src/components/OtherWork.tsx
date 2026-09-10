@@ -17,7 +17,7 @@ export default function OtherWork() {
 
   return (
     <section className="border-b border-rule bg-raised">
-      <div className="mx-auto max-w-shell px-5 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
@@ -35,7 +35,7 @@ export default function OtherWork() {
           </div>
         </Reveal>
 
-        <ul className="mt-12 border-t border-ink/25 sm:mt-16">
+        <ul className="mt-8 border-t border-ink/25 sm:mt-10">
           {otherWork.map((p, i) => {
             const isOpen = open === p.slug;
             return (

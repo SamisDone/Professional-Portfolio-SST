@@ -9,8 +9,8 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-rule">
-      <div className="mx-auto flex max-w-shell flex-col gap-6 px-5 py-8 font-mono text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
+    <footer className="relative z-10 border-t border-rule">
+      <div className="mx-auto flex max-w-shell flex-col gap-6 px-5 py-5 font-mono text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p>
           {profile.name}, {profile.location}
         </p>

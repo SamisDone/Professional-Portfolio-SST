@@ -11,14 +11,14 @@ import MaskText from "./MaskText";
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-16 border-b border-rule bg-raised">
-      <div className="mx-auto max-w-shell px-5 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-shell px-5 py-10 sm:px-8 sm:py-12">
         <Reveal>
-          <h2 className="max-w-[20ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
+          <h2 className="max-w-[20ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
             <MaskText text="Where I have been paid to build." />
           </h2>
         </Reveal>
 
-        <ol className="mt-12 border-t border-ink/25 sm:mt-16">
+        <ol className="mt-8 border-t border-ink/25 sm:mt-10">
           {experience.map((role, i) => (
             <Reveal as="li" key={role.org} index={i}>
               <article className="grid gap-x-8 gap-y-4 border-b border-rule py-8 md:grid-cols-12 md:py-10">

@@ -15,8 +15,8 @@ export default {
         "on-accent": "hsl(var(--on-accent))",
       },
       fontFamily: {
-        sans: ["'IBM Plex Sans Variable'", "system-ui", "sans-serif"],
-        mono: ["'IBM Plex Mono'", "ui-monospace", "monospace"],
+        sans: ["'Plus Jakarta Sans Variable'", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono Variable'", "ui-monospace", "monospace"],
       },
       // One radius scale, near-sharp. A technical document, not a card deck.
       borderRadius: { none: "0", sm: "2px", DEFAULT: "3px", md: "3px", lg: "4px" },

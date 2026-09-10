@@ -1,4 +1,5 @@
 import { ArrowUpRightIcon } from "@phosphor-icons/react";
+import type { ReactNode } from "react";
 import { research } from "../data/content";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
@@ -8,28 +9,29 @@ import MaskText from "./MaskText";
  * link on the row itself. Grouped by year with a single rule per group rather
  * than a hairline under every row.
  */
-export default function Research() {
+export default function Research({ aside }: { aside?: ReactNode }) {
   const years = [...new Set(research.map((m) => m.year))];
 
   return (
     <section id="research" className="scroll-mt-16 border-b border-rule">
-      <div className="mx-auto max-w-shell px-5 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-shell px-5 py-8 sm:px-8 sm:py-10">
         <Reveal>
-          <h2 className="max-w-[22ch] text-[clamp(1.9rem,4.5vw,3rem)] font-medium leading-[1.05] tracking-tightest text-ink">
+          <h2 className="max-w-[22ch] text-[clamp(1.65rem,3.4vw,2.35rem)] font-medium leading-[1.05] tracking-tightest text-ink">
             <MaskText text="Papers and competitions, the work that got reviewed." />
           </h2>
         </Reveal>
 
-        <div className="mt-12 sm:mt-16">
-          {years.map((year, gi) => (
-            <div
-              key={year}
-              className="border-t border-ink/15 pt-6 first:border-ink/30 [&:not(:last-child)]:pb-10"
-            >
-              <div className="grid gap-6 md:grid-cols-12">
+        <div className="mt-7 grid gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="lg:col-span-7">
+            {years.map((year, gi) => (
+              <div
+                key={year}
+                className="border-t border-ink/15 pt-5 first:border-ink/30 [&:not(:last-child)]:pb-7"
+              >
+              <div className="grid gap-4 md:grid-cols-12">
                 <h3 className="font-mono text-sm text-muted md:col-span-2">{year}</h3>
 
-                <ul className="flex flex-col gap-8 md:col-span-10">
+                <ul className="flex flex-col gap-5 md:col-span-10">
                   {research
                     .filter((m) => m.year === year)
                     .map((m, i) => {
@@ -49,7 +51,7 @@ export default function Research() {
                             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                               {m.kind}
                             </span>
-                            <h4 className="mt-2 flex items-start gap-2 text-xl font-medium leading-snug tracking-tight text-ink sm:text-2xl">
+                            <h4 className="mt-2 flex items-start gap-2 text-lg font-semibold leading-snug tracking-tight text-ink sm:text-xl">
                               <span className={m.href ? "group-hover:underline" : ""}>
                                 {m.title}
                               </span>
@@ -63,7 +65,7 @@ export default function Research() {
                             <p className="mt-1.5 font-mono text-[13px] text-muted">
                               {m.venue}
                             </p>
-                            <p className="mt-3 max-w-measure text-[15px] leading-relaxed text-muted">
+                            <p className="mt-1.5 max-w-measure text-[13.5px] leading-snug text-muted">
                               {m.note}
                             </p>
                           </Tag>
@@ -72,8 +74,11 @@ export default function Research() {
                     })}
                 </ul>
               </div>
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
+
+          {aside && <div className="lg:col-span-5">{aside}</div>}
         </div>
       </div>
     </section>
