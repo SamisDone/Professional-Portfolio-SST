@@ -1,12 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { flushSync } from "react-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { SunIcon, MoonIcon, ListIcon, XIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
+import { ListIcon, XIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
 import { ROUTES } from "../lib/routes";
-import { applyTheme, storedTheme, defaultTheme, type Theme } from "../lib/theme";
-import { useReducedMotion } from "../hooks/useReducedMotion";
 
 /**
  * Derived from the same list the arrow keys walk, so the nav order and the
@@ -19,12 +16,8 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 const LINKS = ROUTES.filter((r) => r.path !== "/");
 
 export default function Header() {
-  // Resolved once on mount rather than pushed in from an effect.
-  const [theme, setTheme] = useState<Theme>(() => storedTheme() ?? defaultTheme());
   const [open, setOpen] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement | null>(null);
   const { pathname } = useLocation();
-  const reduced = useReducedMotion();
 
   // Read position for a long single page. useScroll rather than a scroll
   // listener, so this never runs work on the main thread per frame.
@@ -47,48 +40,6 @@ export default function Header() {
     setSeen(pathname);
     setOpen(false);
   }
-
-  const toggle = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    const commit = () => {
-      setTheme(next);
-      applyTheme(next);
-    };
-
-    // The new theme is wiped in as a circle growing out of the button that was
-    // pressed, so the change reads as caused by the click rather than as the
-    // page blinking. Browsers without view transitions just swap.
-    const startViewTransition = document.startViewTransition?.bind(document);
-    if (!startViewTransition || reduced) {
-      commit();
-      return;
-    }
-
-    const rect = toggleRef.current?.getBoundingClientRect();
-    const cx = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
-    const cy = rect ? rect.top + rect.height / 2 : 0;
-    const radius = Math.hypot(
-      Math.max(cx, window.innerWidth - cx),
-      Math.max(cy, window.innerHeight - cy),
-    );
-
-    const transition = startViewTransition(() => {
-      flushSync(commit);
-    });
-
-    void transition.ready.then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${radius}px at ${cx}px ${cy}px)`],
-        },
-        {
-          duration: 620,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          pseudoElement: "::view-transition-new(root)",
-        },
-      );
-    });
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-rule bg-paper/85 backdrop-blur-md">
@@ -126,14 +77,6 @@ export default function Header() {
             CV
             <ArrowUpRightIcon size={12} weight="bold" />
           </a>
-          <button
-            ref={toggleRef}
-            onClick={toggle}
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-            className="grid h-9 w-9 place-items-center text-muted transition-colors hover:text-ink active:scale-90"
-          >
-            {theme === "dark" ? <SunIcon size={17} /> : <MoonIcon size={17} />}
-          </button>
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}

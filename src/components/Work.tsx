@@ -27,7 +27,7 @@ function Card({
     >
       {/* A floor here so a title that wraps cannot push its frame out of line
           with the frames either side of it. */}
-      <div className="mb-3 flex min-h-[2.4em] items-baseline gap-3">
+      <div className="mb-2.5 flex min-h-[2.4em] items-baseline gap-3">
         <span className="text-[12px] text-accent">{String(n).padStart(2, "0")}</span>
         <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
           {project.title}
@@ -41,15 +41,24 @@ function Card({
         priority
       />
 
-      <p className="mt-3 line-clamp-2 text-[14px] leading-snug text-ink">
-        {project.summary}
-      </p>
+      <p className="mt-3 text-[14px] leading-snug text-ink">{project.summary}</p>
+
+      <ul className="mt-3 flex flex-wrap gap-1.5">
+        {project.stack.map((item) => (
+          <li
+            key={item}
+            className="border border-rule px-2 py-1 text-[11px] leading-none text-muted"
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
 
       <div className="mt-auto flex items-center justify-between gap-3 pt-4">
         <span className="text-[12px] text-muted">
           {project.kind}, {project.year}
         </span>
-        <span className="flex items-center gap-1.5 text-[12px] text-accent">
+        <span className="flex items-center gap-1.5 text-[12px] text-accent-2">
           View case
           <ArrowUpRightIcon
             size={12}
@@ -69,8 +78,11 @@ function IndexCard() {
       <h3 className="font-display text-base leading-tight tracking-tight text-ink sm:text-lg">
         Everything else
       </h3>
+      <p className="mt-1.5 text-[12px] text-muted">
+        {otherWork.length} more, from a crime-detection model to OS algorithms.
+      </p>
       <ul className="mt-4 flex flex-col">
-        {otherWork.map((project) => (
+        {otherWork.slice(0, 6).map((project) => (
           <li key={project.slug} className="border-t border-rule py-2.5">
             <a
               href={project.live ?? project.repo}
@@ -78,7 +90,7 @@ function IndexCard() {
               rel="noopener noreferrer"
               className="group flex items-baseline justify-between gap-3"
             >
-              <span className="text-[14px] text-ink group-hover:text-accent">
+              <span className="text-[14px] text-ink group-hover:text-accent-2">
                 {project.title}
               </span>
               <span className="shrink-0 text-[11px] text-muted">{project.kind}</span>
@@ -100,19 +112,29 @@ function IndexCard() {
 }
 
 /**
- * A rail that slides on its own.
+ * A rail that slides continuously, with each project appearing once.
  *
- * The track holds two copies of the same set. A frame loop nudges scrollLeft
- * along and wraps at the halfway mark, which lands on an identical frame, so
- * the loop has no seam. It drifts rather than steps because motion at the edge
- * of the screen is what says there is more to the side.
+ * There is no duplicated second copy of the set. The track is translated left a
+ * fraction of a pixel per frame, and as soon as the leading card has fully
+ * passed the edge it is sent to the back by rewriting its flex `order`, with
+ * the same width taken back off the offset. Nothing remounts and nothing
+ * repeats: the card that leaves on the left is the one that returns on the
+ * right, after the others have had their turn.
+ *
+ * `order` rather than rotating a React array, because a style write lands in
+ * the same frame as the transform. Rotating state would leave the DOM one
+ * render behind the offset and show a card-width jump on every recycle.
  *
  * It stops on hover, on focus, while a case study is open, when the tab is
- * hidden, and under reduced motion. Below the large breakpoint there is no
- * rail at all: the cards stack.
+ * hidden, and under reduced motion. Below the large breakpoint there is no rail
+ * at all: the cards stack.
  */
 export default function Work() {
-  const railRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  // Where the track sits, and where it is heading. The arrows move the target;
+  // the loop eases the offset toward it on top of the constant drift.
+  const offsetRef = useRef(0);
+  const targetRef = useRef(0);
   const [open, setOpen] = useState<Project | null>(null);
   const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
@@ -120,26 +142,50 @@ export default function Work() {
   const halted = paused || reduced || open !== null;
 
   useEffect(() => {
-    const rail = railRef.current;
-    if (!rail || halted) return;
+    const track = trackRef.current;
+    if (!track) return;
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
 
-    // The position is accumulated as a float here rather than read back off
-    // the element: scrollLeft rounds, so adding a sub-pixel drift to it every
-    // frame rounds straight back down and the rail never moves at all.
-    let position = rail.scrollLeft;
-    let frame = 0;
+    const cards = Array.from(track.children) as HTMLElement[];
+    const count = cards.length;
+    if (count === 0) return;
 
+    const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+    let head = 0;
+
+    const applyOrder = () => {
+      cards.forEach((card, i) => {
+        card.style.order = String((i - head + count) % count);
+      });
+    };
+    applyOrder();
+
+    let frame = 0;
     const step = () => {
-      const half = rail.scrollWidth / 2;
-      position += DRIFT;
-      if (position >= half) position -= half;
-      rail.scrollLeft = position;
+      if (!halted) offsetRef.current += DRIFT;
+      // Ease toward whatever the arrows last asked for.
+      offsetRef.current += (targetRef.current - offsetRef.current) * 0.12;
+
+      const leadWidth = cards[head].offsetWidth + gap;
+      if (offsetRef.current >= leadWidth) {
+        offsetRef.current -= leadWidth;
+        targetRef.current -= leadWidth;
+        head = (head + 1) % count;
+        applyOrder();
+      }
+
+      track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
       frame = requestAnimationFrame(step);
     };
 
     frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      track.style.transform = "";
+      cards.forEach((card) => {
+        card.style.order = "";
+      });
+    };
   }, [halted]);
 
   useEffect(() => {
@@ -149,15 +195,12 @@ export default function Work() {
   }, []);
 
   const nudge = useCallback((direction: 1 | -1) => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const card = rail.querySelector<HTMLElement>("[data-case]");
-    const step = card ? card.offsetWidth + 32 : rail.clientWidth * 0.8;
-    rail.scrollBy({ left: direction * step, behavior: "smooth" });
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector<HTMLElement>("[data-case]");
+    const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+    targetRef.current += direction * ((card?.offsetWidth ?? 320) + gap);
   }, []);
-
-  // Two copies so the wrap lands on an identical frame.
-  const loop = [...featured, ...featured];
 
   return (
     <section id="work" className="border-b border-rule">
@@ -197,33 +240,30 @@ export default function Work() {
       </div>
 
       <div
-        ref={railRef}
         role="region"
         aria-label="Projects. Slides on its own; hover or focus to stop it."
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
-        className="work-rail short-trim mt-5 flex flex-col gap-8 px-5 pb-4 sm:px-8 sm:pb-6 lg:flex-row lg:items-stretch lg:gap-8 lg:overflow-x-auto lg:pb-6"
+        className="work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-6 lg:overflow-hidden lg:pb-6"
       >
-        {loop.map((project, i) => (
-          <div
-            key={`${project.slug}-${i}`}
-            data-case
-            // The second copy exists only to make the wrap seamless; it is a
-            // duplicate, so it is hidden from assistive technology.
-            aria-hidden={i >= featured.length}
-            className="lg:shrink-0"
-          >
-            <Reveal index={Math.min(i, 4)} className="h-full">
-              <Card project={project} n={(i % featured.length) + 1} onOpen={setOpen} />
+        <div
+          ref={trackRef}
+          className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-8 lg:will-change-transform"
+        >
+          {featured.map((project, i) => (
+            <div key={project.slug} data-case className="lg:shrink-0">
+              <Reveal index={Math.min(i, 4)} className="h-full">
+                <Card project={project} n={i + 1} onOpen={setOpen} />
+              </Reveal>
+            </div>
+          ))}
+          <div className="index-card lg:shrink-0">
+            <Reveal index={5} className="h-full">
+              <IndexCard />
             </Reveal>
           </div>
-        ))}
-        <div className="index-card lg:shrink-0">
-          <Reveal index={5} className="h-full">
-            <IndexCard />
-          </Reveal>
         </div>
       </div>
 

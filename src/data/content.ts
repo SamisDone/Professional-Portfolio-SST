@@ -84,6 +84,27 @@ export type Project = {
  */
 export const featured: Project[] = [
   {
+    slug: "greenlight",
+    title: "Greenlight",
+    kind: "Hackathon build",
+    year: "2026",
+    summary:
+      "A robot arm you drive in the browser, six different ways, through one motion pipeline.",
+    stack: ["Next.js", "Three.js", "TypeScript", "Zustand", "Gemini API"],
+    repo: "https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon",
+    live: "https://greenlight-ptsd.vercel.app/",
+    liveLabel: "Open the simulator",
+    shot: "/shots/greenlight.jpg",
+    shotAlt:
+      "The Greenlight control suite: a 3D robot arm with jog control, voice input and joint readouts.",
+    problem:
+      "Vantage Robotics tests every software change on a real arm, which is slow, risky and expensive. A motion change should be provable before hardware is involved at all.",
+    approach:
+      "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
+    outcome:
+      "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
+  },
+  {
     slug: "medihub",
     title: "MediHub",
     kind: "AI healthcare platform",
@@ -181,23 +202,24 @@ export const featured: Project[] = [
       "Editing and preview render from the same state, so the page you are looking at is the page you get. Export runs entirely in the browser, which means no account, no upload, and no copy of your resume sitting on someone else's server.",
     outcome: "Deployed and free to use, with no sign-up in the way.",
   },
-];
-
-/** The rest of the shelf. A compact index, not a second grid of cards. */
-export const otherWork: Project[] = [
   {
-    slug: "stockmaster",
-    title: "StockMaster",
-    kind: "Inventory tracker",
-    year: "2025",
-    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    repo: "https://github.com/SamisDone/StockMaster",
+    slug: "glitch",
+    title: "Glitch Breach",
+    kind: "Browser game",
+    year: "2026",
+    summary:
+      "A cyberpunk typing game: fix corrupted terminal commands before the clock runs out.",
+    stack: ["JavaScript", "Local storage"],
+    repo: "https://github.com/SamisDone/GLITCH-BREACH",
+    live: "https://glitch-breach-sam.netlify.app/",
+    liveLabel: "Play it",
+    shot: "/shots/glitch.jpg",
+    shotAlt: "The Glitch Breach game screen, a green-on-black terminal interface.",
     problem:
-      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
+      "Typing games mostly test speed on ordinary prose. Almost none of them make you read what you are typing closely enough to spot what is wrong with it.",
     approach:
-      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
-    outcome: "Working application with the component library and state layer built out.",
+      "Sixty-odd corrupted shell commands, and the player has to type the corrected version before the timer runs out. Three difficulty levels change the clock rather than the words, a combo multiplier rewards streaks, and answering faster scores higher, so speed and accuracy are both worth something.",
+    outcome: "Deployed and playable, with a leaderboard and three lives per run.",
   },
   {
     slug: "sortnplay",
@@ -216,6 +238,136 @@ export const otherWork: Project[] = [
     approach:
       "No framework and no animation library, so every comparison and swap is a deliberate DOM write on a timed loop. Running all three over the same input makes the difference in their access patterns the thing you actually watch.",
     outcome: "Deployed and used as a teaching aid.",
+  },
+  {
+    slug: "hangman",
+    title: "Hangman",
+    kind: "Browser game",
+    year: "2026",
+    summary:
+      "Hangman on a programming word list, with the figure drawn a stroke at a time.",
+    stack: ["JavaScript", "Local storage"],
+    repo: "https://github.com/SamisDone/HangMan",
+    live: "https://hangman-sam.netlify.app/",
+    liveLabel: "Play it",
+    shot: "/shots/hangman.jpg",
+    shotAlt: "The Hangman game board with its letter keyboard and score.",
+    problem:
+      "A guessing game gives away nothing about how close you are to losing unless the state is visible at a glance.",
+    approach:
+      "The figure is drawn one stroke per wrong guess, so the remaining margin is the picture rather than a counter. Guesses come from the on-screen keyboard or the physical one, there is a hint for when a word stalls, and the running record persists in local storage.",
+    outcome: "Deployed and playable, on a programming and technology word list.",
+  },
+  {
+    slug: "pixelart",
+    title: "Pixel Art Pad",
+    kind: "Drawing tool",
+    year: "2026",
+    summary: "A pixel grid with pen, eraser and flood fill, exporting straight to an image.",
+    stack: ["JavaScript", "Canvas"],
+    repo: "https://github.com/SamisDone/Pixel-Art-App",
+    live: "https://pixelartweb.netlify.app/",
+    liveLabel: "Open the pad",
+    shot: "/shots/pixelart.jpg",
+    shotAlt: "The Pixel Art Pad, a drawing grid with a colour palette and tools.",
+    problem:
+      "Drawing pixel art in a general image editor means fighting antialiasing and a canvas that does not think in cells.",
+    approach:
+      "No framework and no libraries. The grid is the data structure, the tools write into it directly, and flood fill walks neighbours from the clicked cell. Grid size switches between 16, 24, 32 and 48 squares, and export writes the grid out as an image.",
+    outcome: "Deployed, with pen, eraser, fill, four grid sizes and image export.",
+  },
+];
+
+/** The rest of the shelf. A compact index, not a second grid of cards. */
+export const otherWork: Project[] = [
+  {
+    slug: "anomlite",
+    title: "AnomLite",
+    kind: "Deep learning research",
+    year: "2026",
+    summary:
+      "A hybrid model for multiclass crime detection in surveillance video, small enough to run on constrained hardware.",
+    stack: ["PyTorch", "MobileNetV2", "LSTM"],
+    repo: "https://github.com/SamisDone/Violence-Detection",
+    problem:
+      "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
+    approach:
+      "MobileNetV2 handles the spatial features and an LSTM handles the temporal ones, which keeps the whole network to roughly 11 million parameters. Trained on the UCF-Crime dataset across 14 classes, from abuse and arson through to normal video.",
+    outcome:
+      "79 percent accuracy, 0.97 ROC AUC and a 0.75 macro F1, at a size that suits real-time deployment on constrained devices.",
+  },
+  {
+    slug: "task-scheduling",
+    title: "Task Scheduling with ML, DL and DRL",
+    kind: "Research comparison",
+    year: "2026",
+    summary:
+      "Traditional CPU schedulers benchmarked against learned ones on the same simulated workload.",
+    stack: ["Python", "PyTorch", "Jupyter"],
+    repo: "https://github.com/SamisDone/Task-Scheduling-using-Traditional-ML-DL-DRL",
+    problem:
+      "Learned schedulers are usually reported against their own baselines, which makes it hard to tell whether they beat first-come-first-served by a margin worth the complexity.",
+    approach:
+      "A simulated multi-tasking environment runs FCFS, shortest job first and shortest remaining time first alongside machine learning, deep learning and deep reinforcement learning approaches, all measured on the same average waiting time and turnaround time.",
+    outcome: "A like-for-like comparison across every paradigm on one workload.",
+  },
+  {
+    slug: "kandesk",
+    title: "KanDesk",
+    kind: "Task manager",
+    year: "2026",
+    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
+    stack: ["React", "Tailwind CSS", "TanStack Router"],
+    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
+    problem:
+      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+    approach:
+      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
+    outcome: "Working board with the full task lifecycle and protected routing in place.",
+  },
+  {
+    slug: "finpulse",
+    title: "FinPulse",
+    kind: "Personal finance app",
+    year: "2026",
+    summary:
+      "Income, expenses, budgets and savings goals, with the security work actually done.",
+    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
+    repo: "https://github.com/SamisDone/FinPulse",
+    problem:
+      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
+    approach:
+      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
+    outcome:
+      "Complete application covering tracking, budgeting, goals and reporting.",
+  },
+  {
+    slug: "page-replacement",
+    title: "Page Replacement Algorithms",
+    kind: "OS algorithms",
+    year: "2025",
+    summary: "FIFO, LRU and optimal replacement implemented and compared in C++.",
+    stack: ["C++"],
+    repo: "https://github.com/SamisDone/Page-Replacement-Algorithms",
+    problem:
+      "Page replacement is taught as three rules and a hit-rate table, which hides how differently the policies behave on the same reference string.",
+    approach:
+      "Each policy implemented from scratch in C++ and run over shared reference strings so the fault counts can be compared directly.",
+    outcome: "Runnable comparison of the standard replacement policies.",
+  },
+  {
+    slug: "stockmaster",
+    title: "StockMaster",
+    kind: "Inventory tracker",
+    year: "2025",
+    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    repo: "https://github.com/SamisDone/StockMaster",
+    problem:
+      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
+    approach:
+      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
+    outcome: "Working application with the component library and state layer built out.",
   },
   {
     slug: "roundrobin",

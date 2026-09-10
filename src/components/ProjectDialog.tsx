@@ -102,7 +102,7 @@ export default function ProjectDialog({
             }}
             className="relative my-auto grid w-full max-w-4xl gap-0 border border-rule bg-raised shadow-2xl shadow-black/50 md:grid-cols-2"
           >
-            <div className="p-4 sm:p-5">
+            <div className="bg-surface-2/25 p-4 sm:p-5">
               <Figure
                 src={project.shot!}
                 alt={project.shotAlt ?? ""}

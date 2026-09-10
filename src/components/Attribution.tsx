@@ -53,7 +53,7 @@ export default function Attribution() {
               height={ROW}
               rx="1"
               fill={
-                bar.dir === 1 ? "hsl(var(--accent))" : "hsl(var(--muted) / 0.42)"
+                bar.dir === 1 ? "hsl(var(--accent))" : "hsl(var(--accent-2))"
               }
               initial={reduced ? false : { width: 0, x: AXIS }}
               whileInView={{

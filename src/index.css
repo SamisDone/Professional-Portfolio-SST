@@ -3,42 +3,34 @@
 @tailwind utilities;
 
 /*
- * Palette:
- *   #3F194D plum      #68097E violet    #C91C7A magenta
- *   #E8675C coral     #FFCA06 yellow
+ * One scheme, all five colours together, each with its own job:
  *
- * Plum is the surface colour; the page ground is the same hue taken darker so
- * text has contrast headroom. Magenta carries the actions, yellow carries
- * highlights and figures, and violet and coral drive the backdrop fields.
+ *   #3F194D plum      cards and panels
+ *   #68097E violet    second surface, and the rules between things
+ *   #C91C7A magenta   primary actions and the page-transition panels
+ *   #E8675C coral     links, hovers, and the pager
+ *   #FFCA06 yellow    numbers, labels, and figures
  *
- * Magenta reads at only 3.5 to 1 against the ground, so it is never used for
- * type on the page: it is a fill, with near-white on top at 5.3 to 1. Yellow
- * is the text accent at 12.2 to 1.
+ * The page ground is plum taken darker so text has contrast headroom, and the
+ * type is a near-white tint of the same hue. There is no second theme: these
+ * five are meant to sit on screen together rather than be split across a light
+ * mode and a dark one.
+ *
+ * Measured against the ground: yellow 12.0, coral 5.7, near-white 15.8, muted
+ * 9.2. Magenta reads at 3.5 so it is never type, only a fill with white on it
+ * at 5.3.
  */
 :root {
   --paper: 284 51% 10%;
   --raised: 284 51% 20%;
+  --surface-2: 289 87% 26%;
   --ink: 284 22% 94%;
   --muted: 284 16% 74%;
-  --rule: 284 32% 24%;
+  --rule: 284 45% 27%;
   --accent: 47 100% 51%;
+  --accent-2: 5 75% 64%;
   --accent-solid: 327 76% 45%;
   --on-accent: 0 0% 100%;
-  --violet: 289 87% 26%;
-  --coral: 5 75% 64%;
-}
-
-:root[data-theme="light"] {
-  --paper: 284 40% 97%;
-  --raised: 284 40% 99%;
-  --ink: 284 50% 16%;
-  --muted: 284 18% 38%;
-  --rule: 284 22% 88%;
-  --accent: 289 87% 26%;
-  --accent-solid: 327 76% 45%;
-  --on-accent: 0 0% 100%;
-  --violet: 289 87% 26%;
-  --coral: 5 75% 52%;
 }
 
 * {
@@ -158,22 +150,6 @@ body.dialog-open {
   }
 }
 
-/*
- * Theme switch. Both snapshots are held still and the incoming one is clipped
- * by the circle animated in Header.tsx, so the new theme wipes out of the
- * button instead of the page blinking.
- */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-  z-index: 1;
-}
-::view-transition-new(root) {
-  z-index: 2;
-}
 
 /* Nav links draw an accent rule as the pointer arrives. */
 .nav-link {
@@ -197,10 +173,6 @@ body.dialog-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
   .nav-link::after {
     transition: none;
   }
@@ -211,24 +183,6 @@ body.dialog-open {
   transform: scaleX(1);
 }
 
-/* The work rail. Thin scrollbar in the brand colours, and snapping is only
-   armed at the breakpoint where the rail is actually horizontal. */
-.work-rail {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--rule)) transparent;
-}
-.work-rail::-webkit-scrollbar {
-  height: 8px;
-}
-.work-rail::-webkit-scrollbar-track {
-  background: transparent;
-}
-.work-rail::-webkit-scrollbar-thumb {
-  background: hsl(var(--rule));
-}
-.work-rail::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--accent));
-}
 
 /*
  * Rail gutters. Real CSS rather than Tailwind arbitrary values, because the
@@ -240,12 +194,6 @@ body.dialog-open {
      Tailwind emits its responsive utilities after this file's own rules. */
   .work-rail.work-rail {
     padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
-    scroll-padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
-  }
-  /* A scroll container drops its trailing padding, so the tail is an element. */
-  .work-rail::after {
-    content: "";
-    flex: 0 0 calc(max(0px, (100vw - 1240px) / 2) + 2rem);
   }
 }
 
@@ -456,6 +404,17 @@ body.dialog-open {
     padding-block: 0.3rem;
   }
   .work-rail [data-case] p {
+    display: none;
+  }
+}
+
+/* The index card gained a standfirst and a longer list; on the shortest
+   screens it would otherwise set the height for every card beside it. */
+@media (max-height: 780px) {
+  .index-slide > p {
+    display: none;
+  }
+  .index-slide li:nth-child(n + 5) {
     display: none;
   }
 }

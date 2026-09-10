@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ["class", '[data-theme="dark"]'],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -13,8 +12,8 @@ export default {
         accent: "hsl(var(--accent))",
         "accent-solid": "hsl(var(--accent-solid))",
         "on-accent": "hsl(var(--on-accent))",
-        violet: "hsl(var(--violet))",
-        coral: "hsl(var(--coral))",
+        "surface-2": "hsl(var(--surface-2))",
+        "accent-2": "hsl(var(--accent-2))",
       },
       fontFamily: {
         sans: ["'Libre Franklin Variable'", "system-ui", "sans-serif"],

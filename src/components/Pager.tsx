@@ -64,7 +64,7 @@ export default function Pager() {
             <CaretLeftIcon
               size={15}
               weight="bold"
-              className="text-accent transition-transform group-hover:-translate-x-0.5"
+              className="text-accent-2 transition-transform group-hover:-translate-x-0.5"
             />
             <span className="text-left">
               <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
@@ -91,7 +91,7 @@ export default function Pager() {
             <CaretRightIcon
               size={15}
               weight="bold"
-              className="text-accent transition-transform group-hover:translate-x-0.5"
+              className="text-accent-2 transition-transform group-hover:translate-x-0.5"
             />
           </button>
         )}
