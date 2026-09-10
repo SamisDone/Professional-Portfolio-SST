@@ -5,6 +5,11 @@ Chrome extensions, and research in explainable AI and NLP.
 
 Not deployed yet. See Deployment below.
 
+`CONTEXT.md` sits beside this file and covers how the project got here: the
+instructions behind the design choices, what was tried and reversed, the bugs
+that were hard to find, and what is still open. Read it before changing
+anything visual.
+
 ## The idea
 
 Explainable AI attributes a prediction back to the features that caused it, and
