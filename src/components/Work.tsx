@@ -70,7 +70,7 @@ function Card({
     <button
       onClick={() => onOpen(project)}
       aria-label={`Open the ${project.title} case study`}
-      className="group flex h-full w-full flex-col border border-rule bg-raised/50 p-4 text-left backdrop-blur-sm transition-colors hover:border-accent focus-visible:border-accent"
+      className="group flex h-full w-full flex-col border border-rule bg-raised/50 p-4 text-left backdrop-blur-sm transition-[border-color,transform] duration-200 ease-out hover:-translate-y-1 hover:border-accent focus-visible:-translate-y-1 focus-visible:border-accent"
     >
       {/* A floor here so a title that wraps cannot push its frame out of line
           with the frames either side of it. */}
@@ -150,7 +150,7 @@ function IndexBand() {
           href={profile.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-2 text-[13px] text-accent-2"
+          className="tap group inline-flex items-center gap-2 text-[13px] text-accent-2"
         >
           All repositories
           <ArrowUpRightIcon

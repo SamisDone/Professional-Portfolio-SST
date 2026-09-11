@@ -46,7 +46,7 @@ export default function Header() {
       <div className="mx-auto flex h-16 max-w-shell items-center justify-between gap-6 px-5 sm:px-8">
         <Link
           to="/"
-          className="font-mono text-[13px] uppercase tracking-[0.16em] text-ink"
+          className="tap font-mono text-[13px] uppercase tracking-[0.16em] text-ink"
         >
           Sarker
         </Link>
@@ -81,7 +81,7 @@ export default function Header() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="grid h-9 w-9 place-items-center text-ink sm:hidden"
+            className="-mr-2 grid h-11 w-11 place-items-center text-ink sm:hidden"
           >
             {open ? <XIcon size={19} /> : <ListIcon size={19} />}
           </button>

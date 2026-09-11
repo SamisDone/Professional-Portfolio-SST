@@ -5,9 +5,19 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 import { ROUTES } from "../lib/routes";
 
 const PANELS = 5;
-const RISE = 0.34;
-const HOLD = 0.46;
-const FALL = 0.44;
+/*
+ * The whole curtain, in seconds.
+ *
+ * These were half again as long. Arrow keys walking between sections is the
+ * point of the site, and at the old timing every press cost about a second
+ * before the next page was readable, which made the one interaction the site
+ * is built around feel like waiting rather than moving. The hold is still long
+ * enough to read the section name, which is the only thing the pause is for.
+ */
+const RISE = 0.26;
+const HOLD = 0.24;
+const FALL = 0.3;
+const STAGGER = 0.03;
 const TOTAL = RISE + HOLD + FALL;
 
 function labelFor(pathname: string) {
@@ -46,7 +56,7 @@ export default function PageTransition() {
     if (!showing) return;
     const id = window.setTimeout(
       () => setShowing(null),
-      (TOTAL + PANELS * 0.045 + 0.1) * 1000,
+      (TOTAL + PANELS * STAGGER + 0.08) * 1000,
     );
     return () => window.clearTimeout(id);
   }, [showing]);
@@ -73,7 +83,7 @@ export default function PageTransition() {
                 ease: [0.76, 0, 0.24, 1],
                 // Left to right on the way in, and the stagger carries through
                 // the exit so the wall peels rather than lifting as one slab.
-                delay: i * 0.045,
+                delay: i * STAGGER,
               }}
             />
           ))}

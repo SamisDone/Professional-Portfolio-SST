@@ -86,7 +86,7 @@ export default function Contact() {
               </p>
               <a
                 href={`mailto:${profile.email}`}
-                className="mt-7 inline-flex items-center gap-2 font-mono text-[15px] text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
+                className="tap mt-7 inline-flex items-center gap-2 font-mono text-[15px] text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
               >
                 {profile.email}
               </a>
@@ -100,7 +100,7 @@ export default function Contact() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center justify-between gap-4"
+                      className="tap group flex items-center justify-between gap-4"
                     >
                       <dt className="font-mono text-[13px] text-muted">{s.label}</dt>
                       <dd className="flex items-center gap-1.5 font-mono text-[13px] text-ink">

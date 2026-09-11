@@ -61,7 +61,11 @@ export default function Pager() {
           ? { duration: 0 }
           : { duration: 0.5, delay: 0.9, ease: [0.16, 1, 0.3, 1] }
       }
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex items-end justify-between gap-4 px-5 pb-5 sm:px-8 sm:pb-7"
+      // Sits clear of the footer rather than on top of it. `--footer-h` is
+      // published by Footer; the fallback keeps it sane for the one frame
+      // before that lands, and on the 404, which has no pager anyway.
+      style={{ bottom: "calc(var(--footer-h, 3.5rem) + 0.75rem)" }}
+      className="section-pager pointer-events-none fixed inset-x-0 z-40 flex items-end justify-between gap-4 px-5 sm:px-8"
     >
       <div className="pointer-events-auto">
         {prev && (

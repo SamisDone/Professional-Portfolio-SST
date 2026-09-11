@@ -135,6 +135,13 @@ file fails to parse and Vercel rejects the whole deployment with "invalid
 vercel.json file provided". It has to be written `\\.`, which decodes to the
 `\.` the regex wants. Run the file through a JSON parser before pushing it.
 
+**A fixed element at the bottom of the viewport will find the footer.** The
+pager was covering footer links, 68px of "Get in touch" at 1280x720, on a page
+that had been checked at five viewports for everything except overlap. Fit
+checks compare scroll height to viewport height and say nothing about two
+things occupying the same pixels. Test for overlap separately: walk the pager
+buttons against every text node and compare rectangles.
+
 **A single-page app ships an empty body, and checking the `<head>` does not
 catch it.** Per-route titles and descriptions were added and verified, and the
 body was still zero characters of text in the deployed HTML. Anything reading
@@ -270,6 +277,10 @@ were run against the production build with Playwright:
   or the tail of the lerp reads as drift.
 - Under `prefers-reduced-motion` the page still renders and the rail becomes
   manually scrollable rather than a frozen strip.
+- Nothing overlaps the pager. Compare its buttons' rectangles against every
+  text node in `main` and `footer`, at every viewport. Fitting one screen and
+  not colliding are different checks.
+- No touch target under 44px at 390px wide, counting the `.tap` pseudo-element.
 - Zero em-dashes in the rendered text, and none in the page titles either.
   `document.body.innerText` never sees a `<title>`, which is how one sat in
   the browser tab and in every search result for months.

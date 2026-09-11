@@ -19,7 +19,7 @@ export default function Hero() {
   });
 
   return (
-    <section id="top" className="border-b border-rule">
+    <section id="top" className="flex flex-1 flex-col justify-center border-b border-rule">
       <div className="mx-auto grid max-w-shell gap-8 px-5 pb-16 pt-16 sm:px-8 sm:pt-20 md:grid-cols-12 md:gap-10 md:pb-20">
         <div className="md:col-span-8">
           <motion.p

@@ -61,11 +61,13 @@ export default function Page({
       aria-label={title}
       initial={reduced ? false : { opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={reduced ? undefined : { opacity: 0, y: -14, transition: { duration: 0.18 } }}
+      exit={reduced ? undefined : { opacity: 0, y: -14, transition: { duration: 0.14 } }}
       transition={{
-        duration: reduced ? 0 : 0.6,
-        // Lands while the transition panels still cover the screen.
-        delay: reduced ? 0 : 0.34,
+        duration: reduced ? 0 : 0.4,
+        // Lands while the transition panels still cover the screen. This delay
+        // plus the duration is most of what a navigation costs, so it is the
+        // first place to look if the site starts feeling slow again.
+        delay: reduced ? 0 : 0.2,
         ease: [0.16, 1, 0.3, 1],
       }}
       className={`flex flex-1 flex-col page-pad ${center ? "justify-center" : ""}`}

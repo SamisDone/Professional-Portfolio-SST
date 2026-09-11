@@ -212,6 +212,46 @@ body.dialog-open {
   }
 }
 
+/*
+ * The pager, on a screen with nothing to spare.
+ *
+ * Every route fills its viewport exactly, and at 720px tall the pager's 57px
+ * was reaching about 8px past where content ends, clipping the year label on
+ * the research page. Taking the buttons in reclaims more than that, and the
+ * pager is a hint rather than something anyone reads closely.
+ */
+@media (max-height: 780px) {
+  .section-pager button {
+    padding-block: 0.25rem;
+  }
+}
+
+/*
+ * Enlarges a small control's tap area to 44px without changing how it looks.
+ *
+ * The footer and contact links are set at 12 to 14px and come out 18 to 23px
+ * tall, which is fine for a cursor and too small for a thumb. Padding them to
+ * 44px would wreck the layout, so the hit area is grown with a pseudo-element
+ * instead and the text stays exactly where it was.
+ *
+ * Only on touch pointers, so a mouse does not get invisible click targets
+ * bleeding into its neighbours.
+ */
+@media (pointer: coarse) {
+  .tap {
+    position: relative;
+  }
+  .tap::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* The current section keeps its rule drawn. */
 .nav-link.is-active::after {
   transform: scaleX(1);
@@ -228,6 +268,31 @@ body.dialog-open {
      Tailwind emits its responsive utilities after this file's own rules. */
   .work-rail.work-rail {
     padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
+  }
+
+  /*
+   * The rail runs off both edges of the screen, and without this the card at
+   * the right edge is simply sliced down the middle. Fading the two edges
+   * makes cards arrive and leave rather than get cut, and it reads as the
+   * strip continuing past the window instead of being clipped by it.
+   *
+   * Wider on the right, where cards enter and there is more of one showing.
+   */
+  .work-rail {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 5rem,
+      #000 calc(100% - 7rem),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 5rem,
+      #000 calc(100% - 7rem),
+      transparent 100%
+    );
   }
 }
 

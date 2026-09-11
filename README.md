@@ -154,6 +154,29 @@ eight builds above argues against the work rather than for it.
 an earlier version folded them behind a disclosure and hid them entirely on
 short screens, which cut the substance to save height. Keep them in the dialog.
 
+**The pager never sits on the footer.** It is fixed to the bottom of the
+viewport and used to land on top of the footer links, covering 68px of "Get in
+touch" at 1280x720. `Footer` publishes its own height as `--footer-h` through a
+`ResizeObserver`, and the pager offsets itself by that. Measured rather than
+hard-coded, because the footer stacks to two rows below `sm`.
+
+Every route fills its viewport exactly, so on a 720px screen the pager still
+reached a few pixels past where content ends. It takes its buttons in below
+`max-height: 780px`.
+
+**Touch targets.** The footer and contact links are set at 12 to 14px and come
+out around 20px tall, which is fine for a cursor and too small for a thumb. The
+`.tap` utility in `index.css` grows the hit area to 44px with a pseudo-element,
+so nothing moves visually. It is behind `pointer: coarse`, so a mouse does not
+get invisible targets bleeding into neighbours.
+
+**Transition timing.** A navigation used to take about a second before the new
+page was readable. Arrow keys walking between sections is the whole point of
+the site, so that was a tax on the one interaction it is built around. The
+curtain constants at the top of `PageTransition` and the delay in `Page` are
+where that time lives; it is around 560ms now. The hold is still long enough to
+read the section name, which is the only thing the pause is for.
+
 **Loading.** Two skeleton layers, both shaped like the content they replace. The
 boot shell is inlined in `index.html` so it paints before the bundles arrive.
 `Figure` holds a skeleton in the image's own box until the file decodes.

@@ -36,8 +36,10 @@ export const proof: Proof[] = [
     href: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
   },
   {
-    value: "1",
-    label: "peer-reviewed paper, IEEE ICECTE 2026",
+    // "1" rendered at the same size as "300+" undersold this badly. The venue
+    // is the claim worth reading, not the count.
+    value: "IEEE",
+    label: "peer-reviewed paper at ICECTE 2026",
     href: "https://ieeexplore.ieee.org/document/11429440",
   },
   {
