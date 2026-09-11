@@ -135,6 +135,14 @@ file fails to parse and Vercel rejects the whole deployment with "invalid
 vercel.json file provided". It has to be written `\\.`, which decodes to the
 `\.` the regex wants. Run the file through a JSON parser before pushing it.
 
+**A single-page app ships an empty body, and checking the `<head>` does not
+catch it.** Per-route titles and descriptions were added and verified, and the
+body was still zero characters of text in the deployed HTML. Anything reading
+the page without a browser saw nothing: link scrapers, applicant tracking
+systems, a plain `curl`. `scripts/prerender.mjs` now writes the rendered DOM
+into each route's file at build time. The check is to fetch the deployed URL
+and strip the tags, not to read the head and assume the rest followed.
+
 **A joined script needs the type settings undone, not just the family swapped.**
 Climate Crisis was a wide slab and every heading carried `tracking-tight` and
 leading near 1.0 to suit it. Both are wrong for Lobster Two: negative tracking
@@ -252,6 +260,8 @@ were run against the production build with Playwright:
   `document.body.innerText` never sees a `<title>`, which is how one sat in
   the browser tab and in every search result for months.
 - Exactly one `h1` per route, and no gap in the heading ranks below it.
+- Fetch a deployed route with no browser and strip the tags. The body must
+  contain the page's real text. `curl -s URL | grep Greenlight` is enough.
 - Each route serves its own title, description and canonical link. Check this
   against a server that resolves the filesystem before the SPA rewrite, the
   way Vercel does. `vite preview` goes straight to the rewrite and every route

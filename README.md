@@ -185,6 +185,24 @@ title and description for all six pages. Vercel serves a matching file before
 it consults the rewrite in `vercel.json`, so a crawler gets the real page while
 a visitor still lands in the app and navigates client-side.
 
+**Prerendering.** `scripts/prerender.mjs` runs after vite as part of
+`npm run build`. It serves `dist`, loads each route in Chromium, and writes the
+rendered DOM into that route's HTML file.
+
+Without it the deployed body carried zero text. Search engines run JavaScript
+and coped, but a plain HTTP fetch did not, and neither do link scrapers,
+applicant tracking systems, or any tool that reads a URL without a browser.
+They all received a shell.
+
+The capture emulates reduced motion, which the site honours. That is the part
+worth not breaking: without it every entry animation is caught at its start and
+the markup is saved holding `opacity: 0`, which is worse than shipping nothing.
+Case-study text lives in a dialog that mounts only when opened, so it is not
+captured; every heading, card title, summary and stack is.
+
+React replaces this markup when it mounts, and there is no gap: on a throttled
+connection the text is on screen at about 120ms and never returns to empty.
+
 **One `h1` per route.** Each route's own heading is its `h1`, and ranks below
 it run without a gap. Only the home page had an `h1` before, which read to a
 crawler as five pages with no subject.
