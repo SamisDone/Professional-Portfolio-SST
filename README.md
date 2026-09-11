@@ -103,10 +103,18 @@ src/
   lib/          routes.ts
 public/
   shots/        Real screenshots of the live projects
-  og.png        Social card, regenerate if the positioning line changes
+  og.png        Social card, generated; do not hand-edit
 scripts/
   capture-shots.mjs
+  make-og.mjs
 ```
+
+`make-og.mjs` renders `public/og.png` from the site's own font files and colour
+tokens, and reads the name, standfirst, positioning line and proof figures out
+of `content.ts`. Run it after changing any of those. Rendering rather than
+drawing it is the point: the previous card was hand-made, and it was still
+light-background Helvetica long after the site had become dark plum and Lobster
+Two, quoting a positioning line the site no longer said.
 
 ## Notes for future edits
 

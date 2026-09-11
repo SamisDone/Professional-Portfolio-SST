@@ -16,7 +16,7 @@ export const profile = {
   standfirst: "CSE '27, CUET",
   // Hero subtext. Kept under 20 words so the hero always fits one viewport.
   positioning:
-    "I build full-stack products, and I research how to make a model's predictions explainable.",
+    "I build software that ships, and I research models that can explain themselves.",
 };
 
 /**

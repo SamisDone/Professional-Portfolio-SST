@@ -242,4 +242,7 @@ were run against the production build with Playwright:
   shipped, so anything asking for bold gets a synthetic one.
 - No console errors.
 
-`scripts/capture-shots.mjs` re-shoots the project screenshots.
+`scripts/capture-shots.mjs` re-shoots the project screenshots, and
+`scripts/make-og.mjs` re-renders the social card. The card reads its copy out of
+`content.ts`, so run it after any change to the name, the standfirst, the
+positioning line or the proof figures.
