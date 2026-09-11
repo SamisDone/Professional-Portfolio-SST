@@ -23,10 +23,22 @@ export type PageMeta = {
 
 const NAME = "Samonwita Sarker";
 
+/**
+ * Two fields in parallel, not two job titles side by side.
+ *
+ * "Full-stack developer and AI researcher" asked the reader to pick which one
+ * I am, and a recruiter screening against one opening picks neither. Naming
+ * the two fields instead makes the pair the position. "Full-stack" stays in
+ * because it is the word people actually search and filter on.
+ *
+ * The description leads with things that exist and are running, and puts the
+ * credential last. A list of what someone has is weaker than a list of what
+ * they built.
+ */
 export const DEFAULT_META: PageMeta = {
-  title: `${NAME} | Full-stack developer and AI researcher`,
+  title: `${NAME} | Full-stack engineering and explainable AI`,
   description:
-    "CSE undergraduate at CUET. Two Chrome extensions published on the Web Store, a co-authored IEEE paper on explainable AI, and 7th place at an ACL 2026 shared task.",
+    "Two Chrome extensions on the Web Store, a bilingual site in production for a Montreal firm, and explainable AI research peer reviewed at IEEE. CSE '27 at CUET.",
 };
 
 export const ROUTE_META: Record<string, PageMeta> = {
