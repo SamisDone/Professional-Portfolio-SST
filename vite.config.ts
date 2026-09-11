@@ -113,7 +113,7 @@ function routeMetaPlugin(): Plugin {
   };
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "");
   // Vercel and Netlify both expose the deployed host at build time, so a
   // preview deployment gets its own origin rather than the production one.
@@ -126,6 +126,14 @@ export default defineConfig(({ mode }) => {
   ).replace(/\/$/, "");
 
   return {
-    plugins: [react(), siteUrlPlugin(siteUrl), routeMetaPlugin()],
+    plugins: [
+      react(),
+      // The SSR pass exists only to produce a render function for
+      // scripts/prerender.mjs. It emits no HTML, so the plugins that stamp
+      // metadata into HTML have nothing to do and would only litter the SSR
+      // output with a second robots.txt and sitemap.
+      ...(isSsrBuild ? [] : [siteUrlPlugin(siteUrl), routeMetaPlugin()]),
+    ],
+    build: isSsrBuild ? { outDir: "dist-ssr", ssr: "src/entry-server.tsx" } : {},
   };
 });

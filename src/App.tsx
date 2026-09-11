@@ -33,9 +33,17 @@ function Routed() {
   );
 }
 
-export default function App() {
+/**
+ * Everything inside the router, with no router of its own.
+ *
+ * Split out so it can be rendered twice: under `BrowserRouter` in the browser,
+ * and under `StaticRouter` by `entry-server.tsx`, which prerenders each route
+ * to HTML at build time. Keeping the router here would mean the prerender
+ * needed a real browser to resolve a location.
+ */
+export function AppShell() {
   return (
-    <BrowserRouter>
+    <>
       <a href="#main" className="skip-link">
         Skip to main content
       </a>
@@ -49,6 +57,14 @@ export default function App() {
         <Footer />
       </div>
       <Pager />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
     </BrowserRouter>
   );
 }

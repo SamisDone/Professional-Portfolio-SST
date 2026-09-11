@@ -185,20 +185,33 @@ title and description for all six pages. Vercel serves a matching file before
 it consults the rewrite in `vercel.json`, so a crawler gets the real page while
 a visitor still lands in the app and navigates client-side.
 
-**Prerendering.** `scripts/prerender.mjs` runs after vite as part of
-`npm run build`. It serves `dist`, loads each route in Chromium, and writes the
-rendered DOM into that route's HTML file.
+**Prerendering.** Without it the deployed body carried zero text. Search
+engines run JavaScript and coped, but a plain HTTP fetch did not, and neither
+do link scrapers, applicant tracking systems, or any tool that reads a URL
+without a browser. They all received a shell.
 
-Without it the deployed body carried zero text. Search engines run JavaScript
-and coped, but a plain HTTP fetch did not, and neither do link scrapers,
-applicant tracking systems, or any tool that reads a URL without a browser.
-They all received a shell.
+`npm run build` therefore runs three things after the typecheck: the client
+build, an SSR build of `src/entry-server.tsx`, and `scripts/prerender.mjs`,
+which imports that bundle, renders each route with `renderToString`, and writes
+the result into the route's HTML file.
 
-The capture emulates reduced motion, which the site honours. That is the part
-worth not breaking: without it every entry animation is caught at its start and
-the markup is saved holding `opacity: 0`, which is worse than shipping nothing.
+`App` is split for this. `AppShell` holds everything inside the router, so it
+can run under `BrowserRouter` in the browser and `StaticRouter` on the server.
+
+Rendering through React rather than a real browser is deliberate, and it was
+not the first attempt. The first version drove Chromium through Playwright. It
+worked locally and the deploy failed, because it made every build depend on a
+browser binary being downloadable in the host's container. A build that cannot
+finish is worse than a thin page.
+
+`useReducedMotion` returns **true** when there is no `window`, and that is
+load-bearing. Under reduced motion each component renders its plain final
+state; with motion on, the markup is saved frozen at the start of an entry
+animation holding `opacity: 0`, which ships text that is present but invisible.
+Check for it: the built HTML should contain no `opacity:0` in the body.
+
 Case-study text lives in a dialog that mounts only when opened, so it is not
-captured; every heading, card title, summary and stack is.
+included. Every heading, card title, summary and stack is.
 
 React replaces this markup when it mounts, and there is no gap: on a throttled
 connection the text is on screen at about 120ms and never returns to empty.

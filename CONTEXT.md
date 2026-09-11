@@ -139,9 +139,23 @@ vercel.json file provided". It has to be written `\\.`, which decodes to the
 catch it.** Per-route titles and descriptions were added and verified, and the
 body was still zero characters of text in the deployed HTML. Anything reading
 the page without a browser saw nothing: link scrapers, applicant tracking
-systems, a plain `curl`. `scripts/prerender.mjs` now writes the rendered DOM
+systems, a plain `curl`. `scripts/prerender.mjs` now writes the rendered HTML
 into each route's file at build time. The check is to fetch the deployed URL
 and strip the tags, not to read the head and assume the rest followed.
+
+**Prerendering with a real browser broke the deploy.** The first version of
+that script drove Chromium through Playwright. It worked locally and the
+Vercel build never shipped, because it made every build depend on downloading
+a browser binary in the host's container. It renders through
+`react-dom/server` now and needs nothing but Node. If a build step works on
+this machine and the deploy goes quiet, suspect the step, not the host.
+
+**Prerendering with motion on is worse than not prerendering.** Rendered with
+animations enabled, the markup is saved frozen at the start of every entry
+animation, holding `opacity: 0`. The text is in the file and invisible.
+`useReducedMotion` returns true when there is no `window` for exactly this
+reason. `Pager` was the one component not checking the hook at all, so it kept
+coming out hidden until it did.
 
 **A joined script needs the type settings undone, not just the family swapped.**
 Climate Crisis was a wide slab and every heading carried `tracking-tight` and
@@ -262,6 +276,12 @@ were run against the production build with Playwright:
 - Exactly one `h1` per route, and no gap in the heading ranks below it.
 - Fetch a deployed route with no browser and strip the tags. The body must
   contain the page's real text. `curl -s URL | grep Greenlight` is enough.
+- The built HTML must contain no `opacity:0` inside `<body>`. That is the
+  signature of markup prerendered mid-animation, which reads as a blank page.
+- Measure the rail's speed only against a known frame rate. A headless browser
+  under load drops to 20-odd fps, and a naive sample then reads half the real
+  speed. The drift is per second, so it should hold at about 42 px/sec at any
+  frame rate; if it scales with fps, the per-second fix has been undone.
 - Each route serves its own title, description and canonical link. Check this
   against a server that resolves the filesystem before the SPA rewrite, the
   way Vercel does. `vite preview` goes straight to the rewrite and every route

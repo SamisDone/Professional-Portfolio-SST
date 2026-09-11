@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { neighbours } from "../lib/routes";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 const TYPING = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
@@ -19,6 +20,7 @@ export default function Pager() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { prev, next } = neighbours(pathname);
+  const reduced = useReducedMotion();
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -50,9 +52,15 @@ export default function Pager() {
   return (
     <motion.nav
       aria-label="Section pager"
-      initial={{ opacity: 0, y: 12 }}
+      // The one animation on the site that was not checking this. It also
+      // meant the prerendered HTML carried the pager at opacity 0.
+      initial={reduced ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      transition={
+        reduced
+          ? { duration: 0 }
+          : { duration: 0.5, delay: 0.9, ease: [0.16, 1, 0.3, 1] }
+      }
       className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex items-end justify-between gap-4 px-5 pb-5 sm:px-8 sm:pb-7"
     >
       <div className="pointer-events-auto">

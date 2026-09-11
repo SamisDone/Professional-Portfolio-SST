@@ -11,8 +11,14 @@ const QUERY = "(prefers-reduced-motion: reduce)";
  * hand rather than a frozen one, which is the part that is easy to get wrong.
  */
 export function useReducedMotion(): boolean {
+  // With no window we are being rendered to a string by the prerender step,
+  // and there the answer must be true. Under reduced motion every component
+  // renders its plain final state; with motion on, the markup is saved frozen
+  // at the start of an entry animation, holding `opacity: 0`. That ships a
+  // page whose text is present but invisible, which is worse than shipping no
+  // markup at all.
   const [reduced, setReduced] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia(QUERY).matches : false,
+    typeof window === "undefined" ? true : window.matchMedia(QUERY).matches,
   );
 
   useEffect(() => {
