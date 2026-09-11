@@ -150,9 +150,9 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
     return (
       <figure className="m-0">
         <figcaption className="mb-3">
-          <h3 className="font-display text-base leading-tight text-ink">
+          <h2 className="font-display text-base leading-tight text-ink">
             The grades, including the dip
-          </h3>
+          </h2>
           <p className="mt-1.5 text-[13.5px] leading-snug text-muted">
             {trajectoryNote}
           </p>

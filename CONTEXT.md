@@ -192,26 +192,37 @@ moving a project between the two lists needs no copy change.
 
 ## Open items
 
-1. **The Fleet AI experience entry** in `src/data/content.ts` says only that it
-   was contract work for a US-based AI company, because that is all the CV
-   gave. It needs two or three lines about what was actually done. This is the
-   most valuable outstanding item: it is real industry experience currently
-   described in one thin sentence.
+1. **Confirm the contact form end to end.** It posts to formsubmit.co, which
+   holds the first message sent to a new address until a confirmation link in
+   the inbox is clicked. Until that happens a visitor fills the form, sees
+   "sent", and nothing arrives. This is the one item on the site that can fail
+   silently and lose a real message, so test it on the deployed URL.
 
-2. **Deploy, then set the origin.** See the Deployment section of the README.
-   Until then Open Graph tags point at a placeholder and link previews will not
-   resolve.
-
-3. **FinPulse has no screenshot.** PHP against MySQL, and its free host times
+2. **FinPulse has no screenshot.** PHP against MySQL, and its free host times
    out. It is in `otherWork` now, so nothing on the page is missing an image,
    but a capture is what it would need to go back on the rail.
 
-4. **Team versus solo authorship.** Asked and left open. The copy is currently
-   neutral about who did what on each project. If any of the eight was
-   collaborative, it should say so explicitly rather than reading as solo work.
+3. **The old portfolio** at `samonwitaportfolio.netlify.app` still exists and
+   will compete with this one in search results. The CV's portfolio link was
+   repointed at the new site, but the old deployment itself is still up and
+   only she can take it down or redirect it.
 
-5. **The old portfolio** at `samonwitaportfolio.netlify.app` still exists and
-   will compete with this one in search results once this is live.
+4. **The JavaScript bundle is about 450kB, 141kB gzipped.** React, the router,
+   framer-motion and the icon set. Nothing is code-split by route. It is the
+   largest thing left on the wire now that the images are handled, but it is
+   also a real refactor rather than a tune, so it was left alone.
+
+### Resolved, and how
+
+- **Fleet AI** used to be one thin sentence, on the belief that the CV said no
+  more. The CV in `public/` describes the work in full on page one. Read the
+  source before recording that a source is empty.
+- **Team versus solo authorship** was left open for the same reason. The CV
+  names a role for eight of the projects, and those are now in `role` on
+  `Project`, shown in the dialog. The ones the CV does not name have no role
+  set, and nothing is rendered for them: a guess at authorship is the one
+  mistake here worth avoiding.
+- **The origin** is set. `vite.config.ts` defaults to the deployed URL.
 
 ---
 
@@ -237,7 +248,14 @@ were run against the production build with Playwright:
   or the tail of the lerp reads as drift.
 - Under `prefers-reduced-motion` the page still renders and the rail becomes
   manually scrollable rather than a frozen strip.
-- Zero em-dashes in the rendered text.
+- Zero em-dashes in the rendered text, and none in the page titles either.
+  `document.body.innerText` never sees a `<title>`, which is how one sat in
+  the browser tab and in every search result for months.
+- Exactly one `h1` per route, and no gap in the heading ranks below it.
+- Each route serves its own title, description and canonical link. Check this
+  against a server that resolves the filesystem before the SPA rewrite, the
+  way Vercel does. `vite preview` goes straight to the rewrite and every route
+  comes back with the home page's metadata, which hides the whole problem.
 - No heading computes to a weight other than 400. Only Lobster Two Regular is
   shipped, so anything asking for bold gets a synthetic one.
 - No console errors.

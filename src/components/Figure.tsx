@@ -9,7 +9,29 @@ type Props = {
   ratio?: string;
   priority?: boolean;
   className?: string;
+  /**
+   * Widest this image is ever drawn, in CSS pixels. Sets the `sizes` hint.
+   * Both places a shot appears, the rail card and the dialog, land near 430.
+   * A normal display then takes the 700px file and a retina one takes the
+   * 1400px file. Without this the browser assumes the full viewport width and
+   * takes the largest every time.
+   */
+  displayWidth?: number;
 };
+
+/**
+ * scripts/optimise-shots.mjs writes a 1400px and a 700px WebP beside every
+ * capture. This builds the srcset for them and leaves `src` as the original
+ * file, which is what a browser with no WebP support falls back to.
+ *
+ * A shot narrower than 700px has no second variant, so it gets no srcset and
+ * is served as the one file that exists.
+ */
+function webpSources(src: string) {
+  const stem = src.replace(/\.(jpg|jpeg|png)$/i, "");
+  if (stem === src) return undefined;
+  return `${stem}-700.webp 700w, ${stem}.webp 1400w`;
+}
 
 /**
  * A screenshot that holds a skeleton in its own box until the file decodes,
@@ -26,11 +48,13 @@ export default function Figure({
   ratio = "16 / 10",
   priority = false,
   className = "",
+  displayWidth = 430,
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
   const reduced = useReducedMotion();
+  const sources = webpSources(src);
 
   // An image restored from cache can finish before React attaches onLoad.
   useEffect(() => {
@@ -79,6 +103,8 @@ export default function Figure({
         <img
           ref={imgRef}
           src={src}
+          srcSet={sources}
+          sizes={sources ? `${displayWidth}px` : undefined}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding={priority ? "sync" : "async"}

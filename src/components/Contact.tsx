@@ -76,9 +76,9 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <h2 className="max-w-[14ch] h-section font-display leading-[1.18] text-ink">
+              <h1 className="max-w-[14ch] h-section font-display leading-[1.18] text-ink">
                 <MaskText text="Get in touch." />
-              </h2>
+              </h1>
               <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
                 I am looking for internships and research collaborations. If you
                 have a project, a paper idea, or a question about anything above,

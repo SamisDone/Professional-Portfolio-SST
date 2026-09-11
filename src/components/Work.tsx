@@ -76,9 +76,9 @@ function Card({
           with the frames either side of it. */}
       <div className="mb-2.5 flex min-h-[2.4em] items-baseline gap-3">
         <span className="text-[12px] text-accent">{String(n).padStart(2, "0")}</span>
-        <h3 className="font-display text-base leading-tight text-ink sm:text-lg">
+        <h2 className="font-display text-base leading-tight text-ink sm:text-lg">
           {project.title}
-        </h3>
+        </h2>
       </div>
 
       {project.shot ? (
@@ -137,9 +137,9 @@ function IndexBand() {
     <div className="index-band mx-auto max-w-shell px-5 pb-4 sm:px-8">
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-rule pt-3">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h3 className="font-display text-base leading-none text-ink">
+          <h2 className="font-display text-base leading-none text-ink">
             Everything else
-          </h3>
+          </h2>
           <p className="text-[13px] leading-none text-muted">
             {otherWork.length} more on GitHub, from a crime-detection model to OS
             scheduling algorithms and browser toys.
@@ -279,12 +279,12 @@ export default function Work() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
             <div>
-              <h2
+              <h1
                 tabIndex={-1}
                 className="h-section font-display leading-[1.18] text-ink outline-none"
               >
                 <MaskText text="Projects that stand out." />
-              </h2>
+              </h1>
               <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
                 Open any one for the problem, what I built, and how it turned out.
               </p>

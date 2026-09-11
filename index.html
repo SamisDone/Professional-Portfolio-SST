@@ -8,14 +8,16 @@
       __SITE_URL__ is replaced at build time from VITE_SITE_URL (see
       vite.config.ts). These have to be absolute: Open Graph crawlers do not
       resolve relative paths, so a relative image silently yields a blank card.
-    -->
-    <link rel="canonical" href="__SITE_URL__/" />
 
-    <title>Samonwita Sarker — Full-Stack Developer &amp; AI Researcher</title>
-    <meta
-      name="description"
-      content="CSE undergraduate at CUET building full-stack products with React, Node.js and PostgreSQL. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
-    />
+      The per-route title and description placeholders below are filled in the
+      same way, once per route. This is a single-page app, so without that
+      every route would ship one identical title and description to any
+      crawler that does not run JavaScript.
+    -->
+    <link rel="canonical" href="__SITE_URL____PAGE_PATH__" />
+
+    <title>__PAGE_TITLE__</title>
+    <meta name="description" content="__PAGE_DESCRIPTION__" />
     <meta name="author" content="Samonwita Sarker" />
     <meta name="theme-color" content="#200c27" />
 
@@ -26,15 +28,9 @@
     <!-- Open Graph: what LinkedIn, Slack and iMessage render for the link. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Samonwita Sarker" />
-    <meta property="og:url" content="__SITE_URL__/" />
-    <meta
-      property="og:title"
-      content="Samonwita Sarker — Full-Stack Developer &amp; AI Researcher"
-    />
-    <meta
-      property="og:description"
-      content="CSE '27 at CUET. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
-    />
+    <meta property="og:url" content="__SITE_URL____PAGE_PATH__" />
+    <meta property="og:title" content="__PAGE_TITLE__" />
+    <meta property="og:description" content="__PAGE_DESCRIPTION__" />
     <meta property="og:image" content="__SITE_URL__/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -44,14 +40,8 @@
     />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="Samonwita Sarker — Full-Stack Developer &amp; AI Researcher"
-    />
-    <meta
-      name="twitter:description"
-      content="CSE '27 at CUET. Published Chrome extensions, an IEEE paper on explainable AI, and a 7th-place finish at an ACL 2026 shared task."
-    />
+    <meta name="twitter:title" content="__PAGE_TITLE__" />
+    <meta name="twitter:description" content="__PAGE_DESCRIPTION__" />
     <meta name="twitter:image" content="__SITE_URL__/og.png" />
 
     <!-- Structured data, so a search result can show the role and affiliation. -->

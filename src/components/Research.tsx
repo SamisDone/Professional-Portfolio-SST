@@ -16,9 +16,9 @@ export default function Research({ aside }: { aside?: ReactNode }) {
     <section id="research" className="scroll-mt-16 border-b border-rule">
       <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[22ch] h-section font-display leading-[1.18] text-ink">
+          <h1 className="max-w-[22ch] h-section font-display leading-[1.18] text-ink">
             <MaskText text="Research." />
-          </h2>
+          </h1>
           <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
             Papers and competitions, the work that got reviewed.
           </p>
@@ -32,7 +32,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                 className="border-t border-ink/15 pt-5 first:border-ink/30 [&:not(:last-child)]:pb-7"
               >
               <div className="grid gap-4 md:grid-cols-12">
-                <h3 className="font-display text-sm text-accent md:col-span-2">{year}</h3>
+                <h2 className="font-display text-sm text-accent md:col-span-2">{year}</h2>
 
                 <ul className="flex flex-col gap-5 md:col-span-10">
                   {research
@@ -54,7 +54,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                               {m.kind}
                             </span>
-                            <h4 className="mt-2 flex items-start gap-2 font-display text-[15px] leading-tight text-ink sm:text-base">
+                            <h3 className="mt-2 flex items-start gap-2 text-[15px] font-medium leading-snug text-ink sm:text-base">
                               <span className={m.href ? "group-hover:underline" : ""}>
                                 {m.title}
                               </span>
@@ -64,7 +64,7 @@ export default function Research({ aside }: { aside?: ReactNode }) {
                                   className="mt-1.5 shrink-0 text-muted transition-transform group-hover:-translate-y-0.5 group-hover:text-ink"
                                 />
                               )}
-                            </h4>
+                            </h3>
                             <p className="mt-1.5 font-mono text-[13px] text-muted">
                               {m.venue}
                             </p>

@@ -13,9 +13,9 @@ export default function Experience() {
     <section id="experience" className="scroll-mt-16 border-b border-rule bg-raised">
       <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <Reveal>
-          <h2 className="max-w-[20ch] h-section font-display leading-[1.18] text-ink">
+          <h1 className="max-w-[20ch] h-section font-display leading-[1.18] text-ink">
             <MaskText text="Paid work." />
-          </h2>
+          </h1>
           <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
             Where someone has paid me to build the thing.
           </p>
@@ -33,9 +33,9 @@ export default function Experience() {
                 </div>
 
                 <div className="md:col-span-9">
-                  <h3 className="font-display text-lg leading-tight text-ink sm:text-xl">
+                  <h2 className="font-display text-lg leading-tight text-ink sm:text-xl">
                     {role.org}
-                  </h3>
+                  </h2>
                   <p className="mt-1.5 font-mono text-[13px] text-accent">
                     {role.role}
                   </p>

@@ -144,6 +144,14 @@ export default function ProjectDialog({
                 <span className="text-ink">{project.kind}</span>
                 <span aria-hidden className="h-3 w-px bg-rule" />
                 <span>{project.year}</span>
+                {/* Only where the CV names it. Silence is better than a guess
+                    at who did what. */}
+                {project.role ? (
+                  <>
+                    <span aria-hidden className="h-3 w-px bg-rule" />
+                    <span className="text-accent-2">{project.role}</span>
+                  </>
+                ) : null}
               </div>
               <p className="mt-2 text-[12px] leading-relaxed text-muted">
                 {project.stack.join(", ")}

@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 const QUERY = "(prefers-reduced-motion: reduce)";
 
 /**
- * True when the visitor has asked their OS to reduce motion. Every decorative
- * animation on the site checks this — the marquee, the auto-scrolling project
- * columns, the pinned section, the intro counter — so the page stays usable
- * for people who get motion sickness from parallax and infinite scrollers.
+ * True when the visitor has asked their OS to reduce motion.
+ *
+ * Every decorative animation checks it: the sliding work rail, the page
+ * transition panels, the masked headings, the image reveals and the CGPA
+ * chart. Under reduced motion the rail becomes a strip the visitor scrolls by
+ * hand rather than a frozen one, which is the part that is easy to get wrong.
  */
 export function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(() =>

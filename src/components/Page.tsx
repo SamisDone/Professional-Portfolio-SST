@@ -1,6 +1,38 @@
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { metaFor } from "../lib/meta";
+
+/**
+ * Keeps the document's title, description and canonical link in step with the
+ * route the visitor is actually on.
+ *
+ * The build stamps the same values into a real HTML file per route, which is
+ * what a crawler reads. This is for everything after the first paint: a
+ * visitor navigating client-side, the browser tab, and a bookmark.
+ */
+function useDocumentMeta(pathname: string) {
+  useEffect(() => {
+    const meta = metaFor(pathname);
+    document.title = meta.title;
+
+    const set = (selector: string, attr: string, value: string) => {
+      const el = document.head.querySelector(selector);
+      if (el) el.setAttribute(attr, value);
+    };
+
+    set('meta[name="description"]', "content", meta.description);
+    set('meta[property="og:title"]', "content", meta.title);
+    set('meta[property="og:description"]', "content", meta.description);
+    set('meta[name="twitter:title"]', "content", meta.title);
+    set('meta[name="twitter:description"]', "content", meta.description);
+
+    const url = window.location.origin + pathname;
+    set('link[rel="canonical"]', "href", url);
+    set('meta[property="og:url"]', "content", url);
+  }, [pathname]);
+}
 
 /**
  * Wraps every route. Pages are sized to the viewport minus the header, so a
@@ -13,11 +45,15 @@ export default function Page({
   center = false,
 }: {
   children: ReactNode;
+  /** Names the landmark for a screen reader. The document title comes from
+      `lib/meta.ts`, keyed on the route. */
   title: string;
   /** Vertically centre the content when it is shorter than the screen. */
   center?: boolean;
 }) {
   const reduced = useReducedMotion();
+  const { pathname } = useLocation();
+  useDocumentMeta(pathname);
 
   return (
     <motion.main

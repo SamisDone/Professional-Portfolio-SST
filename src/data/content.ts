@@ -60,6 +60,12 @@ export type Project = {
   /** One line. What it is, in plain language. */
   summary: string;
   stack: string[];
+  /**
+   * Who I was on it, in the CV's own words. Only set where the CV states it:
+   * the alternative is guessing at authorship, and a portfolio that implies
+   * solo work on a team project is the one mistake here worth avoiding.
+   */
+  role?: string;
   repo: string;
   live?: string;
   liveLabel?: string;
@@ -135,6 +141,7 @@ export const featured: Project[] = [
     summary:
       "A time tracker that makes no network requests, so your browsing history stays on your machine.",
     stack: ["JavaScript", "Chrome APIs", "Storage Sync"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/RIPHours",
     live: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
     liveLabel: "Chrome Web Store",
@@ -156,6 +163,7 @@ export const featured: Project[] = [
     summary:
       "Hospital management with Gemini-backed symptom routing and three separate roles.",
     stack: ["React", "Node.js", "Firebase", "Gemini API"],
+    role: "Full-stack developer",
     repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
     live: "https://ai-powered-hospital-management-syst.vercel.app/",
     liveLabel: "Open the demo",
@@ -175,6 +183,7 @@ export const featured: Project[] = [
     year: "2025",
     summary: "Real-time stock auditing on one centralized store, so every view agrees.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    role: "Full-stack developer",
     repo: "https://github.com/SamisDone/StockMaster",
     shot: "/shots/stockmaster.jpg",
     shotAlt: "The StockMaster landing page for its inventory management system.",
@@ -192,6 +201,7 @@ export const featured: Project[] = [
     summary:
       "A bilingual site for a Montreal exterior design firm. My first paid engagement.",
     stack: ["Next.js", "Tailwind CSS"],
+    role: "Frontend developer, freelance",
     repo: "https://github.com/SamisDone",
     live: "https://pierrafinal.vercel.app/",
     liveLabel: "Open the site",
@@ -211,6 +221,7 @@ export const featured: Project[] = [
     summary:
       "Restores a whole working session, tab groups intact, in one click.",
     stack: ["JavaScript", "Chrome APIs"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/TabSaver-2.0",
     live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
     liveLabel: "Chrome Web Store",
@@ -230,6 +241,7 @@ export const featured: Project[] = [
     summary:
       "A resume builder with live preview and in-browser PDF export. No account, no upload.",
     stack: ["React", "Tailwind CSS", "React Router"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/ResumeForge",
     live: "https://resumeforge-sam.netlify.app/",
     liveLabel: "Open the tool",
@@ -393,6 +405,7 @@ export const otherWork: Project[] = [
     year: "2025",
     summary: "A priority-aware scheduler where the quantum adapts instead of staying fixed.",
     stack: ["C++", "React"],
+    role: "Systems programmer",
     repo: "https://github.com/SamisDone/Adaptive-Priority-Round-Robin",
     problem:
       "Round robin is easy to state and hard to feel. A fixed quantum punishes short jobs, and a table of numbers does not show you why.",
@@ -407,6 +420,7 @@ export const otherWork: Project[] = [
     year: "2024",
     summary: "Multi-user transactions on a normalized schema, with charted reporting.",
     stack: ["PostgreSQL", "Chart.js"],
+    role: "Full-stack developer",
     repo: "https://github.com/SamisDone/Finance-Tracker",
     problem:
       "A shared expense tracker goes wrong quickly if categories and accounts are stored as free text on every transaction row.",
@@ -482,7 +496,8 @@ export const experience: Role[] = [
     period: "May to August 2026",
     location: "Remote",
     points: [
-      "Contract work for a US-based AI company, delivered remotely from Bangladesh.",
+      "Authored long-horizon, multi-step agentic AI evaluation tasks across simulated enterprise application environments, grounding each workflow in verified environment data.",
+      "QA-reviewed other contributors' tasks for must-have and should-have coverage, action counts, ambiguity and codename compliance, checking each for correctness, novelty and robust edge-case handling.",
     ],
   },
   {
