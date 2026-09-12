@@ -1,6 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, type Plugin } from "vite";
-import { ROUTE_META, DEFAULT_META } from "./src/lib/meta.js";
+import { ROUTE_META, DEFAULT_META, NOT_FOUND_META } from "./src/lib/meta.js";
 
 /**
  * The site's own absolute URL, needed anywhere a relative path will not do:
@@ -106,6 +106,22 @@ function routeMetaPlugin(): Plugin {
           source: fill(template, path),
         });
       }
+
+      /*
+       * A real 404 document. vercel.json rewrites anything that matches no
+       * file to this, so an unknown URL gets the not-found page with its own
+       * title. It used to fall through to index.html, which meant a wrong URL
+       * served the home page's title and, once prerendering landed, the home
+       * page's content too.
+       */
+      this.emitFile({
+        type: "asset",
+        fileName: "404.html",
+        source: template
+          .replaceAll("__PAGE_TITLE__", escape(NOT_FOUND_META.title))
+          .replaceAll("__PAGE_DESCRIPTION__", escape(NOT_FOUND_META.description))
+          .replaceAll("__PAGE_PATH__", "/404"),
+      });
 
       // The root last, so the template is still untouched for the loop above.
       index.source = fill(template, "/");

@@ -135,6 +135,13 @@ file fails to parse and Vercel rejects the whole deployment with "invalid
 vercel.json file provided". It has to be written `\\.`, which decodes to the
 `\.` the regex wants. Run the file through a JSON parser before pushing it.
 
+**Client-side state written into prerendered HTML becomes permanent.** `Figure`
+holds a skeleton until its image decodes, which is a state React flips. Rendered
+to a string that skeleton is just markup, so with JavaScript off every
+screenshot stayed a grey shimmering box forever. Anything whose initial state
+means "not ready yet" needs to render its ready state when there is no window.
+The same applies to `useReducedMotion`.
+
 **A fixed element at the bottom of the viewport will find the footer.** The
 pager was covering footer links, 68px of "Get in touch" at 1280x720, on a page
 that had been checked at five viewports for everything except overlap. Fit
@@ -236,10 +243,13 @@ moving a project between the two lists needs no copy change.
    repointed at the new site, but the old deployment itself is still up and
    only she can take it down or redirect it.
 
-4. **The JavaScript bundle is about 450kB, 141kB gzipped.** React, the router,
-   framer-motion and the icon set. Nothing is code-split by route. It is the
-   largest thing left on the wire now that the images are handled, but it is
-   also a real refactor rather than a tune, so it was left alone.
+4. **The JavaScript bundle is about 143kB gzipped**, and splitting it by route
+   would not help. Measured by chunk: react-dom 56kB, framer-motion 47kB, app
+   code 20kB, react-router 14kB, phosphor 4.5kB. The icons already tree-shake.
+   Route splitting only moves that 20kB of app code around. The one reducible
+   piece is framer-motion, through `LazyMotion` with `m` components in place of
+   `motion`, worth perhaps 15kB and touching every animated component. It was
+   left alone: the page is prerendered, so none of this blocks first paint.
 
 ### Resolved, and how
 
@@ -281,6 +291,9 @@ were run against the production build with Playwright:
   text node in `main` and `footer`, at every viewport. Fitting one screen and
   not colliding are different checks.
 - No touch target under 44px at 390px wide, counting the `.tap` pseudo-element.
+- The site still works with JavaScript disabled. Screenshots must render, not
+  skeletons, and the header links must navigate.
+- An unknown URL serves 404.html, not the home page.
 - Zero em-dashes in the rendered text, and none in the page titles either.
   `document.body.innerText` never sees a `<title>`, which is how one sat in
   the browser tab and in every search result for months.

@@ -45,11 +45,23 @@ const routes = [
     .map((e) => `/${e.name}`),
 ];
 
+// 404.html is a file at the root rather than a directory, so it is named
+// rather than discovered. Rendering a path that matches no route is what makes
+// React Router produce the not-found page.
+const NOT_FOUND = { path: "/404", file: join(dist, "404.html") };
+
 const OPEN = '<div id="root">';
 let failures = 0;
 
-for (const path of routes) {
-  const file = path === "/" ? join(dist, "index.html") : join(dist, path.slice(1), "index.html");
+const targets = [
+  ...routes.map((path) => ({
+    path,
+    file: path === "/" ? join(dist, "index.html") : join(dist, path.slice(1), "index.html"),
+  })),
+  ...(existsSync(NOT_FOUND.file) ? [NOT_FOUND] : []),
+];
+
+for (const { path, file } of targets) {
 
   let markup;
   try {

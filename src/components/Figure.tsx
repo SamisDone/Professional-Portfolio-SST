@@ -50,7 +50,16 @@ export default function Figure({
   className = "",
   displayWidth = 430,
 }: Props) {
-  const [loaded, setLoaded] = useState(false);
+  /*
+   * Starts loaded when there is no window, which means the prerender step is
+   * rendering this to a string. The skeleton is a client-side state, and
+   * writing it into the HTML left every screenshot as a shimmering grey box
+   * for anyone who does not run JavaScript: the page reads as a set of empty
+   * frames rather than the evidence it is built around. In the browser this
+   * is false as before, so the skeleton still covers the image until it
+   * decodes.
+   */
+  const [loaded, setLoaded] = useState(typeof window === "undefined");
   const imgRef = useRef<HTMLImageElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
   const reduced = useReducedMotion();

@@ -239,6 +239,21 @@ included. Every heading, card title, summary and stack is.
 React replaces this markup when it mounts, and there is no gap: on a throttled
 connection the text is on screen at about 120ms and never returns to empty.
 
+**The site works with JavaScript off.** That falls out of prerendering rather
+than being designed for, but it is worth not breaking. Router links render as
+real `<a href>` and every route is a real file, so a visitor with no JavaScript
+navigates by full page loads and sees everything, screenshots included.
+
+`Figure` starts in its loaded state when there is no `window`. The skeleton is
+client-side state, and writing it into the HTML left every screenshot as a grey
+box for anyone not running JavaScript, which turned the work page into a set of
+empty frames.
+
+**404s are a real document.** `vercel.json` rewrites anything matching no file
+to `404.html`, which is built and prerendered like any other route. Before, an
+unknown URL fell through to `index.html` and served the home page's title and
+content under the wrong address.
+
 **One `h1` per route.** Each route's own heading is its `h1`, and ranks below
 it run without a gap. Only the home page had an `h1` before, which read to a
 crawler as five pages with no subject.
@@ -249,6 +264,14 @@ one as a 1400px and a 700px WebP plus a same-size fallback in the original
 format, and `Figure` picks between them with `srcset` and a `sizes` hint of
 430px, which is roughly where both a rail card and the dialog land. That took
 the work page's imagery from 948kB to 132kB.
+
+**Caching.** Hashed assets under `/assets/` are immutable for a year. The
+screenshots, the social card and the CV keep stable filenames so they cannot be,
+and take a day of freshness with a week of stale-while-revalidate instead: a
+repeat visitor pays nothing and a re-captured shot still reaches people quickly.
+
+Keep `vercel.json` to keys Vercel's schema accepts. There is no `comment` field,
+and an unrecognised key fails the whole file the same way a syntax error does.
 
 **No em-dashes.** Deliberate, throughout the copy, and in the page titles too.
 The old title carried one, where the check for them never looked, so it showed
