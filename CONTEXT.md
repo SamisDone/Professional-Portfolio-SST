@@ -293,7 +293,8 @@ were run against the production build with Playwright:
 - No touch target under 44px at 390px wide, counting the `.tap` pseudo-element.
 - The site still works with JavaScript disabled. Screenshots must render, not
   skeletons, and the header links must navigate.
-- An unknown URL serves 404.html, not the home page.
+- An unknown URL serves 404.html *and answers 404*, not 200. There is no
+  catch-all rewrite; a rewrite would make every missing page a soft 404.
 - Zero em-dashes in the rendered text, and none in the page titles either.
   `document.body.innerText` never sees a `<title>`, which is how one sat in
   the browser tab and in every search result for months.
@@ -307,8 +308,8 @@ were run against the production build with Playwright:
   speed. The drift is per second, so it should hold at about 42 px/sec at any
   frame rate; if it scales with fps, the per-second fix has been undone.
 - Each route serves its own title, description and canonical link. Check this
-  against a server that resolves the filesystem before the SPA rewrite, the
-  way Vercel does. `vite preview` goes straight to the rewrite and every route
+  against a server that resolves the filesystem the way Vercel does, file then
+  directory index. `vite preview` applies its own SPA fallback and every route
   comes back with the home page's metadata, which hides the whole problem.
 - No heading computes to a weight other than 400. Only Lobster Two Regular is
   shipped, so anything asking for bold gets a synthetic one.

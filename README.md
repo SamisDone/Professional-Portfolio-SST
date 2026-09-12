@@ -204,9 +204,9 @@ description, canonical link and Open Graph tags.
 The build-time half is the half that matters. This is a single-page app, so
 every route otherwise serves one identical `index.html`, and a crawler that
 does not run JavaScript, which is most social-preview crawlers, reads the same
-title and description for all six pages. Vercel serves a matching file before
-it consults the rewrite in `vercel.json`, so a crawler gets the real page while
-a visitor still lands in the app and navigates client-side.
+title and description for all six pages. Each route is a real file, so that is
+what a crawler gets, while a visitor still lands in the app and navigates
+client-side from there.
 
 **Prerendering.** Without it the deployed body carried zero text. Search
 engines run JavaScript and coped, but a plain HTTP fetch did not, and neither
@@ -249,10 +249,13 @@ client-side state, and writing it into the HTML left every screenshot as a grey
 box for anyone not running JavaScript, which turned the work page into a set of
 empty frames.
 
-**404s are a real document.** `vercel.json` rewrites anything matching no file
-to `404.html`, which is built and prerendered like any other route. Before, an
-unknown URL fell through to `index.html` and served the home page's title and
-content under the wrong address.
+**404s are a real document, with a real status.** `404.html` is built and
+prerendered like any other route, and there is no catch-all rewrite: every real
+route is a real file, so Vercel serves `404.html` with a 404 when nothing
+matches. Before, an unknown URL fell through to `index.html` and served the home
+page's title and content under the wrong address, and a rewrite to `404.html`
+fixed the page but still answered 200, which invites a crawler to index junk
+paths.
 
 **One `h1` per route.** Each route's own heading is its `h1`, and ranks below
 it run without a gap. Only the home page had an `h1` before, which read to a
@@ -291,9 +294,11 @@ in the browser tab and in every search result.
 
 ## Deployment
 
-Configured for Vercel via `vercel.json`, which adds the SPA rewrite, immutable
-caching for hashed assets, and basic security headers. `public/_redirects`
-covers the equivalent fallback on Netlify.
+Configured for Vercel via `vercel.json`: caching rules and basic security
+headers. There is no SPA rewrite, deliberately. Every route is built as its own
+file, so Vercel resolves them from the filesystem and answers a genuine 404 for
+anything else. `public/_redirects` still carries the fallback for Netlify, where
+the behaviour differs.
 
 The origin resolves in this order:
 
