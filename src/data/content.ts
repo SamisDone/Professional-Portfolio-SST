@@ -8,6 +8,14 @@ export const profile = {
   location: "Chattogram, Bangladesh",
   email: "sarker.samonwita@gmail.com",
   github: "https://github.com/SamisDone",
+  /**
+   * The repositories tab, not the profile. "All repositories" in the work
+   * index promises a list, and the profile page opens on pinned repos and a
+   * contribution graph instead. The plain profile URL stays above, because
+   * that is the right destination for an identity link in the footer, the
+   * contact list and the structured data.
+   */
+  githubRepos: "https://github.com/SamisDone?tab=repositories",
   githubHandle: "SamisDone",
   linkedin: "https://www.linkedin.com/in/samonwita-sarker-a87737262/",
   codeforces: "https://codeforces.com/profile/jinxed_sam",

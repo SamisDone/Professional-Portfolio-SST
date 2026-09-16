@@ -73,10 +73,9 @@ function siteUrlPlugin(siteUrl: string): Plugin {
  * not execute JavaScript reads one identical title and description for all six
  * pages. Most social-preview crawlers are exactly that.
  *
- * The files sit at `work/index.html` and so on. Vercel serves a matching file
- * before it consults the rewrite in vercel.json, so these are what a crawler
- * gets, while a visitor still lands in the same single-page app and navigates
- * client-side from there.
+ * The files sit at `work/index.html` and so on, and are resolved off the
+ * filesystem, so these are what a crawler gets, while a visitor still lands in
+ * the same single-page app and navigates client-side from there.
  */
 function routeMetaPlugin(): Plugin {
   return {
@@ -108,11 +107,11 @@ function routeMetaPlugin(): Plugin {
       }
 
       /*
-       * A real 404 document. vercel.json rewrites anything that matches no
-       * file to this, so an unknown URL gets the not-found page with its own
-       * title. It used to fall through to index.html, which meant a wrong URL
-       * served the home page's title and, once prerendering landed, the home
-       * page's content too.
+       * A real 404 document. There is no catch-all rewrite: every route is a
+       * real file, so the host resolves those from disk and serves this one,
+       * with a genuine 404 status, for everything else. An unknown URL used to
+       * fall through to index.html and serve the home page's title and, once
+       * prerendering landed, the home page's content too.
        */
       this.emitFile({
         type: "asset",

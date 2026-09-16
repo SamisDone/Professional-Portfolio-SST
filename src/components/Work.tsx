@@ -147,7 +147,7 @@ function IndexBand() {
         </div>
 
         <a
-          href={profile.github}
+          href={profile.githubRepos}
           target="_blank"
           rel="noopener noreferrer"
           className="tap group inline-flex items-center gap-2 text-[13px] text-accent-2"
