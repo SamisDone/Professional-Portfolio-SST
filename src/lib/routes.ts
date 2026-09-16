@@ -7,6 +7,7 @@ export const ROUTES: RouteDef[] = [
   { path: "/experience", label: "Experience" },
   { path: "/research", label: "Research" },
   { path: "/about", label: "About" },
+  { path: "/activities", label: "Activities" },
   { path: "/contact", label: "Get in touch" },
 ];
 

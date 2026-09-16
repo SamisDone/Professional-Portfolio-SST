@@ -1,16 +1,16 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { cgpaHistory, trajectoryNote } from "../data/content";
+import { cgpaHistory, trajectoryCaption, trajectoryNote } from "../data/content";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
 const W = 900;
 const H = 300;
-const PAD_L = 40;
+const PAD_L = 54;
 const PAD_R = 16;
-const PAD_T = 44;
-const PAD_B = 38;
+const PAD_T = 50;
+const PAD_B = 48;
 const DOMAIN: [number, number] = [3.2, 4.0];
 const GRID = [3.2, 3.4, 3.6, 3.8, 4.0];
 
@@ -42,7 +42,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
       viewBox={`0 0 ${W} ${H}`}
       className="h-auto w-full overflow-visible"
       role="img"
-      aria-label="CGPA across six terms: 3.45, 3.44, 3.43, 3.33, then 3.58 and 3.85."
+      aria-label="Term GPA at CUET, level 1 term 1 through level 3 term 2: 3.45, 3.44, 3.43, 3.33, then 3.58 and 3.85. Each figure is that term on its own, not a cumulative average."
     >
       <defs>
         <linearGradient id="cgpa-fill" x1="0" y1="0" x2="0" y2="1">
@@ -65,12 +65,12 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
             strokeWidth="1"
           />
           <text
-            x={PAD_L - 10}
+            x={PAD_L - 12}
             y={y(v)}
             textAnchor="end"
             dominantBaseline="middle"
-            className="fill-[hsl(var(--muted))] font-mono"
-            fontSize="11"
+            className="num font-mono fill-[hsl(var(--muted))]"
+            fontSize="16"
           >
             {v.toFixed(1)}
           </text>
@@ -118,12 +118,15 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
               }}
               style={{ transformOrigin: `${x(i)}px ${y(p.value)}px` }}
             />
+            {/* The end labels anchor inward. Centred, the first one ran into
+                the axis ticks once the figures were set in mono, which is
+                wider than the sans they used to be in. */}
             <motion.text
-              x={x(i)}
-              y={y(p.value) - 15}
-              textAnchor="middle"
-              className="fill-[hsl(var(--ink))] font-mono"
-              fontSize="13"
+              x={i === 0 ? x(i) - 6 : last ? x(i) + 6 : x(i)}
+              y={y(p.value) - 17}
+              textAnchor={i === 0 ? "start" : last ? "end" : "middle"}
+              className="num font-mono fill-[hsl(var(--ink))]"
+              fontSize="18"
               initial={reduced ? false : { opacity: 0 }}
               animate={show ? { opacity: 1 } : {}}
               transition={{ duration: 0.3, delay: reduced ? 0 : 0.45 + i * 0.14 }}
@@ -132,10 +135,10 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
             </motion.text>
             <text
               x={x(i)}
-              y={H - PAD_B + 22}
+              y={H - PAD_B + 26}
               textAnchor="middle"
-              className="fill-[hsl(var(--muted))] font-mono"
-              fontSize="11"
+              className="num font-mono fill-[hsl(var(--muted))]"
+              fontSize="16"
             >
               <title>{p.full}</title>
               {p.label}
@@ -150,17 +153,15 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
     return (
       <figure className="m-0">
         <figcaption className="mb-3">
-          <h2 className="font-display text-base leading-tight text-ink">
+          <h3 className="text-lg font-medium leading-tight text-ink">
             The grades, including the dip
-          </h2>
-          <p className="mt-1.5 text-[13.5px] leading-snug text-muted">
+          </h3>
+          <p className="mt-1.5 text-[14px] leading-snug text-muted">
             {trajectoryNote}
           </p>
         </figcaption>
         {chart}
-        <p className="mt-2 font-mono text-[11px] text-muted">
-          CUET, six terms, 2023 to present.
-        </p>
+        <p className="mt-2 font-mono text-[11px] text-muted">{trajectoryCaption}</p>
       </figure>
     );
   }
@@ -170,7 +171,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
       <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
         <div className="grid gap-8 md:grid-cols-12">
           <Reveal className="md:col-span-5">
-            <h2 className="max-w-[16ch] h-section font-display leading-[1.18] text-ink">
+            <h2 className="max-w-[16ch] h-section font-display text-ink">
               <MaskText text="The grades." />
             </h2>
             <p className="mt-2 max-w-[42ch] text-[14px] leading-snug text-muted">
@@ -179,9 +180,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
             <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
               {trajectoryNote}
             </p>
-            <p className="mt-5 font-mono text-[13px] text-muted">
-              CUET, six terms, 2023 to present.
-            </p>
+            <p className="mt-5 font-mono text-[12px] text-muted">{trajectoryCaption}</p>
           </Reveal>
           <Reveal index={1} className="md:col-span-7">
             {chart}

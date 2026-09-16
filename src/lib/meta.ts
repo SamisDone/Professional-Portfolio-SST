@@ -9,7 +9,7 @@
  * The build-time half is the half that matters. This is a single-page app, so
  * every route is served the same `index.html`; a crawler that does not run
  * JavaScript, which is most social-preview crawlers, would otherwise see one
- * identical title and description for all six pages.
+ * identical title and description for every page.
  *
  * No em-dashes here either. They were in the old title, where the check for
  * them never looked, so they showed in the browser tab and in search results.
@@ -38,7 +38,7 @@ const NAME = "Samonwita Sarker";
 export const DEFAULT_META: PageMeta = {
   title: `${NAME} | Full-stack engineering and explainable AI`,
   description:
-    "Two Chrome extensions on the Web Store, a bilingual site in production for a Montreal firm, and explainable AI research peer reviewed at IEEE. CSE '27 at CUET.",
+    "Two Chrome extensions on the Web Store, a bilingual site shipped for a Montreal design firm, and explainable AI research peer reviewed at IEEE. CSE '27 at CUET.",
 };
 
 export const ROUTE_META: Record<string, PageMeta> = {
@@ -46,27 +46,42 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/work": {
     title: `Projects | ${NAME}`,
     description:
-      "Eight builds with full case studies: a browser-driven robot arm, two published Chrome extensions, an AI hospital platform, and a production bilingual site for a Montreal firm.",
+      "Ten case studies: brick kiln detection from satellite imagery, a browser-driven robot arm, a paid bilingual client site and two published Chrome extensions.",
   },
   "/experience": {
     title: `Experience | ${NAME}`,
     description:
-      "Generalist contractor at Fleet AI, authoring long-horizon agentic AI evaluation tasks and QA-reviewing other contributors' work. Freelance web development for a Montreal design firm.",
+      "Generalist contractor at Fleet AI, writing and reviewing long-horizon agentic AI evaluation tasks. Freelance web development for a Montreal design firm.",
   },
   "/research": {
     title: `Research and publications | ${NAME}`,
     description:
-      "A co-authored IEEE paper on explainable AI using SHAP interpretability, first-author work placing 7th at DravidianLangTech ACL 2026, and a datathon finalist placing.",
+      "A co-authored IEEE paper on explainable AI with SHAP, a first-author system paper placing 7th at DravidianLangTech ACL 2026, and a Bangla scene text thesis.",
   },
   "/about": {
     title: `About | ${NAME}`,
     description:
-      "CSE undergraduate at CUET, graduating 2027. Full-stack engineering on one side, explainable AI research on the other, and a preference for problems where both have to hold up.",
+      "CSE undergraduate at CUET, graduating 2027. Full-stack engineering and explainable AI research, the stack behind both, and grades term by term.",
+  },
+  "/activities": {
+    title: `Leadership and competitions | ${NAME}`,
+    description:
+      "Vice President (Organizing) of the CUET Computer Club and three more club roles, plus hackathons, a datathon final, a 7th-place shared task and certificates.",
+  },
+  /*
+   * Not in `ROUTES`, so it is not in the nav and the arrow keys skip it, but it
+   * is here so the build emits it as a real file with its own title and puts it
+   * in the sitemap. A page that lists every project is worth indexing.
+   */
+  "/repositories": {
+    title: `All projects and source | ${NAME}`,
+    description:
+      "Every project in one table, with the source repository for each and a live demo where one exists, including the ones built on other people's repositories.",
   },
   "/contact": {
     title: `Contact | ${NAME}`,
     description:
-      "Open to internships and research collaborations. Reach me by email, on LinkedIn, or through the form.",
+      "Open to software and ML research internships, remote or in Chattogram. Reach me by email, on LinkedIn, or through the form.",
   },
 };
 

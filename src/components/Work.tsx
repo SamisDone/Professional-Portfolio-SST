@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
-import { featured, otherWork, profile, type Project } from "../data/content";
+import { Link } from "react-router-dom";
+import { featured, otherWork, type Project } from "../data/content";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
 import Figure from "./Figure";
@@ -32,10 +33,10 @@ function Figures({ project }: { project: Project }) {
             key={figure.label}
             className="flex flex-col items-center justify-center gap-1 bg-raised"
           >
-            <span className="font-display text-lg leading-none text-accent">
+            <span className="num font-display text-[1.75rem] leading-none text-accent">
               {figure.value}
             </span>
-            <span className="text-[11px] leading-none text-muted">{figure.label}</span>
+            <span className="font-mono text-[11px] leading-none text-muted">{figure.label}</span>
           </div>
         ))}
       </div>
@@ -67,18 +68,38 @@ function Card({
   onOpen: (p: Project) => void;
 }) {
   return (
-    <button
-      onClick={() => onOpen(project)}
-      aria-label={`Open the ${project.title} case study`}
-      className="group flex h-full w-full flex-col border border-rule bg-raised/50 p-4 text-left backdrop-blur-sm transition-[border-color,transform] duration-200 ease-out hover:-translate-y-1 hover:border-accent focus-visible:-translate-y-1 focus-visible:border-accent"
-    >
+    <div
+      data-card
+      className="group relative flex h-full w-full flex-col border border-rule bg-raised/50 p-3.5 text-left backdrop-blur-sm transition-[border-color,transform] duration-200 ease-out hover:-translate-y-1 hover:border-accent focus-within:-translate-y-1 focus-within:border-accent">
+      {/* The card used to be one button, which is why the running product and
+          the source were three clicks away behind the case study. They are two
+          links in the footer now, and the case study is still the whole card:
+          a real button stretched across it, so it stays keyboard reachable and
+          is still announced as a control. The links sit above it on z-20 and
+          keep their own hit area. */}
+      <button
+        onClick={() => onOpen(project)}
+        aria-label={`Open the ${project.title} case study`}
+        className="absolute inset-0 z-10"
+      />
+
       {/* A floor here so a title that wraps cannot push its frame out of line
           with the frames either side of it. */}
-      <div className="mb-2.5 flex min-h-[2.4em] items-baseline gap-3">
-        <span className="text-[12px] text-accent">{String(n).padStart(2, "0")}</span>
-        <h2 className="font-display text-base leading-tight text-ink sm:text-lg">
+      <div className="mb-2 flex min-h-[2.4em] items-baseline gap-3">
+        <span className="font-mono text-[12px] text-accent">{String(n).padStart(2, "0")}</span>
+        <h2 className="font-display text-[1.75rem] leading-[1.04] text-ink">
           {project.title}
         </h2>
+        {/* The affordance for the case study, which used to be the words "View
+            case" in the footer. The footer row is the same height as it was and
+            now carries the live and source links instead, so the card gained
+            two destinations without gaining a pixel. */}
+        <ArrowUpRightIcon
+          size={13}
+          weight="bold"
+          aria-hidden
+          className="ml-auto shrink-0 self-start text-muted transition-transform group-hover:-translate-y-0.5 group-hover:text-accent"
+        />
       </div>
 
       {project.shot ? (
@@ -92,33 +113,49 @@ function Card({
         <Figures project={project} />
       )}
 
-      <p className="mt-3 text-[14px] leading-snug text-ink">{project.summary}</p>
+      <p className="mt-2.5 text-[14px] leading-snug text-ink">{project.summary}</p>
 
-      <ul className="mt-3 flex flex-wrap gap-1.5">
+      <ul className="mt-2.5 flex flex-wrap gap-1.5">
         {project.stack.map((item) => (
           <li
             key={item}
-            className="border border-rule px-2 py-1 text-[11px] leading-none text-muted"
+            className="border border-rule px-2 py-1 font-mono text-[11px] leading-none text-muted"
           >
             {item}
           </li>
         ))}
       </ul>
 
-      <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-        <span className="text-[12px] text-muted">
+      <div className="mt-auto flex items-center justify-between gap-3 pt-3.5">
+        <span className="font-mono text-[12px] text-muted">
           {project.kind}, {project.year}
         </span>
-        <span className="flex items-center gap-1.5 text-[12px] text-accent-2">
-          View case
-          <ArrowUpRightIcon
-            size={12}
-            weight="bold"
-            className="transition-transform group-hover:-translate-y-0.5"
-          />
+        <span className="relative z-20 flex items-center gap-3">
+          {project.live && (
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${project.title}, live`}
+              className="tap inline-flex items-center gap-1 text-[12px] text-accent-2 transition-colors hover:text-accent"
+            >
+              Live
+              <ArrowUpRightIcon size={11} weight="bold" />
+            </a>
+          )}
+          <a
+            href={project.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${project.title} source on GitHub`}
+            className="tap inline-flex items-center gap-1 text-[12px] text-muted transition-colors hover:text-accent"
+          >
+            Code
+            <ArrowUpRightIcon size={11} weight="bold" />
+          </a>
         </span>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -127,38 +164,36 @@ function Card({
  *
  * Two decisions, both deliberate. It is not a slide in the rail: it is an
  * index, not a project, and standing in the same row of frames it read as
- * though it were a ninth build. And it names nothing. Of the eleven behind
- * this link, four are browser toys and four are coursework, and setting those
- * names beside the eight builds above argues against the work rather than for
- * it. Anyone who wants that depth is one click from all of it.
+ * though it were one more build. And it names nothing: four of the fifteen
+ * behind this link are browser toys and four are coursework, and setting those
+ * titles beside the ten above argues against the work rather than for it.
+ * Anyone who wants that depth is one click from all of it.
  */
 function IndexBand() {
   return (
-    <div className="index-band mx-auto max-w-shell px-5 pb-4 sm:px-8">
+    <div className="index-band mx-auto max-w-shell px-5 pb-3 sm:px-8">
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-rule pt-3">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="font-display text-base leading-none text-ink">
+          <h2 className="text-lg font-medium leading-none text-ink">
             Everything else
           </h2>
           <p className="text-[13px] leading-none text-muted">
-            {otherWork.length} more on GitHub, from a crime-detection model to OS
-            scheduling algorithms and browser toys.
+            {otherWork.length} more, from a Kanban board and a rental platform
+            to a crime-detection model, OS scheduling and browser toys.
           </p>
         </div>
 
-        <a
-          href={profile.githubRepos}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/repositories"
           className="tap group inline-flex items-center gap-2 text-[13px] text-accent-2"
         >
-          All repositories
-          <ArrowUpRightIcon
+          List them all
+          <ArrowRightIcon
             size={13}
             weight="bold"
-            className="transition-transform group-hover:-translate-y-0.5"
+            className="transition-transform group-hover:translate-x-0.5"
           />
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -281,7 +316,7 @@ export default function Work() {
             <div>
               <h1
                 tabIndex={-1}
-                className="h-section font-display leading-[1.18] text-ink outline-none"
+                className="h-section font-display text-ink outline-none"
               >
                 <MaskText text="Projects that stand out." />
               </h1>
@@ -317,7 +352,13 @@ export default function Work() {
         onMouseLeave={() => setPaused(false)}
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
-        className={`work-rail short-trim mt-5 px-5 pb-4 sm:px-8 sm:pb-5 ${
+                // The gap above the rail is 20px either way, but 8px of it is the
+        // rail's own padding rather than margin. The rail is clipped twice,
+        // by `overflow-hidden` and by the edge-fade mask, and both clip at
+        // its box: a card lifting 4px on hover had its top border cut off,
+        // and the focus ring with it. Padding moves the clip line up
+        // without moving the cards or costing the page any height.
+        className={`work-rail short-trim mt-3 px-5 pb-3 pt-2 sm:px-8 sm:pb-4 ${
           // With the drift off there is nothing to bring the later cards into
           // view, so the rail has to be scrollable by hand instead.
           reduced ? "lg:overflow-x-auto" : "lg:overflow-hidden"

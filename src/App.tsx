@@ -10,7 +10,9 @@ import WorkPage from "./pages/WorkPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import ResearchPage from "./pages/ResearchPage";
 import AboutPage from "./pages/AboutPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
 import ContactPage from "./pages/ContactPage";
+import RepositoriesPage from "./pages/RepositoriesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function Routed() {
@@ -26,7 +28,11 @@ function Routed() {
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/research" element={<ResearchPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/activities" element={<ActivitiesPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        {/* Reachable by link, and absent from ROUTES on purpose: it takes no
+            place in the arrow-key sequence and no slot in the nav. */}
+        <Route path="/repositories" element={<RepositoriesPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AnimatePresence>

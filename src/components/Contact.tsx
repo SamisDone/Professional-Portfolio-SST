@@ -76,7 +76,7 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <h1 className="max-w-[14ch] h-section font-display leading-[1.18] text-ink">
+              <h1 className="max-w-[14ch] h-section font-display text-ink">
                 <MaskText text="Get in touch." />
               </h1>
               <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
@@ -86,7 +86,7 @@ export default function Contact() {
               </p>
               <a
                 href={`mailto:${profile.email}`}
-                className="tap mt-7 inline-flex items-center gap-2 font-mono text-[15px] text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
+                className="tap mt-7 inline-flex items-center gap-2 text-[15px] font-medium text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
               >
                 {profile.email}
               </a>
@@ -102,8 +102,8 @@ export default function Contact() {
                       rel="noopener noreferrer"
                       className="tap group flex items-center justify-between gap-4"
                     >
-                      <dt className="font-mono text-[13px] text-muted">{s.label}</dt>
-                      <dd className="flex items-center gap-1.5 font-mono text-[13px] text-ink">
+                      <dt className="font-mono text-[12px] text-muted">{s.label}</dt>
+                      <dd className="flex items-center gap-1.5 text-[13px] font-medium text-ink">
                         {s.handle}
                         <ArrowUpRightIcon
                           size={13}
@@ -223,7 +223,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="self-start bg-accent-solid px-7 py-3.5 font-mono text-sm text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0"
+                className="self-start bg-accent-solid px-7 py-3.5 text-sm font-medium text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {status === "sending" ? "Sending" : "Send message"}
               </button>

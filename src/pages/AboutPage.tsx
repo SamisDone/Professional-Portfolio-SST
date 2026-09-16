@@ -3,7 +3,7 @@ import About from "../components/About";
 
 export default function AboutPage() {
   return (
-    <Page title="About" center>
+    <Page title="About">
       <About />
     </Page>
   );

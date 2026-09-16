@@ -1,311 +1,325 @@
 # Samonwita Sarker, portfolio
 
-Personal site for a CSE undergraduate at CUET. Full-stack work, two published
-Chrome extensions, and research in explainable AI and NLP.
+The personal site of Samonwita Sarker, a Computer Science and Engineering
+undergraduate at CUET (class of 2027) who builds software and researches
+explainable AI and NLP.
 
-Not deployed yet. See Deployment below.
+**Live:** [samonwita.vercel.app](https://samonwita.vercel.app)
 
-`CONTEXT.md` sits beside this file and covers how the project got here: the
-instructions behind the design choices, what was tried and reversed, the bugs
-that were hard to find, and what is still open. Read it before changing
-anything visual.
+![The home page: the name at poster scale beside a stack of real project screenshots](docs/home.jpg)
 
-## The idea
+<table>
+  <tr>
+    <td width="50%"><img src="docs/work.jpg" alt="The work page: a sliding rail of project cards with real screenshots"></td>
+    <td width="50%"><img src="docs/research.jpg" alt="The research page: two publications with author lists and a thesis in progress"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/about.jpg" alt="The about page: introduction, education and a chart of term grades"></td>
+    <td width="50%" align="center"><img src="docs/home-mobile.jpg" alt="The home page on a phone" width="220"></td>
+  </tr>
+</table>
 
-Explainable AI attributes a prediction back to the features that caused it, and
-a debater attaches evidence to every claim. The site works the same way: every
-project states its problem, what was built and the outcome, and every figure in
-the strip under the hero links to the thing that proves it.
+---
 
-## Colour
+## Contents
 
-Five colours, used together in one scheme rather than split across a light mode
-and a dark one. There is no theme toggle.
+- [What the site is](#what-the-site-is)
+- [Pages](#pages)
+- [What it does well](#what-it-does-well)
+- [Tech stack](#tech-stack)
+- [Getting started](#getting-started)
+- [Project structure](#project-structure)
+- [Editing content](#editing-content)
+- [Design system](#design-system)
+- [How the build works](#how-the-build-works)
+- [Things that are easy to break](#things-that-are-easy-to-break)
+- [Deployment](#deployment)
+- [Open items](#open-items)
+- [Credits](#credits)
 
-| | | Job |
-|---|---|---|
-| `#3F194D` | plum | cards and panels; a darker cut is the page ground |
-| `#68097E` | violet | second surface, and the rules between things |
-| `#C91C7A` | magenta | primary actions and the page-transition panels |
-| `#E8675C` | coral | links, hovers, the pager, negative attribution bars |
-| `#FFCA06` | yellow | numbers, labels and figures |
+---
 
-One thing worth not undoing: magenta reads at only 3.5 to 1 against the ground,
-so it is never used for type. It is a fill, with white on it at 5.3 to 1.
-Yellow is the text accent at 12.0, coral at 5.7.
+## What the site is
 
-## Type
+A portfolio built on one idea: **every claim carries its receipt.** Explainable
+AI traces a prediction back to the features that caused it, and a debater backs
+every point with evidence. The site does the same. Every project states the
+problem, what was built and how it turned out, with a live link and the source
+wherever they exist. Every figure in the strip under the hero links to the
+thing that proves it: the Chrome Web Store listing, the IEEE paper, the ACL
+Anthology page, the list of running projects.
 
-Lobster Two for headings, h1 through h3. Bricolage Grotesque for everything
-else. Both self-hosted from the files in `src/fonts`, taken from the design
-handoff rather than a package, subset to Latin and converted to woff2:
-Bricolage went 398kB to 149kB, Lobster Two 116kB to 47kB. The OFL licences sit
-beside them as the licence requires.
+Nothing is mocked up. Every project image is a capture of the real, running
+product.
 
-Only Lobster Two's Regular is shipped. Every heading on the page computes to
-weight 400, and the Bold file is another 47kB for nothing. If a heading ever
-needs bold, add the second face rather than letting the browser smear a
-synthetic one over a script.
+## Pages
 
-Bricolage's file defaults to ExtraBold at 96pt optical size, so the `@font-face`
-has to declare `font-weight: 200 800` or every word on the page renders at 800.
+| Route | What is on it |
+|---|---|
+| `/` | The name, one line on what she does, a shuffling stack of real screenshots, and four proof figures |
+| `/work` | Ten projects in a sliding rail, each opening a full case study, plus an index of fifteen more |
+| `/experience` | Paid work: Fleet AI, Inc. and a freelance client site |
+| `/research` | An IEEE ICECTE 2026 paper, a first-author ACL 2026 system paper, and the thesis in progress |
+| `/about` | Introduction, education, term-by-term grades, and the stack |
+| `/activities` | Leadership roles, competitions and certificates |
+| `/contact` | Email, profiles and a contact form |
+| `/repositories` | Every project in one table with source and live links, including work on other people's repositories |
 
-**Lobster Two is a joined script, and that governs three things.** Its letters
-connect through the `calt` and `liga` features, so the subset keeps every
-layout feature; strip them and the script comes apart. It takes no negative
-tracking, so no heading carries one. And its ascenders and descenders are deep,
-so headings are set at 1.1 to 1.18 rather than the near-solid leading a slab
-face tolerates, and the mask boxes in `MaskText` clear 0.2em below the baseline
-so a descender is not shaved off.
+The first seven are a reading sequence: the header nav, the left and right
+arrow keys and the on-screen pager all walk them in that order.
+`/repositories` is reached by link and sits outside the sequence.
 
-Headings are still short phrases. That began as a constraint of the previous
-face, which was extremely wide, and it survives because a script is harder to
-read at length than a grotesque. Where a heading needs more, the sentence goes
-underneath as a standfirst in Bricolage.
+## What it does well
 
-## Structure
+- **Every page fits one screen** on a laptop, from 1920x1080 down to 1280x720.
+  Spacing and type scale against the viewport height, with extra compression
+  for short screens.
+- **Arrow-key navigation** between sections, with a curtain transition that
+  shows the name of the page you are moving to.
+- **It works without JavaScript.** Every route is prerendered to real HTML, so
+  search engines, link previews, applicant tracking systems and scrapers all
+  read the full text, and a visitor with scripts off can still use every page.
+- **Real metadata per page.** Each route ships its own title, description,
+  canonical link and Open Graph tags, plus a generated sitemap and a social
+  card rendered from the site's own fonts.
+- **Genuine 404s,** with a designed page and a real 404 status.
+- **Accessible by default.** One `h1` per page, labelled controls, a skip link,
+  visible focus, 44px touch targets on touch screens, WCAG AA colour contrast,
+  and every animation turned off under `prefers-reduced-motion`.
+- **Light on the network.** Self-hosted fonts (88kB), responsive WebP
+  screenshots at two sizes, long-lived caching for hashed assets, and skeleton
+  placeholders shaped like the content they stand in for.
+- **Honest about authorship.** Projects on repositories she does not own say so,
+  with the owner's name and her role.
 
-Six routes, one per section: `/`, `/work`, `/experience`, `/research`,
-`/about`, `/contact`, plus a 404.
+## Tech stack
 
-**Every page fits one screen.** Verified from 1920x1080 down to 1280x720. The
-vertical rhythm clamps against `vh` as well as `vw`, and `index.css` carries
-`max-height` blocks that compress further on short laptops.
+| | |
+|---|---|
+| Framework | React 19, TypeScript 6, React Router 7 |
+| Build | Vite 8, with a server-side render pass for prerendering |
+| Styling | Tailwind CSS 3 plus hand-written CSS for the design tokens and short-screen rules |
+| Motion | framer-motion |
+| Icons | Phosphor |
+| Fonts | Instrument Serif, Instrument Sans, DM Mono, self-hosted |
+| Tooling | oxlint, Playwright (screenshot and image scripts only) |
+| Hosting | Vercel |
 
-**Left and right arrow keys** walk the sections in reading order, with the same
-two moves at the bottom edge as buttons so the shortcut is discoverable. The
-handler stands down inside form fields and while a dialog is open.
+There are no other runtime dependencies. The contact form posts to
+[FormSubmit](https://formsubmit.co), so there is no backend.
 
-The header nav is generated from the same `ROUTES` list the arrows walk, so the
-two orders cannot drift apart. The CV is a download, not a section, so it sits
-off to the right rather than inline, where it read as the next step and sent
-people somewhere the arrow key did not.
+## Getting started
 
-## Running it
+Requires Node.js 20.19 or later (or 22.12 or later), which Vite 8 needs.
 
 ```bash
 npm install
-npm run dev      # dev server on :5173
-npm run build    # typecheck, then production build to dist/
-npm run preview  # serve the production build
-npm run lint     # oxlint
+npm run dev        # development server at http://localhost:5173
+npm run build      # typecheck, build, server-render, and prerender every route into dist/
+npm run preview    # serve the production build
+npm run lint       # oxlint
 ```
 
-## Layout
+Maintenance scripts, run by hand when their inputs change:
+
+```bash
+node scripts/capture-shots.mjs     # re-capture project screenshots from the live sites
+node scripts/optimise-shots.mjs    # rebuild the 1400px and 700px WebP variants
+node scripts/make-og.mjs           # re-render public/og.png, the social card
+```
+
+The first two need a Playwright browser: `npx playwright install chromium`.
+
+## Project structure
 
 ```
 src/
-  pages/        One per route, each composing section components
-  components/   Sections, plus Figure, Reveal, MaskText, Backdrop,
-                Pager, PageTransition, ProjectDialog
-  data/         content.ts, every string a visitor reads
-  hooks/        useReducedMotion
-  lib/          routes.ts
+  pages/            One component per route
+  components/       Page sections and shared pieces:
+                      Hero, ShotDeck, Proof, Work, ProjectDialog, Experience,
+                      Research, About, Activities, Contact, Repositories,
+                      Entry, Figure, MaskText, Reveal, Trajectory,
+                      Header, Footer, Pager, PageTransition, Backdrop
+  data/content.ts   Every string a visitor reads
+  lib/routes.ts     The reading order, used by the nav, the arrow keys and the pager
+  lib/meta.ts       Title and description for every route
+  hooks/            useReducedMotion
+  fonts/            woff2 files and their OFL licences
+  entry-server.tsx  The server entry used for prerendering
 public/
-  shots/        Real screenshots of the live projects
-  og.png        Social card, generated; do not hand-edit
-scripts/
-  capture-shots.mjs
-  make-og.mjs
+  shots/            Project screenshots, each as original, 1400px WebP and 700px WebP
+  og.png            Social card, generated by make-og.mjs; do not hand-edit
+  Samonwita_Sarker_CV.pdf
+scripts/            prerender, capture-shots, optimise-shots, make-og
+docs/               Screenshots for this README
+CONTEXT.md          The design history: every instruction, reversal and hard-won bug fix
 ```
 
-`make-og.mjs` renders `public/og.png` from the site's own font files and colour
-tokens, and reads the name, standfirst, positioning line and proof figures out
-of `content.ts`. Run it after changing any of those. Rendering rather than
-drawing it is the point: the previous card was hand-made, and it was still
-light-background Helvetica long after the site had become dark plum and Lobster
-Two, quoting a positioning line the site no longer said.
+## Editing content
 
-## Notes for future edits
+**Almost everything lives in `src/data/content.ts`:** the profile, projects,
+publications, experience, education, leadership, competitions and
+certifications. Change it there and every page that shows it updates.
 
-**Screenshots, not illustrations.** Project imagery is a real capture of the
-running product. Where a project has no deployment, it can still be cloned and
-run locally to be captured; StockMaster and KanDesk were shot that way. Where
-even that is impractical, the frame carries real figures or the capabilities
-the project actually has, never a mocked-up interface.
+**Adding a project.** Add an entry to `featured` (the rail on `/work`) or to
+`otherWork` (the index). Write it from the project's own README, not from
+memory: every number on the site came from a real source. Set `role`, and if
+the repository is not hers, say what she did on it. Then:
 
-Every shot is stored at 16:10 and each frame is locked to the file's own ratio,
-so an image fills its box with nothing cropped and no bars around it. Card
-height is governed by card **width**, never by a height cap on the image. A
-height cap is what was silently cropping them before.
+1. Add the live URL to `TARGETS` in `scripts/capture-shots.mjs` and run it.
+2. Run `scripts/optimise-shots.mjs`.
+3. Point `shot` at `/shots/<name>.jpg`. Every shot is 16:10.
 
-**The work rail** slides continuously and never repeats. The track is
-translated left a fraction of a pixel per frame, and once the leading card has
-passed the edge it is sent to the back by rewriting its flex `order`, with the
-same width taken off the offset. Each project appears once.
+A project with no deployment gets no image rather than an invented one. It can
+be run locally and captured, or carry real `figures` instead.
 
-`order` rather than rotating a React array is deliberate: a style write lands in
-the same frame as the transform, whereas rotating state leaves the DOM a render
-behind and jumps a card width on every recycle.
+**Changing the name, standfirst, positioning line or proof figures?** Run
+`scripts/make-og.mjs` afterwards, so the social card says the same thing.
 
-Cards stretch to a common height, so any space left above the footer gets filled
-with content rather than the card being shrunk. It stops on hover, on focus,
-while a dialog is open, when the tab is hidden, and under reduced motion. Below
-`lg` it collapses to a column.
+**Adding a page.** Create the component in `src/pages`, add the route in
+`src/App.tsx`, add a title and description to `ROUTE_META` in `src/lib/meta.ts`
+(which also puts it in the sitemap and the prerender), and add it to `ROUTES` in
+`src/lib/routes.ts` if it belongs in the nav and the arrow-key sequence. Then
+check it fits one screen at 1280x720.
 
-**The index band** under the rail is `otherWork`, and it is deliberately a
-single line: the heading, how many there are, and a link to the repositories.
-It used to be a slide inside the rail, where it read as one more project rather
-than as the index it is. It names none of them either. Most of what is behind
-that link is coursework and browser toys, and setting those titles next to the
-eight builds above argues against the work rather than for it.
+**Copy rules.** No em-dashes anywhere. Headings are short phrases, with the
+sentence underneath when one is needed. Keep descriptions in `meta.ts` to 160
+characters or fewer.
 
-**Case studies live in `ProjectDialog`,** not on the card. That is deliberate:
-an earlier version folded them behind a disclosure and hid them entirely on
-short screens, which cut the substance to save height. Keep them in the dialog.
+## Design system
 
-**The pager never sits on the footer.** It is fixed to the bottom of the
-viewport and used to land on top of the footer links, covering 68px of "Get in
-touch" at 1280x720. `Footer` publishes its own height as `--footer-h` through a
-`ResizeObserver`, and the pager offsets itself by that. Measured rather than
-hard-coded, because the footer stacks to two rows below `sm`.
+### Colour
 
-Every route fills its viewport exactly, so on a 720px screen the pager still
-reached a few pixels past where content ends. It takes its buttons in below
-`max-height: 780px`.
+Five colours, always used together in one dark scheme. There is no light mode.
 
-**Touch targets.** The footer and contact links are set at 12 to 14px and come
-out around 20px tall, which is fine for a cursor and too small for a thumb. The
-`.tap` utility in `index.css` grows the hit area to 44px with a pseudo-element,
-so nothing moves visually. It is behind `pointer: coarse`, so a mouse does not
-get invisible targets bleeding into neighbours.
+| Hex | Name | Job |
+|---|---|---|
+| `#3F194D` | plum | cards and panels; a darker cut is the page ground |
+| `#68097E` | violet | the second surface, and the rules between things |
+| `#C91C7A` | magenta | primary buttons and the page-transition panels |
+| `#E8675C` | coral | links, hovers, the pager |
+| `#FFCA06` | yellow | figures, labels and the italic accent |
 
-**Transition timing.** A navigation used to take about a second before the new
-page was readable. Arrow keys walking between sections is the whole point of
-the site, so that was a tax on the one interaction it is built around. The
-curtain constants at the top of `PageTransition` and the delay in `Page` are
-where that time lives; it is around 560ms now. The hold is still long enough to
-read the section name, which is the only thing the pause is for.
+Magenta reads at only 3.5:1 against the ground, so it is a fill and never text;
+white on magenta is 5.3:1. Yellow as text is 12.0:1 and coral is 5.7:1.
 
-**Loading.** Two skeleton layers, both shaped like the content they replace. The
-boot shell is inlined in `index.html` so it paints before the bundles arrive.
-`Figure` holds a skeleton in the image's own box until the file decodes.
+### Type
 
-**Motion.** Everything checks `useReducedMotion` or sits behind the
-`prefers-reduced-motion` block in `index.css`.
+| Face | Job |
+|---|---|
+| **Instrument Serif** 400 and italic | the name, page headings, project and company names, proof figures |
+| **Instrument Sans** 400 and 500 | body copy, navigation, buttons, subsection headings |
+| **DM Mono** 400 | dates, kinds, stacks, captions, chart figures and every small uppercase label |
 
-A framer-motion trap worth knowing: a bare four-number `ease` array next to a
-keyframe track is parsed as one easing per segment, not as a cubic bezier, and
-the animation silently refuses to run. Use a named easing on keyframed tracks.
+The scale is deliberately short. A new element takes the nearest size rather
+than a new one:
 
-**Absolute URLs.** The canonical link, the Open Graph tags and `sitemap.xml`
-need the deployed origin, because Open Graph crawlers do not resolve relative
-paths. All are stamped at build time from one value. `index.html` carries a
-`__SITE_URL__` token, and `robots.txt` and `sitemap.xml` are generated by the
-`site-url` plugin in `vite.config.ts`. The default is the deployed origin, so a
-build anywhere produces correct tags; `VITE_SITE_URL` overrides it.
+| Face | Size | Used for |
+|---|---|---|
+| Serif | hero name, `h-section`, 28px (2.1rem in panels on wider screens) | the name, page headings, project and company names, proof figures |
+| Sans | 19px / 17px | the hero line / page introductions |
+| Sans 500 | 18px | subsection headings: Education, Leadership, Everything else |
+| Sans | 15px | body copy; item titles at 500 |
+| Sans | 14px | secondary copy: summaries, notes, proof labels; every button at 500 |
+| Sans | 13px / 12px | navigation, links and metadata / compact controls such as Live and Code |
+| Mono | 12px | dates, years, kinds, stacks, captions; the page eyebrow in uppercase |
+| Mono | 11px uppercase, `0.16em` tracking | every small label: Problem, Publication, Languages, the pager hint |
+| Mono | 11px | stack chips |
 
-**Per-route HTML.** `src/lib/meta.ts` holds a title and description for every
-route, and it is read twice. `Page` applies it to the document as the visitor
-navigates, and the `route-meta` plugin writes a real `work/index.html`,
-`about/index.html` and so on at build time, each with its own title,
-description, canonical link and Open Graph tags.
+Rules that keep it consistent:
 
-The build-time half is the half that matters. This is a single-page app, so
-every route otherwise serves one identical `index.html`, and a crawler that
-does not run JavaScript, which is most social-preview crawlers, reads the same
-title and description for all six pages. Each route is a real file, so that is
-what a crawler gets, while a visitor still lands in the app and navigates
-client-side from there.
+- **Uppercase is always mono at `0.16em` tracking.** The one exception is the
+  wordmark in the header.
+- **Instrument Serif never goes below 28px.** It is a condensed display face and
+  falls apart small, so short-screen rules take height off the frame around a
+  heading, never off the heading.
+- **One italic accent per page,** set with `MaskText`'s `italicFrom`: "Samonwita
+  *Sarker*" on the home page, "Build, then *ask why*." on About.
+- Only Regular and Italic of the serif are shipped, and `font-synthesis: none`
+  stops a stray `font-bold` from producing a fake bold.
 
-**Prerendering.** Without it the deployed body carried zero text. Search
-engines run JavaScript and coped, but a plain HTTP fetch did not, and neither
-do link scrapers, applicant tracking systems, or any tool that reads a URL
-without a browser. They all received a shell.
+### Motion
 
-`npm run build` therefore runs three things after the typecheck: the client
-build, an SSR build of `src/entry-server.tsx`, and `scripts/prerender.mjs`,
-which imports that bundle, renders each route with `renderToString`, and writes
-the result into the route's HTML file.
+Motion is there to show hierarchy or a change of state, never as decoration.
+Headings rise out of a mask word by word, sections reveal as they enter, the
+page transition is a curtain carrying the next section's name, the work rail
+drifts, and the home page's screenshots shuffle. Everything checks
+`useReducedMotion` and renders its final state when motion is reduced.
 
-`App` is split for this. `AppShell` holds everything inside the router, so it
-can run under `BrowserRouter` in the browser and `StaticRouter` on the server.
+## How the build works
 
-Rendering through React rather than a real browser is deliberate, and it was
-not the first attempt. The first version drove Chromium through Playwright. It
-worked locally and the deploy failed, because it made every build depend on a
-browser binary being downloadable in the host's container. A build that cannot
-finish is worse than a thin page.
+`npm run build` runs four steps:
 
-`useReducedMotion` returns **true** when there is no `window`, and that is
-load-bearing. Under reduced motion each component renders its plain final
-state; with motion on, the markup is saved frozen at the start of an entry
-animation holding `opacity: 0`, which ships text that is present but invisible.
-Check for it: the built HTML should contain no `opacity:0` in the body.
+1. **Typecheck** with `tsc -b`.
+2. **Client build** with Vite. The `site-url` plugin stamps the absolute origin
+   into `index.html` and generates `robots.txt` and `sitemap.xml`; the
+   `route-meta` plugin writes a real `index.html` for every route in
+   `ROUTE_META`, each with its own title, description, canonical link and Open
+   Graph tags.
+3. **Server build** of `src/entry-server.tsx`.
+4. **Prerender** with `scripts/prerender.mjs`, which renders each route with
+   React's `renderToString` and writes the markup into that route's file.
 
-Case-study text lives in a dialog that mounts only when opened, so it is not
-included. Every heading, card title, summary and stack is.
+React then takes over in the browser and navigation is client-side from there.
 
-React replaces this markup when it mounts, and there is no gap: on a throttled
-connection the text is on screen at about 120ms and never returns to empty.
+`App.tsx` is split so this can work: `AppShell` holds everything inside the
+router, and runs under `BrowserRouter` in the browser and `StaticRouter` on
+the server.
 
-**The site works with JavaScript off.** That falls out of prerendering rather
-than being designed for, but it is worth not breaking. Router links render as
-real `<a href>` and every route is a real file, so a visitor with no JavaScript
-navigates by full page loads and sees everything, screenshots included.
+**Prerendering goes through React, not a headless browser,** on purpose. A
+browser-based version worked locally and failed on deploy, because every build
+then depended on downloading a browser binary.
 
-`Figure` starts in its loaded state when there is no `window`. The skeleton is
-client-side state, and writing it into the HTML left every screenshot as a grey
-box for anyone not running JavaScript, which turned the work page into a set of
-empty frames.
+**The origin** used for absolute URLs resolves in this order: `VITE_SITE_URL` if
+set, then the deployment URL on Vercel preview builds, then
+`https://samonwita.vercel.app`.
 
-**404s are a real document, with a real status.** `404.html` is built and
-prerendered like any other route, and there is no catch-all rewrite: every real
-route is a real file, so Vercel serves `404.html` with a 404 when nothing
-matches. Before, an unknown URL fell through to `index.html` and served the home
-page's title and content under the wrong address, and a rewrite to `404.html`
-fixed the page but still answered 200, which invites a crawler to index junk
-paths.
+## Things that are easy to break
 
-**One `h1` per route.** Each route's own heading is its `h1`, and ranks below
-it run without a gap. Only the home page had an `h1` before, which read to a
-crawler as five pages with no subject.
+Each of these was a real bug. `CONTEXT.md` has the full story behind them.
 
-**Images.** Captures come off `capture-shots.mjs` at 2240px, which is about
-five times what any box on the page renders. `optimise-shots.mjs` rebuilds each
-one as a 1400px and a 700px WebP plus a same-size fallback in the original
-format, and `Figure` picks between them with `srcset` and a `sizes` hint of
-430px, which is roughly where both a rail card and the dialog land. That took
-the work page's imagery from 948kB to 132kB.
-
-**Caching.** Hashed assets under `/assets/` are immutable for a year. The
-screenshots, the social card and the CV keep stable filenames so they cannot be,
-and take a day of freshness with a week of stale-while-revalidate instead: a
-repeat visitor pays nothing and a re-captured shot still reaches people quickly.
-
-Keep `vercel.json` to keys Vercel's schema accepts. There is no `comment` field,
-and an unrecognised key fails the whole file the same way a syntax error does.
-
-**No em-dashes.** Deliberate, throughout the copy, and in the page titles too.
-The old title carried one, where the check for them never looked, so it showed
-in the browser tab and in every search result.
-
-## Still to do
-
-- FinPulse sits in `otherWork` rather than the rail. It has no screenshot,
-  because it is PHP and its free host times out. Redeploy it, or run it
-  locally against MySQL, and it can be captured like the others, which is what
-  it would need before it could go back on the rail.
-- Confirm the contact form end to end. It posts to formsubmit.co, which holds
-  the first message to a new address until a confirmation link is clicked.
-  Until that is done a visitor sees "sent" and nothing arrives.
-- The old portfolio at `samonwitaportfolio.netlify.app` still exists and will
-  compete with this one in search results. The CV no longer links to it.
+- **`useReducedMotion` must return `true` when there is no `window`.** The
+  prerender relies on it: with motion on, markup is captured mid-animation at
+  `opacity: 0` and ships invisible text. The built HTML should contain no
+  `opacity:0` in the body.
+- **Anything that starts in a "not ready" state must render ready on the
+  server.** `Figure` and `ShotDeck` do; otherwise visitors without JavaScript
+  see empty skeleton boxes forever.
+- **Frames match the image's ratio.** Card height follows card width. A height
+  cap on an image silently crops it.
+- **The rail recycles cards by rewriting flex `order`,** not by rotating a React
+  array, which lags a frame and makes the rail jump.
+- **The pager must not cover the footer.** `Footer` publishes its height as
+  `--footer-h` and the pager offsets itself by it. On a page that scrolls, the
+  pager only appears once the reader reaches the end, and hidden buttons leave
+  the tab order.
+- **A bare four-number `ease` array next to a keyframe track** is read by
+  framer-motion as one easing per segment, and the animation silently does not
+  run. Use a named easing on keyframed tracks.
+- **Tailwind emits `.relative` after `.absolute`,** so an element with both is
+  `relative`.
+- **`vercel.json` accepts only keys in Vercel's schema.** An unknown key fails
+  the whole file, the same as a syntax error.
+- **There is no catch-all rewrite,** deliberately. Every route is a real file, so
+  Vercel serves `404.html` with a real 404 for anything else. A rewrite would
+  answer 200 for junk URLs.
+- **Check the one-screen fit after any layout change,** at 1920x1080, 1536x864,
+  1440x900, 1366x768 and 1280x720. Test against the built site: `vite preview`
+  is fine for layout, but it falls back to the home page's metadata on every
+  route, so check metadata against the files in `dist/` instead.
 
 ## Deployment
 
-Configured for Vercel via `vercel.json`: caching rules and basic security
-headers. There is no SPA rewrite, deliberately. Every route is built as its own
-file, so Vercel resolves them from the filesystem and answers a genuine 404 for
-anything else. `public/_redirects` still carries the fallback for Netlify, where
-the behaviour differs.
+Pushing to `main` deploys to Vercel. `vercel.json` sets the caching and security
+headers:
 
-The origin resolves in this order:
+- Hashed files under `/assets/` are cached for a year and marked immutable.
+- Screenshots, the social card and the CV keep stable filenames, so they are
+  fresh for a day and served stale while revalidating for a week.
+- Every response carries `X-Content-Type-Options`, `Referrer-Policy` and
+  `X-Frame-Options`.
 
-1. `VITE_SITE_URL`, if set. Use this for a custom domain.
-2. `VERCEL_PROJECT_PRODUCTION_URL` on Vercel, or `URL` on Netlify. Both hosts
-   set these automatically, so a normal deploy needs no configuration.
-3. A placeholder, with a build warning.
+To deploy by hand:
 
 ```bash
 npm i -g vercel
@@ -313,5 +327,39 @@ vercel login
 vercel --prod
 ```
 
-After the first production deploy, paste the URL into LinkedIn's Post Inspector
-to confirm the card renders. It caches on first scrape, so check before sharing.
+`public/_redirects` holds the equivalent fallback for Netlify, if the site ever
+moves there. After changing the social card, paste the URL into LinkedIn's Post
+Inspector: LinkedIn caches the card on its first scrape.
+
+## Open items
+
+Things that need the owner or a change outside this repository:
+
+- **The CV PDF disagrees with the site** in a few places: it describes the ACL
+  system as multimodal (the task is text only), still claims "300+ coding
+  challenges", lists PostgreSQL for Finance Tracker where FinPulse is PHP and
+  MySQL, and its ACL "[Paper]" link goes to OpenReview rather than the
+  Anthology. The PDF has no LaTeX source, so each fix has to fit the fonts
+  embedded in it.
+- **Confirm the CGPA** (3.51, the equal-credit mean of six terms) against the
+  official transcript.
+- **Confirm the roles on KilnWatch and Narrative Guard,** both labelled
+  "Contributor" for now.
+- **Test the contact form end to end** on the live site. FormSubmit holds the
+  first message to a new address until a confirmation link is clicked.
+- **Redeploy KanDesk** to put it back on the rail, and give FinPulse a working
+  host so it can be captured.
+- **Take down the old portfolio** at `samonwitaportfolio.netlify.app`, which
+  competes with this one in search.
+- Two certificates named on the site and the CV (freeCodeCamp Full-Stack
+  Development, DataCamp Data Science and Python) have no file in the linked
+  Drive folder yet.
+
+## Credits
+
+Designed and built by Samonwita Sarker.
+
+Instrument Serif, Instrument Sans and DM Mono are used under the SIL Open Font
+License; the licence files are in `src/fonts`. Project screenshots are of
+Samonwita's own work and of team projects she contributed to, each credited on
+the site.

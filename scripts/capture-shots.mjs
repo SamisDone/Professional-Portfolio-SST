@@ -14,6 +14,9 @@ import { chromium } from "playwright";
 
 const TARGETS = [
   { id: "medihub", url: "https://ai-powered-hospital-management-syst.vercel.app/" },
+  { id: "narrativeguard", url: "https://narrative-guard.vercel.app/" },
+  { id: "kilnwatch", url: "https://sciblitz-ptsd-ibkd.vercel.app" },
+  { id: "huntrix", url: "https://huntrix-friction.vercel.app/" },
   { id: "pierra", url: "https://pierrafinal.vercel.app/" },
   { id: "resumeforge", url: "https://resumeforge-sam.netlify.app/" },
   { id: "sortnplay", url: "https://sortnplay.netlify.app/" },

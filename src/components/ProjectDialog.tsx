@@ -120,7 +120,7 @@ export default function ProjectDialog({
                       key={figure.label}
                       className="flex flex-col items-center justify-center gap-1.5 bg-raised"
                     >
-                      <dt className="font-display text-2xl leading-none text-accent">
+                      <dt className="num text-2xl font-semibold leading-none text-accent">
                         {figure.value}
                       </dt>
                       <dd className="text-[12px] leading-none text-muted">
@@ -140,12 +140,12 @@ export default function ProjectDialog({
                     ))}
                 </dl>
               )}
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-muted">
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[12px] text-muted">
                 <span className="text-ink">{project.kind}</span>
                 <span aria-hidden className="h-3 w-px bg-rule" />
                 <span>{project.year}</span>
-                {/* Only where the CV names it. Silence is better than a guess
-                    at who did what. */}
+                {/* Every project carries a role now, but the guard stays:
+                    silence is better than a guess at who did what. */}
                 {project.role ? (
                   <>
                     <span aria-hidden className="h-3 w-px bg-rule" />
@@ -153,7 +153,7 @@ export default function ProjectDialog({
                   </>
                 ) : null}
               </div>
-              <p className="mt-2 text-[12px] leading-relaxed text-muted">
+              <p className="mt-2 font-mono text-[12px] leading-relaxed text-muted">
                 {project.stack.join(", ")}
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function ProjectDialog({
             <div className="flex flex-col p-5 sm:p-7 md:border-l md:border-rule">
               <h2
                 id="case-title"
-                className="font-display text-xl leading-tight text-ink sm:text-2xl"
+                className="font-display text-[1.75rem] leading-[1.06] text-ink sm:text-[2.1rem]"
               >
                 {project.title}
               </h2>
@@ -176,7 +176,7 @@ export default function ProjectDialog({
                   ["Outcome", project.outcome],
                 ].map(([term, body]) => (
                   <div key={term}>
-                    <dt className="mb-1 text-[11px] uppercase tracking-[0.16em] text-accent">
+                    <dt className="mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                       {term}
                     </dt>
                     <dd className="text-[14px] leading-relaxed text-muted">{body}</dd>

@@ -13,13 +13,14 @@ Written at commit `58974b1`. If you are picking this up much later, check
 
 ## Where the project stands
 
-A six-route single-page site for Samonwita Sarker, a CSE undergraduate at CUET.
+A seven-route single-page site for Samonwita Sarker, a CSE undergraduate at CUET.
 React 19, TypeScript, Vite, Tailwind 3, React Router, framer-motion, Phosphor
 icons. No other runtime dependencies.
 
 **Not deployed.** The origin in the meta tags is a placeholder until it is.
 
-Routes: `/`, `/work`, `/experience`, `/research`, `/about`, `/contact`, plus a
+Routes: `/`, `/work`, `/experience`, `/research`, `/about`, `/activities`,
+`/contact`, plus `/repositories` (by link, not in the arrow-key sequence) and a
 404. Every page is built to fit one screen, verified 1920x1080 down to
 1280x720.
 
@@ -39,9 +40,11 @@ These were all explicit. Do not quietly undo them.
 5. **Horizontal scrolling on desktop where it helps**, but mobile responsive.
 6. **Fonts**, in order of instruction: not Instrument Serif, then not Geist
    ("identical to my boyfriend's"), then IBM Plex ("so freaking ugly"), then
-   Plus Jakarta, then Climate Crisis for headings, and now **Lobster Two for
-   headings with Bricolage Grotesque for text**. All from zips supplied in the
-   project root; the Lobster Two files are in the three-family zip.
+   Plus Jakarta, then Climate Crisis for headings, then Lobster Two for
+   headings with Bricolage Grotesque for text, and now **Instrument Serif for
+   display, Instrument Sans for body and UI, and DM Mono for labels**, which
+   reverses the first instruction on purpose (see the typography notes below).
+   All three are self-hosted woff2 in `src/fonts` with their OFL licences.
 7. **Colour**, in order: not the blue gradient, then espresso and baby pink,
    then dark green and strong red and bright white, then three Pantone
    references, then finally the **five hex values** now in use. And used
@@ -201,25 +204,43 @@ real figures or the project's actual capabilities. Never a mocked-up interface.
 route.
 
 **Headings are short phrases.** This began under Climate Crisis, which was very
-wide, and it holds under Lobster Two for a different reason: a joined script is
-harder to read at length than a grotesque. Where a heading needs more, the
-sentence goes underneath as a standfirst in Bricolage.
+wide, and it holds under Instrument Serif for a different reason: a condensed
+display face is harder to read at length than a text face. Where a heading
+needs more, the sentence goes underneath as a standfirst in Instrument Sans.
 
 ---
 
 ## Current project inventory
 
-Eight in the sliding rail, every one of them with a real screenshot:
+Ten in the sliding rail, every one of them with a real screenshot, in this
+order on purpose: paid client work second, the strongest build third, MediHub
+still fourth.
 
-`greenlight`, `kandesk`, `riphours`, `medihub`, `stockmaster`, `pierra`,
-`tabsaver`, `resumeforge`
+`greenlight`, `pierra`, `kilnwatch`, `medihub`, `riphours`, `unread`,
+`narrativeguard`, `tabsaver`, `resumeforge`, `stockmaster`
 
-Eleven in `otherWork`, none of them named on the page. They are reached through
-the "All repositories" link in the band under the rail:
+Fifteen in `otherWork`, none of them named on the page. They are reached
+through the "List them all" link in the band under the rail, which opens
+`/repositories`:
 
-`anomlite`, `finpulse`, `sortnplay`, `pixelart`, `hangman`, `glitch`,
-`task-scheduling`, `page-replacement`, `roundrobin`, `financetracker`,
-`microops`
+`kandesk`, `anomlite`, `finpulse`, `sortnplay`, `pixelart`, `hangman`,
+`glitch`, `task-scheduling`, `page-replacement`, `roundrobin`, `microops`,
+`ems`, `rentease`, `debate-marksheet`, `ssis-ssrs`
+
+KanDesk came off the rail in the review pass below and stays off for a second
+reason: its deployment is gone, so there is no preview to put on a card.
+ResumeForge came off with it and went back on, because it is a real tool with
+a running deployment. The four browser games stay in the index, as instructed
+twice.
+
+`kilnwatch`, `unread`, `narrativeguard`, `ems` and `rentease` are not on her
+account. They carry a `role` for that reason, and it is measured rather than
+generous: see the survey note at the end of this file.
+
+`financetracker` was deleted. `github.com/SamisDone/Finance-Tracker` redirects
+to `FinPulse`, because the repository was renamed, so the two entries were one
+project listed twice, and the older of them advertised PostgreSQL over code
+that uses MySQL through PDO.
 
 The band is a single line and its only variable is `otherWork.length`, so
 moving a project between the two lists needs no copy change.
@@ -311,11 +332,208 @@ were run against the production build with Playwright:
   against a server that resolves the filesystem the way Vercel does, file then
   directory index. `vite preview` applies its own SPA fallback and every route
   comes back with the home page's metadata, which hides the whole problem.
-- No heading computes to a weight other than 400. Only Lobster Two Regular is
-  shipped, so anything asking for bold gets a synthetic one.
+- No display text computes to a weight other than 400. Instrument Serif ships
+  only Regular and Italic, so anything asking for bold gets a synthetic one.
+- No Instrument Serif below 28px.
 - No console errors.
 
 `scripts/capture-shots.mjs` re-shoots the project screenshots, and
 `scripts/make-og.mjs` re-renders the social card. The card reads its copy out of
 `content.ts`, so run it after any change to the name, the standfirst, the
 positioning line or the proof figures.
+
+---
+
+## The recruiter review pass
+
+A marksheet written from a recruiter's point of view was worked through in
+full. What it changed, and why, because several of these look like arbitrary
+rewrites and are not.
+
+**Nothing claims a number its own link disproves.** The proof strip said "300+
+competitive programming problems solved" over a link to Codeforces, where the
+profile shows 83 solved at 1053. The 300+ is real and spread across judges, as
+the CV says, but the receipt attached to it argued the opposite on the first
+click. That slot now counts the deployed projects, computed from `live` on the
+two project lists rather than typed in, so it cannot drift.
+
+**No cumulative CGPA appears anywhere.** The CV prints "Current CGPA: 3.85",
+which is also the level 3 term II figure in `cgpaHistory`, and a cumulative
+cannot equal the highest single term unless the others carried no credits. Six
+of eight terms are sat. The chart shows the terms, the caption says each point
+is that term alone, and no single number stands in for a degree that is not
+finished. The PDF still says 3.85 and only she can correct it.
+
+**The ACL work is a publication, not a placing.** It was filed under
+Competition with a one-line note about "recovering the prompt behind a
+generated Telugu text". The paper is a first-author system paper, published,
+with a DOI, and the task is nine-way style classification, not prompt
+reconstruction. The link moved from OpenReview, which stops visitors at a
+browser check, to the Anthology page. The 0.1703 macro F1 is stated with the
+chance baseline next to it, because a reader who finds the number alone will
+read it as a failure.
+
+**Author lists are printed in full, with position visible.** Fourth of six and
+first of five are different contributions. Names are spelled the way each venue
+spells them, which is why one list is initials and the other is not.
+
+**The card is no longer a single button.** Live and source were three clicks
+away behind the case study. They are links in the card footer now, with the
+case study still the whole card as a stretched button underneath them. The
+"View case" wording moved to an arrow in the title row, so the footer carries
+two new destinations at exactly the height it had before. This mattered: the
+first version of the change put the page 62px over one screen at 1280x720.
+
+**Education, leadership and the grade chart moved onto `/about`.** They were
+CV-only, which means a visitor had to decide to download a PDF to learn where
+she studies. The grade chart came off `/research`, where it sat beside a list
+of publications answering a question nobody was asking there. `/research` has
+the thesis in that column instead.
+
+**`/about` stopped fitting a screen, so it was split.** With leadership,
+competitions and certifications on it, it ran about 700px over at 1280x720.
+Those three moved to a new `/activities` route, after About in the sequence.
+Education and the grade chart stayed on About, beside the introduction, because
+where she studies is the first thing a recruiter checks; the stack became a
+single four-column row under them. Two new pages (education and activities
+separately) was considered and rejected: education is two entries, too thin
+for a page, and every route adds a nav slot and an arrow-key stop.
+
+Both pages fit at 1920x1080, 1536x864, 1440x900, 1366x768 and 1280x720, with
+their own `max-height` blocks in `index.css`. `/activities` starts compressing
+at 920px rather than 850px, because it has the most rows of any route.
+
+**The home page was rebuilt to be more striking**, at the owner's request
+("very normal looking"). The name is now the display at poster scale, and a
+stack of real screenshots (`ShotDeck`) replaced the attribution diagram and the
+"Based in / Focus / Open to" list. The palette, the fonts, the dark theme and
+the one-screen rule were all kept. MediHub was in the stack first and was
+swapped for TabSaver at her request. Checked: fits one screen at 1920x1080,
+1536x864, 1440x900, 1366x768, 1280x720 and 1024x768; no sideways scroll down to
+360px; static under reduced motion; readable with JavaScript off.
+
+**Competition results are the owner's.** Every event but the ACL placing is
+"Finalist", as she stated on 17 September. The SciBlitz certificate itself names
+no placing, so that one rests on her word, not the document.
+
+**The pager stopped floating over body text.** See the README. It was safe only
+while every page fitted.
+
+**The chart type was set in viewBox units and rendered at about 6px.** The SVG
+scales with its column, so an 11-unit label in a five-column aside came out
+unreadable. Sizes and padding were opened up to land near 12px.
+
+### What the review asked for and did not get
+
+- **Narrative Guard, PoliMemeDecode and the Bengali QA RAG pipeline** have no
+  repository on the account, so there is nothing to link, screenshot or read a
+  README from. PoliMemeDecode's real figures are in the research ledger.
+- **Team versus solo** is still unmarked on Greenlight, KanDesk, Microops and
+  SortnPlay. The CV names a role for the other eight.
+- **"7th of N teams"** needs N, and the shared task overview does not publish
+  it in the abstract.
+- **Months on the freelance entry**, and whether PIERRA runs on a client domain
+  rather than `pierrafinal.vercel.app`, are both hers to supply.
+
+---
+
+## The typography change
+
+The brief arrived as a Next.js guide. This is Vite, so `next/font/google` does
+not apply and the three families are self-hosted in `src/fonts` the way the
+previous two were. Everything else in that guide was followed.
+
+**The palette did not change.** The guide carried a set of colour tokens
+alongside the type; the five hex values in `index.css` are the result of a long
+argument and were left exactly as they were. The guide was read as what it is
+called, a typography guide.
+
+**`p { max-width: 68ch }` was not applied globally.** The project already has
+`max-w-measure` at 68ch and puts it on the paragraphs that want it; a global
+rule would have capped the ones that are meant to fill their column. `text-wrap:
+pretty` on `p` and `balance` on the display classes were applied.
+
+**Instrument Serif was explicitly rejected once before**, in the font sequence
+recorded above, and asked for by name this time. That is a reversal, not an
+oversight, and it is recorded here so the earlier note does not read as an
+instruction that was quietly undone.
+
+### Three stale CSS selectors turned up doing nothing
+
+The short-screen rules are the tightest part of this codebase and three of them
+named elements the markup had stopped having:
+
+- `.work-rail [data-case] h3` shrank the card title. The title is an `h2`, and
+  had been for a while, so the rule had been dead.
+- `.work-rail [data-case] > div > button` padded the card. The card became a
+  `div` with a stretched button inside it when the live and source links were
+  added, so the rule started matching the invisible overlay instead.
+- `#research li h4` and `.index-band h3` were the same kind of miss.
+
+They are fixed, and the card now carries a `data-card` attribute so a rule
+about the card cannot go stale on the tag name again.
+
+### The clamp floor, not the vh term
+
+`/` and `/research` sat three pixels over at exactly 1280x720 through several
+rounds of tuning the `vh` term in `.page-pad`. At 720px tall, `5vh` is 36px and
+the clamp lifts it back to its 2.75rem floor, so the term being tuned was never
+the one applying. Lowering the floor fixed it in one edit. When a `clamp()`
+refuses to respond, check which of its three arguments is actually winning.
+
+---
+
+## The repositories page
+
+`/repositories` lists every project in one table, each row with its source link
+and a live link where there is one.
+
+**It is in `ROUTE_META` but not in `ROUTES`.** Those two lists do different
+jobs: `ROUTES` is the reading sequence the arrow keys and the nav walk, and
+`ROUTE_META` is what the build turns into real prerendered files and sitemap
+entries. Being in one and not the other gives the page a real URL, its own
+title and description, and its text in the HTML, while taking no slot in the
+nav and no place in the arrow-key walk. `Pager` returns null there on its own,
+because `neighbours()` finds no index for it. The 404 works the same way.
+
+**It replaced a link that was wrong.** The band under the rail said "All
+repositories" and pointed at the GitHub repositories tab. That tab lists
+coursework, PDFs and empty repositories that are not projects, and it does not
+list the five projects that live on someone else's account. The band says "List
+them all" and points here; the GitHub link is still on this page, at the
+bottom, described as what it actually is.
+
+**Rows for repositories that are not hers say so**, with the role and the owner
+in the row. That is the whole reason the page is worth having over a link.
+
+It is the one page allowed to scroll and the one element allowed to scroll
+sideways: the table drops to three columns under `lg` and two under `md`, and
+below that it scrolls inside its own container rather than pushing the page
+wide.
+
+## The CV
+
+`public/Samonwita_Sarker_CV.pdf` is pdfTeX output and there is no `.tex` for it
+on the account, so it cannot be recompiled. It can still be edited: the text
+lives in one Flate-compressed content stream and pypdf will rewrite the object
+and fix the xref.
+
+"Current CGPA: 3.85" is now "CGPA: 3.51/4.00, rising: latest term 3.85".
+3.85 was the level 3 term II figure, and a cumulative cannot equal the highest
+single term. 3.51 is the equal-credit mean of the six terms; **it must be checked
+against the official transcript**, because unequal credit loads move it.
+
+Two versions were rejected on the way. Six bare term GPAs in a row read as noise
+to a recruiter scanning for one number, and put 3.33 in front of them. A version
+saying "up from 3.33 to 3.85" ran past the margin and lost its "f": the bold
+subset pdfTeX embedded has no standalone f, only the fi ligature, so any word
+with a lone f renders with a hole in it. Check the glyph before writing a word.
+
+Parentheses inside a PDF string have to be written as the escape `(` and
+`)` as literal characters. Passed as raw bytes they close the string and
+the operators print on the page.
+
+**A table or a graph in the CV needs the LaTeX source.** In-place editing can
+replace text inside an existing line; it cannot add rows, draw axes or reflow
+the page. Either supply the `.tex`, or the CV gets rebuilt from scratch as a
+source she owns.

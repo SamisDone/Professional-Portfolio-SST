@@ -7,6 +7,13 @@ type Props = {
   delay?: number;
   /** Play on mount instead of waiting for the element to scroll into view. */
   immediate?: boolean;
+  /**
+   * Word index from which the rest of the line is set in the display italic
+   * and the accent colour. One accent per view at most: it is a turn in the
+   * sentence, not decoration, and a second one on the same screen cancels the
+   * first.
+   */
+  italicFrom?: number;
 };
 
 /**
@@ -21,11 +28,24 @@ export default function MaskText({
   className = "",
   delay = 0,
   immediate = false,
+  italicFrom,
 }: Props) {
   const reduced = useReducedMotion();
   const words = text.split(" ");
+  const accent = (i: number) =>
+    italicFrom !== undefined && i >= italicFrom ? "italic text-accent" : "";
 
-  if (reduced) return <span className={className}>{text}</span>;
+  if (reduced) {
+    if (italicFrom === undefined) return <span className={className}>{text}</span>;
+    return (
+      <span className={className}>
+        {words.slice(0, italicFrom).join(" ")}{" "}
+        <em className="italic text-accent">
+          {words.slice(italicFrom).join(" ")}
+        </em>
+      </span>
+    );
+  }
 
   const animateProps = immediate
     ? { animate: "shown" }
@@ -44,10 +64,13 @@ export default function MaskText({
           key={`${word}-${i}`}
           aria-hidden
           // The box has to clear descenders, or the mask shaves them off.
-          className="inline-block overflow-hidden pb-[0.2em] align-bottom"
+          // 0.2em was set for a joined script whose descenders ran deep;
+          // Instrument Serif needs less, and the difference is real height on
+          // a heading set at 90px.
+          className="inline-block overflow-hidden pb-[0.12em] align-bottom"
         >
           <motion.span
-            className="inline-block"
+            className={`inline-block ${accent(i)}`}
             variants={{
               hidden: { y: "108%" },
               shown: { y: 0 },

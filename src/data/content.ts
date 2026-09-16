@@ -22,9 +22,15 @@ export const profile = {
   codeforcesHandle: "jinxed_sam",
   resumeUrl: "/Samonwita_Sarker_CV.pdf",
   standfirst: "CSE '27, CUET",
+  /**
+   * "Open to internships and research" told a recruiter nothing they could act
+   * on. What kind of role, and whether the candidate can work where they are,
+   * is the part that decides whether the tab stays open.
+   */
+  status: "Software and ML research internships",
   // Hero subtext. Kept under 20 words so the hero always fits one viewport.
   positioning:
-    "I build software that ships, and I research models that can explain themselves.",
+    "I build software that ships, and I research how to make a model's predictions explainable.",
 };
 
 /**
@@ -35,32 +41,10 @@ export type Proof = {
   value: string;
   label: string;
   href?: string;
+  /** Routes through the router rather than opening a new tab. */
+  internal?: boolean;
 };
 
-export const proof: Proof[] = [
-  {
-    value: "2",
-    label: "extensions published on the Chrome Web Store",
-    href: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
-  },
-  {
-    // "1" rendered at the same size as "300+" undersold this badly. The venue
-    // is the claim worth reading, not the count.
-    value: "IEEE",
-    label: "peer-reviewed paper at ICECTE 2026",
-    href: "https://ieeexplore.ieee.org/document/11429440",
-  },
-  {
-    value: "7th",
-    label: "of the field at an ACL 2026 shared task",
-    href: "https://openreview.net/forum?id=ZnWQpLP5Mc",
-  },
-  {
-    value: "300+",
-    label: "competitive programming problems solved",
-    href: "https://codeforces.com/profile/jinxed_sam",
-  },
-];
 
 export type Project = {
   slug: string;
@@ -71,9 +55,11 @@ export type Project = {
   summary: string;
   stack: string[];
   /**
-   * Who I was on it, in the CV's own words. Only set where the CV states it:
-   * the alternative is guessing at authorship, and a portfolio that implies
-   * solo work on a team project is the one mistake here worth avoiding.
+   * Who I was on it. Set on every project, in the CV's words where the CV
+   * states it and from the owner otherwise: a portfolio that implies solo work
+   * on a team project is the one mistake here worth avoiding. On a repository
+   * that is not hers, this is what the card and the repositories table show
+   * beside the owner's name.
    */
   role?: string;
   repo: string;
@@ -101,9 +87,12 @@ export type Project = {
 };
 
 /**
- * The five that carry the most weight, and the five with a running product to
- * show. StockMaster stays in the secondary index because it has no live
- * deployment, and a case row here without a real screenshot would be a hole.
+ * The ten that carry the most weight, every one with a real screenshot.
+ *
+ * The order is deliberate. Paid client work sits second, above anything built
+ * for its own sake, the strongest build third, and MediHub stays fourth.
+ * KanDesk is not on the rail while its deployment is down; it goes back when
+ * there is something running to open.
  */
 export const featured: Project[] = [
   {
@@ -114,6 +103,7 @@ export const featured: Project[] = [
     summary:
       "A robot arm you drive in the browser, six different ways, through one motion pipeline.",
     stack: ["Next.js", "Three.js", "TypeScript", "Zustand", "Gemini API"],
+    role: "Team build",
     repo: "https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon",
     live: "https://greenlight-ptsd.vercel.app/",
     liveLabel: "Open the simulator",
@@ -128,20 +118,74 @@ export const featured: Project[] = [
       "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
   },
   {
-    slug: "kandesk",
-    title: "KanDesk",
-    kind: "Task manager",
-    year: "2026",
-    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
-    stack: ["React", "Tailwind CSS", "TanStack Router"],
-    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
-    shot: "/shots/kandesk.jpg",
-    shotAlt: "The KanDesk landing page above its three-column board.",
+    slug: "pierra",
+    title: "PIERRA",
+    kind: "Client work",
+    year: "2025",
+    summary:
+      "A bilingual site for a Montreal exterior design firm. My first paid engagement.",
+    stack: ["Next.js", "Tailwind CSS"],
+    role: "Frontend developer, freelance",
+    repo: "https://github.com/SamisDone/Pierra",
+    live: "https://pierrafinal.vercel.app/",
+    liveLabel: "Open the site",
+    shot: "/shots/pierra.jpg",
+    shotAlt: "The PIERRA homepage for a Montreal exterior design firm.",
     problem:
-      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+      "The firm sells into a market where English and French customers are equally common, so a translated afterthought would have quietly cost them half their audience.",
     approach:
-      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
-    outcome: "Working board with the full task lifecycle and protected routing in place.",
+      "Both languages are first class. Copy is lifted into a shared layer keyed by locale rather than duplicated per page, so the gallery, the testimonial carousel and the booking form all stay in step when either language changes.",
+    outcome:
+      "Delivered end to end in both languages, from brief to deployed site. My first paid engagement.",
+  },
+  {
+    /**
+     * Another repository that is not on her account, and the one where the
+     * label matters most: the commit history names two other people and not
+     * her, and the README credits its author. `role` says contributor and
+     * nothing stronger until she says what it should be.
+     */
+    slug: "kilnwatch",
+    title: "KilnWatch",
+    kind: "Earth observation",
+    year: "2026",
+    summary:
+      "Finds brick kilns across Bangladesh in satellite imagery, then screens each for the rules it looks to be breaking.",
+    stack: ["Next.js", "YOLO11-OBB", "TFLite", "MapLibre", "Sentinel-2"],
+    role: "Contributor",
+    repo: "https://github.com/PratikDev/illegal-brick-kiln-detector",
+    live: "https://sciblitz-ptsd-ibkd.vercel.app",
+    liveLabel: "Open the scanner",
+    shot: "/shots/kilnwatch.jpg",
+    shotAlt:
+      "KilnWatch over Sentinel-2 imagery of Bangladesh, with detection counts and a national replay feed.",
+    problem:
+      "Illegal brick kilns are a serious air quality problem in Bangladesh and the enforcement bottleneck is not the law, it is knowing where they are. Finding them by inspection means driving to them.",
+    approach:
+      "Detection and legality are deliberately kept apart. Computer vision finds the kiln, an ensemble of a rotated-box YOLO11, an RT-DETR validator and a ViT context reviewer, working on 128px Sentinel-2 tiles at roughly 10m resolution. A separate rule engine then screens each detection against the measurable parts of the Brick Kilns Act 2013, on location, technology and land use. What needs a human or a government record to confirm is marked as needing one rather than asserted.",
+    outcome:
+      "Deployed and openable, with 50 georeferenced signals across five priority districts, real TFLite inference behind a Live AI mode, and an A4 evidence brief generated in the browser.",
+  },
+  {
+    slug: "medihub",
+    title: "MediHub",
+    kind: "AI healthcare platform",
+    year: "2026",
+    summary:
+      "Hospital management with Gemini-backed symptom routing and three separate roles.",
+    stack: ["React", "Node.js", "Firebase", "Gemini API"],
+    role: "Full-stack developer",
+    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
+    live: "https://ai-powered-hospital-management-syst.vercel.app/",
+    liveLabel: "Open the demo",
+    shot: "/shots/medihub.jpg",
+    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
+    problem:
+      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. Front desks also spend real time routing walk-in patients to the right department by hand.",
+    approach:
+      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. Symptom intake goes to the Gemini API behind a structured prompt that returns a ranked department, deliberately framed as routing and not as diagnosis.",
+    outcome:
+      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
   },
   {
     slug: "riphours",
@@ -166,62 +210,58 @@ export const featured: Project[] = [
       "Published and installable today. The zero-request claim is the kind you can check yourself in the network panel.",
   },
   {
-    slug: "medihub",
-    title: "MediHub",
-    kind: "AI healthcare platform",
+    /**
+     * The repo is Huntrix_friction, after the team; the product is Unread, and
+     * the product is what the card names.
+     */
+    slug: "unread",
+    title: "Unread",
+    kind: "Hackathon build",
     year: "2026",
     summary:
-      "Hospital management with Gemini-backed symptom routing and three separate roles.",
-    stack: ["React", "Node.js", "Firebase", "Gemini API"],
-    role: "Full-stack developer",
-    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
-    live: "https://ai-powered-hospital-management-syst.vercel.app/",
-    liveLabel: "Open the demo",
-    shot: "/shots/medihub.jpg",
-    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
+      "A reader that will not let you move on until you have shown you understood the last part.",
+    stack: ["TanStack Start", "React", "TypeScript", "Claude API"],
+    role: "Team build",
+    repo: "https://github.com/Seyamalam/Huntrix_friction",
+    live: "https://huntrix-friction.vercel.app/",
+    liveLabel: "Try the friction",
+    shot: "/shots/huntrix.jpg",
+    shotAlt:
+      "The Unread landing page: AI should stop you from pretending you read.",
     problem:
-      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. Front desks also spend real time routing walk-in patients to the right department by hand.",
+      "The hackathon theme was friction, where the obvious move is to remove it. Summaries have made it trivial to finish an article without reading it, and nothing in the tooling can tell having read something apart from having skimmed a summary of it.",
     approach:
-      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. Symptom intake goes to the Gemini API behind a structured prompt that returns a ranked department, deliberately framed as routing and not as diagnosis.",
+      "An article becomes a locked reading room. One section opens, and the next stays shut until the reader puts the claim in their own words at a checkpoint, with the model pushing back on a vague answer rather than giving the point away. The completion report is built from what the reader proved, not from what the article said. Friction is the product here rather than a feature bolted onto one, which is the whole argument.",
     outcome:
-      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
+      "Deployed and open to try, with a public reading room and author-side analytics on top of the checkpoints.",
   },
   {
-    slug: "stockmaster",
-    title: "StockMaster",
-    kind: "Inventory tracker",
-    year: "2025",
-    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    role: "Full-stack developer",
-    repo: "https://github.com/SamisDone/StockMaster",
-    shot: "/shots/stockmaster.jpg",
-    shotAlt: "The StockMaster landing page for its inventory management system.",
-    problem:
-      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
-    approach:
-      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
-    outcome: "Working application with the component library and state layer built out.",
-  },
-  {
-    slug: "pierra",
-    title: "PIERRA",
-    kind: "Client work",
-    year: "2025",
+    /**
+     * The repository is not on her account: this is someone else's project
+     * that she worked on, which is exactly why `role` is set. A card that
+     * links to another person's repo and says nothing about authorship is the
+     * reading to avoid.
+     */
+    slug: "narrativeguard",
+    title: "Narrative Guard",
+    kind: "AI governance tool",
+    year: "2026",
     summary:
-      "A bilingual site for a Montreal exterior design firm. My first paid engagement.",
-    stack: ["Next.js", "Tailwind CSS"],
-    role: "Frontend developer, freelance",
-    repo: "https://github.com/SamisDone",
-    live: "https://pierrafinal.vercel.app/",
-    liveLabel: "Open the site",
-    shot: "/shots/pierra.jpg",
-    shotAlt: "The PIERRA homepage for a Montreal exterior design firm.",
+      "Audits a draft against a team's own brand rules before it goes out, and says where it breaks them.",
+    stack: ["Next.js", "TypeScript", "Convex", "RAG", "Gemini API"],
+    role: "Contributor",
+    repo: "https://github.com/PratikDev/narrative-guard",
+    live: "https://narrative-guard.vercel.app/",
+    liveLabel: "Open the app",
+    shot: "/shots/narrativeguard.jpg",
+    shotAlt:
+      "The Narrative Guard landing page, showing its audit dashboard with scored reports.",
     problem:
-      "The firm sells into a market where English and French customers are equally common, so a translated afterthought would have quietly cost them half their audience.",
+      "Brand guidelines are a document nobody rereads. By the time a post, an email or a press release is off-message it has usually already been approved by someone going from memory.",
     approach:
-      "Both languages are first class. Copy is lifted into a shared layer keyed by locale rather than duplicated per page, so the gallery, the testimonial carousel and the booking form all stay in step when either language changes.",
-    outcome: "Delivered and running as the firm's production site.",
+      "A team writes its brand constitution once and it is indexed into a RAG namespace, so an audit is scored against the rules that were actually retrieved rather than against whatever the model believes about the brand. The model writes the report and the findings; the score itself is computed in the backend, which is what stops two runs over the same draft from disagreeing. Workspaces carry owner, admin and member roles, and a finished report exports as a PDF.",
+    outcome:
+      "Deployed and usable, covering social posts, emails, ads, press releases and website copy, with trend analytics across saved reports.",
   },
   {
     slug: "tabsaver",
@@ -263,10 +303,44 @@ export const featured: Project[] = [
       "Editing and preview render from the same state, so the page you are looking at is the page you get. Export runs entirely in the browser, which means no account, no upload, and no copy of your resume sitting on someone else's server.",
     outcome: "Deployed and free to use, with no sign-up in the way.",
   },
+  {
+    slug: "stockmaster",
+    title: "StockMaster",
+    kind: "Inventory tracker",
+    year: "2025",
+    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    role: "Full-stack developer",
+    repo: "https://github.com/SamisDone/StockMaster",
+    shot: "/shots/stockmaster.jpg",
+    shotAlt: "The StockMaster landing page for its inventory management system.",
+    problem:
+      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
+    approach:
+      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
+    outcome: "Working application with the component library and state layer built out.",
+  },
 ];
 
 /** The rest of the shelf. A compact index, not a second grid of cards. */
 export const otherWork: Project[] = [
+  {
+    slug: "kandesk",
+    title: "KanDesk",
+    kind: "Task manager",
+    year: "2026",
+    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
+    stack: ["React", "Tailwind CSS", "TanStack Router"],
+    role: "Solo developer",
+    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
+    shot: "/shots/kandesk.jpg",
+    shotAlt: "The KanDesk landing page above its three-column board.",
+    problem:
+      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+    approach:
+      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
+    outcome: "Working board with the full task lifecycle and protected routing in place.",
+  },
   {
     slug: "anomlite",
     title: "AnomLite",
@@ -275,6 +349,7 @@ export const otherWork: Project[] = [
     summary:
       "A hybrid model for multiclass crime detection in surveillance video, small enough to run on constrained hardware.",
     stack: ["PyTorch", "MobileNetV2", "LSTM"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/Violence-Detection",
     problem:
       "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
@@ -291,6 +366,7 @@ export const otherWork: Project[] = [
     summary:
       "Income, expenses, budgets and savings goals, with the security work actually done.",
     stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/FinPulse",
     highlights: [
       "Parameterised queries throughout, via PDO",
@@ -312,6 +388,7 @@ export const otherWork: Project[] = [
     year: "2024",
     summary: "Merge, Quick and Bubble sort running on the same input, side by side.",
     stack: ["Vanilla JS"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/Sorting-Algorithm-Simulator",
     live: "https://sortnplay.netlify.app/",
     liveLabel: "Open the visualizer",
@@ -330,6 +407,7 @@ export const otherWork: Project[] = [
     year: "2026",
     summary: "A pixel grid with pen, eraser and flood fill, exporting straight to an image.",
     stack: ["JavaScript", "Canvas"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/Pixel-Art-App",
     live: "https://pixelartweb.netlify.app/",
     liveLabel: "Open the pad",
@@ -349,6 +427,7 @@ export const otherWork: Project[] = [
     summary:
       "Hangman on a programming word list, with the figure drawn a stroke at a time.",
     stack: ["JavaScript", "Local storage"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/HangMan",
     live: "https://hangman-sam.netlify.app/",
     liveLabel: "Play it",
@@ -368,6 +447,7 @@ export const otherWork: Project[] = [
     summary:
       "A cyberpunk typing game: fix corrupted terminal commands before the clock runs out.",
     stack: ["JavaScript", "Local storage"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/GLITCH-BREACH",
     live: "https://glitch-breach-sam.netlify.app/",
     liveLabel: "Play it",
@@ -387,6 +467,7 @@ export const otherWork: Project[] = [
     summary:
       "Traditional CPU schedulers benchmarked against learned ones on the same simulated workload.",
     stack: ["Python", "PyTorch", "Jupyter"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/Task-Scheduling-using-Traditional-ML-DL-DRL",
     problem:
       "Learned schedulers are usually reported against their own baselines, which makes it hard to tell whether they beat first-come-first-served by a margin worth the complexity.",
@@ -401,6 +482,7 @@ export const otherWork: Project[] = [
     year: "2025",
     summary: "FIFO, LRU and optimal replacement implemented and compared in C++.",
     stack: ["C++"],
+    role: "Solo developer",
     repo: "https://github.com/SamisDone/Page-Replacement-Algorithms",
     problem:
       "Page replacement is taught as three rules and a hit-rate table, which hides how differently the policies behave on the same reference string.",
@@ -424,27 +506,13 @@ export const otherWork: Project[] = [
     outcome: "Runnable simulator pairing the scheduling core with a visual front end.",
   },
   {
-    slug: "financetracker",
-    title: "Finance Tracker",
-    kind: "Financial auditing tool",
-    year: "2024",
-    summary: "Multi-user transactions on a normalized schema, with charted reporting.",
-    stack: ["PostgreSQL", "Chart.js"],
-    role: "Full-stack developer",
-    repo: "https://github.com/SamisDone/Finance-Tracker",
-    problem:
-      "A shared expense tracker goes wrong quickly if categories and accounts are stored as free text on every transaction row.",
-    approach:
-      "Users, accounts and categories are their own tables and a transaction references them, which is what makes per-user reporting a query rather than a cleanup job.",
-    outcome: "Working tool with charted reporting over the normalized schema.",
-  },
-  {
     slug: "microops",
     title: "Microops",
     kind: "Hackathon build",
     year: "2025",
     summary: "A full-stack MVP taken end to end inside a 24 hour deadline.",
     stack: ["REST API", "React"],
+    role: "Team build",
     repo: "https://github.com/SamisDone/Microops-Hackathon",
     problem:
       "A 24 hour hackathon rewards scope control more than it rewards code. The failure mode is a beautiful half of a product.",
@@ -452,15 +520,98 @@ export const otherWork: Project[] = [
       "Cut the feature set to the one path that had to work, then built the API and the client against it in parallel so integration was continuous instead of a panic in the last hour.",
     outcome: "Complete working MVP submitted inside the deadline.",
   },
+  {
+    slug: "ems",
+    title: "Energy Monitoring System",
+    kind: "Real-time dashboard",
+    year: "2026",
+    summary:
+      "An office power dashboard and a Discord bot reading the same live backend.",
+    stack: ["React", "TypeScript", "Discord API"],
+    role: "Contributor",
+    repo: "https://github.com/PratikDev/energy-monitoring-system",
+    problem:
+      "Office power gets audited from a meter reading at the end of the month, which gives you the total and nothing about which light was left on over a weekend.",
+    approach:
+      "Every light and fan reports into one real-time backend and two clients read it: a dashboard in the browser and a bot in Discord. An alert reaches whoever is already in Discord rather than waiting for someone to think to open a tab.",
+    outcome:
+      "Dashboard, bot and alerting built against one shared real-time backend. The hosted demo is offline at the moment, so the repo is the thing to read.",
+  },
+  {
+    slug: "rentease",
+    title: "RentEase",
+    kind: "Property management system",
+    year: "2026",
+    summary:
+      "Properties, units, leases, payments and utilities, with landlords and tenants seeing different halves of it.",
+    stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL"],
+    role: "Contributor",
+    repo: "https://github.com/maha-shweta/Rent_Ease",
+    problem:
+      "A landlord and a tenant need the same lease, the same payment record and the same utility bill, and almost none of the same controls over any of them.",
+    approach:
+      "One schema over properties, units, leases, payments, utilities and announcements, with two portals on top of it. A unit's availability follows from its lease rather than being a field someone remembers to update, which is the kind of thing that goes wrong first in a rental system.",
+    outcome:
+      "Full-stack system with both portals working over a Postgres schema.",
+  },
+  {
+    slug: "debate-marksheet",
+    title: "Debate Marksheet",
+    kind: "Tournament tool",
+    year: "2025",
+    summary:
+      "A Bangla scoresheet for parliamentary debate that totals the round and exports it as a PDF.",
+    stack: ["HTML", "JavaScript", "html2pdf"],
+    role: "Solo developer",
+    repo: "https://github.com/SamisDone/Debate-Marksheet-Bangla",
+    problem:
+      "Inter-departmental rounds are scored on paper, and the adjudicator adds the columns by hand between speeches while the next speaker is already standing up.",
+    approach:
+      "One self-contained HTML file, in Bangla, laid out the way the format actually runs: government and opposition, prime minister through whip, the rebuttal round, with totals computed as marks are entered. It exports the finished sheet to PDF, so the record survives the evening without anyone photographing a piece of paper.",
+    outcome:
+      "Used for inter-departmental rounds. One file, no build step, no install, which is what makes it usable by whoever is adjudicating.",
+  },
+  {
+    slug: "ssis-ssrs",
+    title: "ETL and Reporting Pipeline",
+    kind: "Data engineering",
+    year: "2026",
+    summary:
+      "An SSIS package that moves and cleans the data, and an SSRS report that reads the result.",
+    stack: ["SSIS", "SSRS", "SQL Server"],
+    role: "Solo developer",
+    repo: "https://github.com/SamisDone/SSIS-SSRS-ETL-Reporting",
+    problem:
+      "Reporting built straight on top of an operational database is reporting that breaks whenever the operational schema moves, and that competes with the application for the same rows.",
+    approach:
+      "The extract, transform and load runs as an Integration Services package, so the shaping happens once on a schedule rather than inside every query. The Reporting Services report reads what the package produced, which keeps the report's definition of a figure in one place instead of in each person's spreadsheet.",
+    outcome:
+      "Working package and report, built against SQL Server.",
+  },
 ];
 
 export type Milestone = {
   year: string;
-  kind: "Publication" | "Competition";
+  kind: "Publication";
   title: string;
   venue: string;
   note: string;
   href?: string;
+  /**
+   * The full author list in publication order, spelled the way the venue
+   * spells it, with `selfIndex` saying which one is me.
+   *
+   * Printed rather than summarised, because the position is the information.
+   * Fourth of six and first of five are different contributions, and a reader
+   * given neither assumes the weaker one.
+   */
+  authors?: string[];
+  selfIndex?: number;
+  /**
+   * The repository the paper points at. The ACL abstract names it, so a reader
+   * who wants to reproduce the result should not have to go looking for it.
+   */
+  code?: string;
 };
 
 /** Academic output only. Employment is a separate section. */
@@ -468,27 +619,58 @@ export const research: Milestone[] = [
   {
     year: "2026",
     kind: "Publication",
-    title: "ML and Explainable AI-Based Police Fraud Prediction",
-    venue: "IEEE ICECTE 2026",
-    note: "Peer reviewed. Uses SHAP so every prediction can be attributed back to the features that drove it.",
+    title:
+      "A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability",
+    venue: "ICECTE 2026, IEEE",
+    authors: [
+      "M. Chowdhury",
+      "J. Islam",
+      "Md. A. I. Semon",
+      "S. Sarker",
+      "M. M. Barua",
+      "A. Akter",
+    ],
+    selfIndex: 3,
+    note: "Peer reviewed. SHAP attribution on every prediction, so a flagged case traces back to the features that drove it.",
     href: "https://ieeexplore.ieee.org/document/11429440",
   },
   {
+    /**
+     * This was filed as a competition placing and nothing else, which sold it
+     * short: the system paper is published, peer reviewed, and first author.
+     *
+     * The link used to go to OpenReview, which stops a visitor at a browser
+     * check before showing them anything. The Anthology page is the version of
+     * record and carries the DOI.
+     */
     year: "2026",
-    kind: "Competition",
-    title: "7th place, Telugu LLM prompt recovery",
-    venue: "DravidianLangTech, ACL 2026 shared task",
-    note: "Recovering the prompt behind a generated Telugu text, ranked against international teams.",
-    href: "https://openreview.net/forum?id=ZnWQpLP5Mc",
-  },
-  {
-    year: "2025",
-    kind: "Competition",
-    title: "Finalist, PoliMemeDecode Datathon",
-    venue: "CUET CSE Fest",
-    note: "Multimodal classification of political memes, combining the image and the text signal.",
+    kind: "Publication",
+    title:
+      "Still Loading@DravidianLangTech 2026: Telugu Prompt-Style Recovery using Multilingual Transformers",
+    venue: "Proceedings of DravidianLangTech, ACL 2026",
+    authors: [
+      "Samonwita Sarker",
+      "Isnat Mehrin Sami",
+      "Priyontee Mojumder",
+      "Arpita Mallik",
+      "Hasan Murad",
+    ],
+    selfIndex: 0,
+    code: "https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu",
+    note: "First author. Sorting Telugu transcripts into nine communicative styles, comparing four multilingual transformers under focal loss. The MuRIL system placed 7th at 0.1703 macro F1, where chance sits near 0.11.",
+    href: "https://aclanthology.org/2026.dravidianlangtech-1.58/",
   },
 ];
+
+/**
+ * What is being worked on now, which a ledger of finished output cannot show.
+ * One entry, because there is one.
+ */
+export const currentResearch = {
+  kind: "Undergraduate thesis, in progress",
+  title: "Grapheme-aware Bangla and English scene text recognition",
+  note: "Reading text off photographs where Bangla and Latin script share a frame. Bangla graphemes are composed rather than laid out one character after the next, so a recogniser that treats a word as a flat sequence gives up the conjuncts.",
+};
 
 export type Role = {
   org: string;
@@ -506,8 +688,8 @@ export const experience: Role[] = [
     period: "May to August 2026",
     location: "Remote",
     points: [
-      "Authored long-horizon, multi-step agentic AI evaluation tasks across simulated enterprise application environments, grounding each workflow in verified environment data.",
-      "QA-reviewed other contributors' tasks for must-have and should-have coverage, action counts, ambiguity and codename compliance, checking each for correctness, novelty and robust edge-case handling.",
+      "Wrote evaluation tasks for agentic AI: long multi-step workflows inside simulated enterprise software, each grounded in data that genuinely exists in that environment.",
+      "Reviewed other contributors' tasks before they shipped, checking each was solvable, unambiguous, not a repeat, and correct at the edges where an agent goes wrong.",
     ],
   },
   {
@@ -516,16 +698,16 @@ export const experience: Role[] = [
     period: "2025",
     location: "Contract",
     points: [
-      "Built and shipped the production site for PIERRA, a Montreal exterior design firm, in English and French.",
-      "Taken from brief to deployed site as my first paid engagement.",
+      "Built and shipped the site for PIERRA, a Montreal exterior design firm, in English and French.",
+      "An interactive project gallery, a testimonial carousel and a consultation request form, with the copy in one locale-keyed layer so the two languages cannot drift apart.",
     ],
   },
 ];
 
 export const about = {
   paragraphs: [
-    "I am a Computer Science and Engineering undergraduate at CUET, graduating in 2027. Two of the Chrome extensions I wrote are published and installable right now, and a site I built is in production for a design firm in Montreal.",
-    "The other half of my time goes to research, on explainable AI and NLP. That work has produced a peer-reviewed paper at IEEE ICECTE and a 7th place finish at an ACL shared task.",
+    "I am a Computer Science and Engineering undergraduate at CUET, graduating in 2027. Two of the Chrome extensions I wrote are published and installable right now, and I built and shipped a bilingual site for a design firm in Montreal.",
+    "The other half of my time goes to research, on explainable AI and NLP. Two papers so far, one peer reviewed at IEEE ICECTE and one first-author system paper at an ACL workshop, and a thesis in progress on reading Bangla off photographs.",
     "The thread between the two is that I like problems where the engineering and the reasoning both have to hold up. A model whose predictions you can defend. An extension that keeps a promise about your privacy. A schema that stays correct as it grows.",
   ],
   stack: [
@@ -533,6 +715,117 @@ export const about = {
     { group: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "Motion"] },
     { group: "Backend and data", items: ["Node.js", "PostgreSQL", "Firebase", "REST"] },
     { group: "ML and research", items: ["PyTorch", "scikit-learn", "SHAP", "Transformers"] },
+  ],
+};
+
+/**
+ * Off the CV, and on the site for the first time. A portfolio that never says
+ * where someone studies sends a recruiter looking for it, and the only copy
+ * was a PDF download away.
+ */
+export const education = [
+  {
+    school: "Chittagong University of Engineering and Technology",
+    award: "B.Sc. in Computer Science and Engineering",
+    period: "2023 to 2027",
+    note: "Six terms sat, two to go.",
+  },
+  {
+    school: "Viqarunnisa Noon College",
+    award: "Higher Secondary Certificate",
+    period: "2021",
+    note: "GPA 5.00 of 5.00.",
+  },
+];
+
+export const leadership = [
+  {
+    org: "CUET Computer Club",
+    role: "Vice President (Organizing)",
+    period: "Current",
+    note: "Runs the organizing side of the club: its workshops, bootcamps and intra-university events. Competes in inter-university programming contests.",
+  },
+  {
+    org: "IEEE Computer Society, CUET Student Branch Chapter",
+    role: "General Secretary, Development Wing",
+    period: "Current",
+    note: "Secretary of the chapter's development wing.",
+  },
+  {
+    org: "CUET Debating Society",
+    role: "Joint General Secretary",
+    period: "Current",
+    note: "Helps run the society and its inter-departmental tournaments, and competes in inter-university parliamentary debate.",
+  },
+  {
+    org: "CUET MUN Club",
+    role: "Joint Organizing Secretary",
+    period: "2023 to present",
+    note: "Organisational logistics for national conferences, and a delegate on committees covering international technology governance.",
+  },
+];
+
+/**
+ * Placings, kept apart from the research ledger. A datathon finish is a result,
+ * not a publication, and filing it under "Published work" made the ledger claim
+ * something it was not. The ACL shared task appears here as a placing and on
+ * the research page as the paper, because it is genuinely both.
+ */
+export const competitions = [
+  {
+    result: "7th place",
+    event: "DravidianLangTech shared task, ACL 2026",
+    period: "2026",
+    note: "Telugu prompt-style recovery, against international teams. The system paper is on the research page.",
+  },
+  {
+    /* Certificate of achievement, IEEE CUET Student Branch with SheSTEM. The
+       certificate names no placing; the finalist result is from the owner,
+       as are the three below it that were "Participant" until she
+       corrected them. */
+    result: "Finalist",
+    event: "AI Hackathon, SciBlitz 2.0",
+    period: "2026",
+    note: "Organised by the IEEE CUET Student Branch with SheSTEM. Certificate of achievement for the AI hackathon.",
+  },
+  {
+    result: "Finalist",
+    event: "IUT Techathon",
+    period: "2026",
+    note: "Built Greenlight, a robot arm driven from the browser six ways through one motion pipeline. It is on the work page.",
+  },
+  {
+    result: "Finalist",
+    event: "The Infinity AI BuildFest 2026",
+    period: "2026",
+    note: "AI build competition.",
+  },
+  {
+    result: "Finalist",
+    event: "PoliMemeDecode Datathon, CUET CSE Fest",
+    period: "2025",
+    note: "Political meme classification over image and text together: DenseNet-121 and BanglaBERT with EasyOCR, at 0.9008 macro F1.",
+  },
+  {
+    result: "Finalist",
+    event: "MicroOps Hackathon",
+    period: "2025",
+    note: "24-hour hackathon. A full-stack MVP, API and client, submitted inside the deadline.",
+  },
+];
+
+/**
+ * The CV links these from page three and the site did not link them anywhere.
+ * The names are the CV's own; the folder is the one the CV points at, checked
+ * to open without signing in.
+ */
+export const certifications = {
+  href: "https://drive.google.com/drive/folders/1ybnT2oynox40j0Shpx_cueBbHoDCKC4j?usp=sharing",
+  items: [
+    "Full-Stack Development, freeCodeCamp",
+    "Responsive Web Design, freeCodeCamp",
+    "JavaScript Algorithms and Data Structures, freeCodeCamp",
+    "Data Science and Python, DataCamp",
   ],
 };
 
@@ -549,3 +842,55 @@ export const cgpaHistory: CgpaPoint[] = [
 
 export const trajectoryNote =
   "Level 2 was the low point. The climb after it is the part I would rather be judged on.";
+
+/**
+ * Six terms of eight. No cumulative figure appears anywhere on this site, on
+ * purpose: the degree is not finished, and a single number standing in for it
+ * would be read as the final one.
+ */
+export const trajectoryCaption =
+  "CUET, six terms of eight. Each point is that term alone, not a running total.";
+
+/**
+ * The strip under the hero, declared here rather than at the top of the file
+ * because the last claim counts the project lists and has to read them after
+ * they exist.
+ */
+const deployed = [...featured, ...otherWork].filter((p) => p.live).length;
+
+export const proof: Proof[] = [
+  {
+    value: "2",
+    label: "extensions published on the Chrome Web Store",
+    href: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
+  },
+  {
+    // "1" rendered at the same size as the others undersold this badly. The
+    // venue is the claim worth reading, not the count.
+    value: "IEEE",
+    label: "peer-reviewed paper at ICECTE 2026",
+    href: "https://ieeexplore.ieee.org/document/11429440",
+  },
+  {
+    // Was "7th of the field", which implies a denominator. The shared task
+    // overview does not publish the number of teams anywhere I can cite, so
+    // the placing stands on its own and the ACL Anthology page is the receipt.
+    // That link also replaces the OpenReview one, which puts visitors through
+    // a browser check before showing them anything.
+    value: "7th",
+    label: "at a DravidianLangTech shared task, ACL 2026",
+    href: "https://aclanthology.org/2026.dravidianlangtech-1.58/",
+  },
+  {
+    // This slot read "300+ competitive programming problems solved" over a
+    // link to Codeforces, where the profile shows 83 solved at 1053. The 300+
+    // is real and spread across judges, but the receipt attached to it argued
+    // the opposite on the first click, which costs more than the claim is
+    // worth. What replaces it is checkable in full: every one of these has a
+    // live URL on the work page.
+    value: String(deployed),
+    label: "projects deployed and open to try right now",
+    href: "/work",
+    internal: true,
+  },
+];

@@ -16,11 +16,12 @@ export default {
         "accent-2": "hsl(var(--accent-2))",
       },
       fontFamily: {
-        sans: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],
-        display: ["'Lobster Two'", "'Bricolage Grotesque'", "cursive"],
-        // `font-mono` labels keep their tracking but take Bricolage, so the
-        // page only ever uses the two families from the handoff.
-        mono: ["'Bricolage Grotesque'", "system-ui", "sans-serif"],
+        sans: ["'Instrument Sans'", "system-ui", "-apple-system", "sans-serif"],
+        display: ["'Instrument Serif'", "Georgia", "'Times New Roman'", "serif"],
+        // A real monospace now. `font-mono` used to fall through to the body
+        // face, so every label was proportional; DM Mono is wider per glyph,
+        // which is why the nav and the pager were re-measured after the swap.
+        mono: ["'DM Mono'", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       // One radius scale, near-sharp. A technical document, not a card deck.
       borderRadius: { none: "0", sm: "2px", DEFAULT: "3px", md: "3px", lg: "4px" },

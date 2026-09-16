@@ -44,11 +44,16 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-rule bg-paper/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-shell items-center justify-between gap-6 px-5 sm:px-8">
+        {/* A surname alone is not an identity. The full name is the wordmark
+            wherever there is room for it, and the initials stand in on a phone
+            rather than a half of the name that could be anyone's. */}
         <Link
           to="/"
-          className="tap font-mono text-[13px] uppercase tracking-[0.16em] text-ink"
+          aria-label={`${profile.name}, home`}
+          className="tap whitespace-nowrap text-[13px] font-medium uppercase tracking-[0.16em] text-ink"
         >
-          Sarker
+          <span className="md:hidden">{profile.initials}</span>
+          <span className="hidden md:inline">{profile.name}</span>
         </Link>
 
         <nav className="hidden items-center gap-7 sm:flex">
@@ -57,7 +62,7 @@ export default function Header() {
               key={l.path}
               to={l.path}
               className={({ isActive }) =>
-                `nav-link font-mono text-[13px] transition-colors hover:text-ink ${
+                `nav-link text-[13px] font-medium transition-colors hover:text-ink ${
                   isActive ? "is-active text-ink" : "text-muted"
                 }`
               }
@@ -72,7 +77,7 @@ export default function Header() {
             href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-1.5 border border-rule px-3 py-1.5 font-mono text-[12px] text-ink transition-colors hover:border-accent sm:inline-flex"
+            className="hidden items-center gap-1.5 border border-rule px-3 py-1.5 text-[12px] font-medium text-ink transition-colors hover:border-accent sm:inline-flex"
           >
             CV
             <ArrowUpRightIcon size={12} weight="bold" />
@@ -103,7 +108,7 @@ export default function Header() {
                 key={l.path}
                 to={l.path}
                 className={({ isActive }) =>
-                  `border-b border-rule py-3.5 text-left font-mono text-sm ${
+                  `border-b border-rule py-3.5 text-left text-sm font-medium ${
                     isActive ? "text-accent" : "text-ink"
                   }`
                 }
@@ -115,7 +120,7 @@ export default function Header() {
               href={profile.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-3 mt-4 border border-rule px-4 py-3 text-center font-mono text-sm text-ink"
+              className="mb-3 mt-4 border border-rule px-4 py-3 text-center text-sm font-medium text-ink"
             >
               Download CV
             </a>
