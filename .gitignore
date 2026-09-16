@@ -32,3 +32,7 @@ _*.mjs
 
 # Font source archives, kept locally
 *.zip
+
+# LaTeX build output for the CV; the PDF that ships is public/Samonwita_Sarker_CV.pdf
+cv/*
+!cv/*.tex

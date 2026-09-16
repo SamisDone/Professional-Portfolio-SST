@@ -1,0 +1,186 @@
+% Samonwita Sarker, CV.
+%
+% Source for public/Samonwita_Sarker_CV.pdf. Build with:
+%
+%   pdflatex -output-directory=cv cv/Samonwita_Sarker_CV.tex
+%   cp cv/Samonwita_Sarker_CV.pdf public/
+%
+% Rebuilt from the published PDF, which had no source, keeping its fonts,
+% sizes and spacing. Palatino (URW Palladio) for text, Latin Modern Mono for
+% the contact lines.
+
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\renewcommand{\ttdefault}{lmtt}
+\usepackage[a4paper,left=0.75in,right=0.75in,top=52.3pt,bottom=0.6in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  linkcolor=blue,
+  pdftitle={Samonwita Sarker, CV},
+  pdfauthor={Samonwita Sarker},
+  pdfsubject={Curriculum vitae},
+}
+
+\linespread{1.25}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% A section: indented heading over a full-width rule.
+\newcommand{\cvsection}[1]{%
+  \vspace{15pt}%
+  {\large\bfseries\hspace*{1.2em}\MakeUppercase{#1}\par}%
+  \nobreak\vspace{7.2pt}\nobreak\hrule height 0.4pt\nobreak\vspace{7pt}\nobreak%
+}
+
+% The list every entry sits in.
+% Pages break between entries, never inside one: no line of a paragraph is
+% separated from the rest, and a title never sits apart from its description.
+\newenvironment{entries}{%
+  \begin{itemize}[leftmargin=11.5pt,labelsep=5pt,itemsep=5pt,topsep=0pt,parsep=0pt,partopsep=0pt,label=\textbullet]%
+  \interlinepenalty=10000\clubpenalty=10000\widowpenalty=10000%
+}{\end{itemize}}
+
+% Links on the right of an entry, italic, in brackets.
+\newcommand{\cvlink}[2]{\href{#1}{\textit{[#2]}}}
+
+% \entry{title}{right-hand side}
+\newcommand{\entry}[2]{\item \textbf{#1}\hfill #2\par\nobreak}
+
+\begin{document}
+
+% ---------------------------------------------------------------- header
+{\large\bfseries Samonwita Sarker\par}
+\vspace{2pt}
+Chattogram, Bangladesh\par
+\vspace{2pt}
+{\ttfamily\color{blue}%
+\href{mailto:sarker.samonwita@gmail.com}{sarker.samonwita@gmail.com} {\bfseries\textperiodcentered}
+\href{tel:+8801602088135}{+8801602088135} {\bfseries\textperiodcentered}
+\href{https://www.linkedin.com/in/samonwita-sarker-a87737262/}{LinkedIn} {\bfseries\textperiodcentered}
+\href{https://samonwita.vercel.app/}{Portfolio}\par
+\vspace{2pt}
+\href{https://github.com/SamisDone}{GitHub: SamisDone} {\bfseries\textperiodcentered}
+\href{https://codeforces.com/profile/jinxed_sam}{Codeforces: jinxed\_sam}\par}
+
+% ---------------------------------------------------------------- summary
+\vspace{7.8pt}
+\cvsection{Summary}
+\begin{entries}
+\item {\small I'm a CSE undergraduate at CUET who builds full-stack web applications with React, Node.js, and PostgreSQL. I previously worked as a Generalist (contractor) at Fleet AI, Inc., authoring and QA-reviewing long-horizon agentic AI evaluation tasks. Along the way, I've published two Chrome extensions on the Web Store, co-authored an IEEE paper on explainable AI, and placed 7th internationally in a shared task at ACL 2026. My interests span Web Development, Deep Learning, and Computer Vision.\par}
+\end{entries}
+
+% ---------------------------------------------------------------- education
+\cvsection{Education}
+\begin{entries}
+\entry{B.Sc. in Computer Science and Engineering}{\textbf{(2023 -- Present)}}
+Chittagong University of Engineering and Technology (CUET) --- \textbf{CGPA: 3.51/4.00, rising: latest term 3.85}
+\entry{Higher Secondary Certificate (HSC)}{\textbf{(2021)}}
+Viqarunnisa Noon College --- \textbf{GPA: 5.00/5.00}
+\end{entries}
+
+% ---------------------------------------------------------------- experience
+\cvsection{Experience}
+\begin{entries}
+\entry{Generalist (Independent Contractor)}{\textbf{(May 2026 -- Aug 2026)}}
+Fleet AI, Inc. (Remote)\par\nobreak
+{\small Authored long-horizon, multi-step agentic AI evaluation tasks across multiple simulated enterprise application environments, grounding realistic workflows in verified environment data. Conducted QA review on other contributors' tasks, assessing must-have/should-have coverage, action counts, ambiguity, codename compliance, and project-specific rules to ensure correctness, novelty, and robust edge-case coverage.}
+\end{entries}
+
+% ---------------------------------------------------------------- skills
+\cvsection{Skills}
+\begin{entries}
+\small
+\item \textbf{Languages:} C++, JavaScript (ES6+), TypeScript, Python, Java, C, SQL.
+\item \textbf{Web Development:} React.js, Node.js, Next.js, Express.js, Firebase, Tailwind CSS, shadcn/ui.
+\item \textbf{AI \& Machine Learning:} NLP, Transformers, Multimodal Deep Learning, Explainable AI (SHAP), Gemini API.
+\item \textbf{Systems \& Architecture:} MVC Architecture, Data Structures, Algorithms, Object-Oriented Programming (OOP), DBMS, OS Scheduling.
+\item \textbf{Tools:} Docker, Git/GitHub, TanStack Router, LaTeX, Linux.
+\end{entries}
+
+% ---------------------------------------------------------------- projects
+\cvsection{Projects}
+\begin{entries}
+\entry{RIPHours: Productivity Chrome Extension}{\cvlink{https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb}{Chrome Web Store} --- \cvlink{https://github.com/SamisDone/RIPHours}{GitHub}}
+{\small\textbf{Solo Developer.} Built and published a privacy-first Chrome Extension using \textbf{JavaScript, Chrome APIs, and Chrome Storage Sync}. Engineered accurate time-tracking via the Page Visibility API with auto-idle detection, per-site daily limits with hard-block enforcement, and a 7-day trend analytics dashboard. Implemented zero-network-request architecture ensuring all user data remains local.}
+
+\entry{TabSaver: Session Management Chrome Extension}{\cvlink{https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk}{Chrome Web Store} --- \cvlink{https://github.com/SamisDone/TabSaver-2.0}{GitHub}}
+{\small\textbf{Solo Developer.} Developed and published a browser productivity extension using \textbf{JavaScript and Chrome Extension APIs}. Implemented session persistence and one-click restoration that lets users close entire tab groups and reopen them later, freeing the memory held by open tabs without losing context.}
+
+\entry{MediHub: AI-Powered Hospital Management}{\cvlink{https://ai-powered-hospital-management-syst.vercel.app/}{Healthcare Portal} --- \cvlink{https://github.com/SamisDone/AI-Powered-Hospital-Management-System}{GitHub}}
+{\small\textbf{Full-Stack Developer.} Engineered a healthcare management platform using \textbf{React, Node.js, and Firebase}. Integrated the \textbf{Gemini API} to summarize uploaded medical reports into key findings, test results, and recommendations, so patients and doctors read a condensed summary instead of the full record. Implemented role-based access control (RBAC) across patient, doctor, and admin dashboards to enforce per-role data privacy.}
+
+\entry{PIERRA: Freelance Client Website}{\cvlink{https://pierrafinal.vercel.app/}{PIERRA Website}}
+{\small\textbf{Frontend Developer (Freelance).} Designed and developed a professional bilingual (English/French) business website for a Montreal-based exterior design firm using \textbf{Next.js and Tailwind CSS}. Built an interactive project gallery, client testimonial carousel, and a consultation request form. Implemented responsive design, smooth scroll navigation, and SEO optimization for local search visibility.}
+
+\entry{StockMaster: Enterprise Inventory Tracker}{\cvlink{https://github.com/SamisDone/StockMaster}{GitHub}}
+{\small\textbf{Full-Stack Developer.} Built an inventory management web application using \textbf{Next.js, TypeScript, and Tailwind CSS}. Engineered a reusable component architecture with custom hooks and centralized state management for real-time stock auditing and data visualization.}
+
+\entry{Adaptive Priority Round Robin Simulator}{\cvlink{https://github.com/SamisDone/Adaptive-Priority-Round-Robin}{GitHub}}
+{\small\textbf{Systems Programmer.} Developed a custom OS scheduling algorithm simulation in \textbf{C++} to measure CPU performance metrics such as turnaround and average wait time. Designed a \textbf{React} frontend that animates the dynamic process queue and plots these metrics live as scheduling parameters change.}
+
+\entry{ResumeForge: Dynamic Resume Builder}{\cvlink{https://resumeforge-sam.netlify.app/}{Resume Builder} --- \cvlink{https://github.com/SamisDone/ResumeForge}{GitHub}}
+{\small\textbf{Solo Developer.} Built a complete resume-building web application using \textbf{React, Tailwind CSS, and React Router}. Engineered a real-time live-preview engine with multiple professional templates, client-side PDF export, and auto-save via local storage using React Context API.}
+
+\entry{FinPulse: Personal Finance Tracker}{\cvlink{https://github.com/SamisDone/FinPulse}{GitHub}}
+{\small\textbf{Solo Developer.} Built a personal finance application with \textbf{PHP 8 (PDO), SQLite/MySQL, and Chart.js} for tracking income, expenses, budgets, and savings goals with charted monthly reports. Secured it with parameterized queries, CSRF tokens on every form, and rate-limited login.}
+
+\entry{Microops Hackathon Project}{\cvlink{https://github.com/SamisDone/Microops-Hackathon}{GitHub}}
+{\small Rapidly prototyped a full-stack solution during a \textbf{24-hour hackathon}. Handled both REST API design and UI implementation to deliver a functional MVP under strict deadlines.}
+
+\entry{SortnPlay: Algorithm Visualization}{\cvlink{https://sortnplay.netlify.app/}{Visualizer} --- \cvlink{https://github.com/SamisDone/Sorting-Algorithm-Simulator}{GitHub}}
+{\small Developed an interactive educational tool using Vanilla JavaScript to visualize core sorting algorithms (Merge, Quick, Bubble). Engineered custom DOM animations to demonstrate algorithmic time complexity and operational flow in real time.}
+\end{entries}
+
+% ---------------------------------------------------------------- research
+\cvsection{Research \& Publications}
+\begin{entries}
+\item \textbf{A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability}\par\nobreak
+{\small M. Chowdhury, J. Islam, Md. A. I. Semon, \textbf{S. Sarker}, M. M. Barua, A. Akter\par\nobreak
+\textit{2026 5th International Conference on Electrical, Computer \& Telecommunication Engineering (ICECTE)}, IEEE\par\nobreak
+DOI: \href{https://ieeexplore.ieee.org/document/11429440}{https://ieeexplore.ieee.org/document/11429440}}
+
+\entry{7th Rank, DravidianLangTech @ ACL 2026 Shared Task: Telugu Prompt-Style Recovery}{\textbf{(Feb 2026)}}
+{\small\textbf{S. Sarker}, I. M. Sami, P. Mojumder, A. Mallik, H. Murad\par\nobreak
+First-author system paper. Classified Telugu text into \textbf{nine communicative styles}, comparing four multilingual transformers trained with focal loss; the \textbf{MuRIL} system placed 7th with a macro F1 of 0.1703, against a chance level of about 0.11. \textit{Published in the Proceedings of DravidianLangTech @ ACL 2026.} \cvlink{https://aclanthology.org/2026.dravidianlangtech-1.58/}{Paper} --- \cvlink{https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu}{Code}}
+
+\entry{Finalist, PoliMemeDecode Datathon (CUET CSE FEST 2025)}{\textbf{(Dec 2025)}}
+{\small Built a multimodal classifier for political memes, fusing visual and textual features (DenseNet-121 and BanglaBERT, with EasyOCR) to reach a macro F1 of 0.9008.}
+\end{entries}
+
+% ---------------------------------------------------------------- certifications
+\cvsection{Certifications}
+\begin{entries}
+\entry{All Certifications}{\cvlink{https://drive.google.com/drive/folders/1ybnT2oynox40j0Shpx_cueBbHoDCKC4j?usp=sharing}{View All on Google Drive}}
+{\small Full-Stack Development (freeCodeCamp), Data Science \& Python (DataCamp), Responsive Web Design, JavaScript Algorithms and Data Structures.}
+\end{entries}
+
+% ---------------------------------------------------------------- leadership
+\cvsection{Leadership \& Extracurricular}
+\begin{entries}
+\entry{Vice President (Organizing), CUET Computer Club (CCC)}{(2023 -- Present)}
+{\small Competed in inter-university programming contests and collaborative algorithmic challenges. Actively contributed to organizing technical workshops, bootcamps, and intra-university events.}
+
+\entry{Joint Organizing Secretary, CUET MUN Club}{(2023 -- Present)}
+{\small Directed organizational logistics for national conferences. Represented delegations in committee sessions, focusing on international technological governance and resolution drafting.}
+
+\entry{Joint General Secretary, CUET Debating Society}{(2023 -- Present)}
+{\small Competed in inter-university parliamentary debates, developing high-level logical rebuttals and analytical thinking. Helps run the society and organize its inter-departmental debate tournaments.}
+
+\entry{General Secretary, Development Wing, IEEE CS CUET Student Branch Chapter}{(Present)}
+{\small Secretary of the development wing of the IEEE Computer Society student branch chapter at CUET.}
+\end{entries}
+
+% ---------------------------------------------------------------- references
+\cvsection{References}
+\begin{entries}
+\item {\small Available upon request.}
+\end{entries}
+
+\end{document}

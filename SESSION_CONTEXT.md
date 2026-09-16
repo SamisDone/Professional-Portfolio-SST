@@ -171,6 +171,24 @@ Downloaded copies are in the session scratchpad, not the repo.
 - Fixed in passing: `MaskText` rendered its italic accent upright under
   reduced motion and with JavaScript off (`not-italic` beat `italic`).
 
+### CV rebuilt from source (17 September)
+- The CV had no LaTeX source, so it was rebuilt as `cv/Samonwita_Sarker_CV.tex`
+  with the same fonts (URW Palladio, Latin Modern Mono), sizes and spacing;
+  line positions match the old PDF to within 0.2pt.
+- Corrected: the ACL entry (text classification into nine styles, MuRIL 7th at
+  0.1703 macro F1, links to the Anthology and the code instead of OpenReview);
+  Finance Tracker became FinPulse (PHP 8, PDO, SQLite/MySQL, Chart.js, solo);
+  MediHub's AI is described as report summaries, as the code does, not symptom
+  assessments; "300+ coding challenges" removed from Certifications; TypeScript
+  added to Languages; the AI skills line lists Transformers and Explainable AI
+  (SHAP) in place of "LLM Prompt Recovery"; the datathon entry gained its
+  models and score; the Debating line says she helps run the society.
+- Pages now break only between entries, and REFERENCES lines up with the other
+  section headings.
+- The site's MediHub copy claimed symptom routing to departments. The repo has
+  no such feature; it summarises uploaded medical reports with Gemini. The
+  case study was corrected to match.
+
 ### Type consistency pass
 - Audited the computed type on every route and in the project dialog, then
   collapsed it onto one scale (recorded in the README): 13.5px became 14px,

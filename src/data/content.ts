@@ -172,7 +172,7 @@ export const featured: Project[] = [
     kind: "AI healthcare platform",
     year: "2026",
     summary:
-      "Hospital management with Gemini-backed symptom routing and three separate roles.",
+      "Hospital management with Gemini-written summaries of medical reports and three separate roles.",
     stack: ["React", "Node.js", "Firebase", "Gemini API"],
     role: "Full-stack developer",
     repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
@@ -181,9 +181,9 @@ export const featured: Project[] = [
     shot: "/shots/medihub.jpg",
     shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
     problem:
-      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. Front desks also spend real time routing walk-in patients to the right department by hand.",
+      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. And a medical report is written for specialists, so a patient reading their own, or a doctor going through a new patient's history, has to wade through the whole document to find what matters.",
     approach:
-      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. Symptom intake goes to the Gemini API behind a structured prompt that returns a ranked department, deliberately framed as routing and not as diagnosis.",
+      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. An uploaded report goes to the Gemini API with a structured prompt that returns its key findings, test results and recommendations, so patients and doctors read a short summary before the full record.",
     outcome:
       "Deployed and publicly reachable, with the full role-separated flow working end to end.",
   },
