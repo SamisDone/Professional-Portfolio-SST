@@ -10,7 +10,7 @@ import MaskText from "./MaskText";
  */
 export default function Experience() {
   return (
-    <section id="experience" className="scroll-mt-16 border-b border-rule bg-raised">
+    <section id="experience" className="scroll-mt-16 border-b border-rule">
       <div className="mx-auto max-w-shell section-pad px-5 sm:px-8">
         <Reveal>
           <h1 className="max-w-[20ch] h-section font-display text-ink">
