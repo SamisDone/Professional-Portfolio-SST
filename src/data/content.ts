@@ -842,6 +842,12 @@ export const education = [
 
 export const leadership = [
   {
+    org: "CUET MUN Club",
+    role: "President",
+    period: "Current",
+    note: "Leads the club and its national conferences, and a delegate on committees covering international technology governance.",
+  },
+  {
     org: "CUET Computer Club",
     role: "Vice President (Organizing)",
     period: "Current",
@@ -858,12 +864,6 @@ export const leadership = [
     role: "Joint General Secretary",
     period: "Current",
     note: "Helps run the society and its inter-departmental tournaments, and competes in inter-university parliamentary debate.",
-  },
-  {
-    org: "CUET MUN Club",
-    role: "Joint Organizing Secretary",
-    period: "2023 to present",
-    note: "Organisational logistics for national conferences, and a delegate on committees covering international technology governance.",
   },
 ];
 
