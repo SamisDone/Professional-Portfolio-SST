@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AnimatePresence,
   motion,
+  useInView,
   useMotionValue,
   useSpring,
   useTransform,
@@ -62,10 +63,16 @@ export default function ShotDeck() {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Only shuffles while the deck is on screen. It used to keep going after the
+  // visitor scrolled past it, and any change in its height moved everything
+  // below, which at the bottom of the page read as the page shaking.
+  const figRef = useRef<HTMLElement | null>(null);
+  const onScreen = useInView(figRef);
+
   // Shuffles on a timer, and stands down for reduced motion, while the pointer
-  // or focus is on the deck, and while the tab is hidden.
+  // or focus is on the deck, while it is off screen, and while the tab is hidden.
   useEffect(() => {
-    if (reduced || paused) return;
+    if (reduced || paused || !onScreen) return;
     const tick = () => {
       if (document.hidden) return;
       setShuffled(true);
@@ -73,7 +80,7 @@ export default function ShotDeck() {
     };
     const id = window.setInterval(tick, CYCLE_MS);
     return () => window.clearInterval(id);
-  }, [reduced, paused]);
+  }, [reduced, paused, onScreen]);
 
   // Tilt toward the pointer. Motion values, so moving the mouse never
   // re-renders React.
@@ -103,7 +110,7 @@ export default function ShotDeck() {
   const current = CARDS[front];
 
   return (
-    <figure className="hero-deck m-0 w-full">
+    <figure ref={figRef} className="hero-deck m-0 w-full">
       <Link
         to="/work"
         aria-label={`See the work: ${CARDS.map((c) => c.title).join(", ")} and more`}
@@ -171,7 +178,10 @@ export default function ShotDeck() {
         </motion.div>
       </Link>
 
-      <figcaption className="mt-5 flex min-h-[1.5rem] items-baseline justify-between gap-4">
+      {/* One line at a fixed height whichever project is in front. On a narrow
+          phone the longer kinds wrapped to two lines, so every shuffle changed
+          the page height. */}
+      <figcaption className="mt-5 flex h-[1.5rem] items-baseline justify-between gap-4">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={current.slug}
@@ -179,13 +189,13 @@ export default function ShotDeck() {
             animate={{ opacity: 1, y: 0 }}
             exit={reduced ? undefined : { opacity: 0, y: -8 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-baseline gap-3"
+            className="flex min-w-0 items-baseline gap-3 whitespace-nowrap"
           >
             <span className="text-[15px] font-medium text-ink">{current.title}</span>
-            <span className="font-mono text-[12px] text-muted">{current.kind}</span>
+            <span className="truncate font-mono text-[12px] text-muted">{current.kind}</span>
           </motion.span>
         </AnimatePresence>
-        <span aria-hidden className="flex gap-1.5">
+        <span aria-hidden className="flex shrink-0 gap-1.5">
           {CARDS.map((c, i) => (
             <span
               key={c.slug}

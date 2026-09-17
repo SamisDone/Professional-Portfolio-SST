@@ -754,12 +754,20 @@ export type Role = {
   org: string;
   role: string;
   period: string;
-  location: string;
+  location?: string;
   points: string[];
   href?: string;
 };
 
 export const experience: Role[] = [
+  {
+    // Dates from her. What the attachment covers, and where, are hers to add;
+    // the entry says nothing it cannot back up until then.
+    org: "BdREN Innovation - Cortex",
+    role: "Industrial attachment",
+    period: "3 to 23 September 2026",
+    points: [],
+  },
   {
     org: "Fleet AI, Inc.",
     // "Generalist" is the contract title and means nothing to a reader on its

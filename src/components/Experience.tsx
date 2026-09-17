@@ -17,7 +17,7 @@ export default function Experience() {
             <MaskText text="Experience." />
           </h1>
           <p className="mt-2 max-w-[46ch] text-[15px] leading-snug text-muted">
-            Contract and freelance roles.
+            Industrial attachment, contract and freelance work.
           </p>
         </Reveal>
 
@@ -27,32 +27,36 @@ export default function Experience() {
               <article className="grid gap-x-8 gap-y-4 border-b border-rule py-8 md:grid-cols-12 md:py-10">
                 <div className="md:col-span-3">
                   <p className="font-mono text-[12px] text-muted">{role.period}</p>
-                  <p className="mt-1 font-mono text-[12px] text-muted/80">
-                    {role.location}
-                  </p>
+                  {role.location && (
+                    <p className="mt-1 font-mono text-[12px] text-muted/80">
+                      {role.location}
+                    </p>
+                  )}
                 </div>
 
                 <div className="md:col-span-9">
                   <h2 className="font-display text-[1.75rem] leading-[1.06] text-ink sm:text-[2.1rem]">
                     {role.org}
                   </h2>
-                  <p className="mt-1.5 text-[13px] font-medium text-accent">
+                  <p className="mt-1.5 text-[14px] font-medium text-accent">
                     {role.role}
                   </p>
-                  <ul className="mt-5 flex flex-col gap-2.5">
-                    {role.points.map((point) => (
-                      <li
-                        key={point}
-                        className="relative max-w-measure pl-5 text-[15px] leading-relaxed text-muted"
-                      >
-                        <span
-                          aria-hidden
-                          className="absolute left-0 top-[0.65em] h-px w-3 bg-accent"
-                        />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+                  {role.points.length > 0 && (
+                    <ul className="mt-5 flex flex-col gap-2.5">
+                      {role.points.map((point) => (
+                        <li
+                          key={point}
+                          className="relative max-w-measure pl-5 text-[15px] leading-relaxed text-muted"
+                        >
+                          <span
+                            aria-hidden
+                            className="absolute left-0 top-[0.65em] h-px w-3 bg-accent"
+                          />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </article>
             </Reveal>

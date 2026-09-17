@@ -51,7 +51,7 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/experience": {
     title: `Experience | ${NAME}`,
     description:
-      "AI evaluation contractor at Fleet AI, writing and reviewing long-horizon agentic AI evaluation tasks. Freelance web development for a Montreal design firm.",
+      "Industrial attachment at BdREN Innovation - Cortex, AI evaluation contracting at Fleet AI, and freelance web development for a Montreal design firm.",
   },
   "/research": {
     title: `Research and publications | ${NAME}`,
