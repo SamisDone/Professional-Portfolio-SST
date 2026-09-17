@@ -20,7 +20,7 @@ export default function Entry({
         <h3 className="text-[15px] font-medium leading-snug text-ink">{title}</h3>
         <span className="shrink-0 font-mono text-[12px] text-muted">{period}</span>
       </div>
-      <p className="mt-1 max-w-measure text-[14px] leading-snug text-muted">
+      <p className="mt-1 max-w-measure text-[14px] leading-relaxed text-muted">
         {meta}. {note}
       </p>
     </li>

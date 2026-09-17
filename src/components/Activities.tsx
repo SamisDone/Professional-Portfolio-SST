@@ -44,7 +44,7 @@ export default function Activities() {
                 href={certifications.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="tap group inline-flex items-center gap-1 text-[13px] text-accent-2 transition-colors hover:text-accent"
+                className="tap group inline-flex items-center gap-1 text-[14px] text-accent-2 transition-colors hover:text-accent"
               >
                 View all certificates
                 <ArrowUpRightIcon

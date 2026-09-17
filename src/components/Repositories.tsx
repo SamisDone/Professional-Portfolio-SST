@@ -36,7 +36,7 @@ function Row({ project, n }: { project: Project; n: number }) {
         <span className="text-[15px] font-medium leading-snug text-ink">
           {project.title}
         </span>
-        <span className="mt-1 block max-w-[52ch] text-[13px] leading-snug text-muted">
+        <span className="mt-1 block max-w-[52ch] text-[14px] leading-snug text-muted">
           {project.summary}
         </span>
         {/* The kind column carries this at lg and up. Below that the column is
@@ -73,7 +73,7 @@ function Row({ project, n }: { project: Project; n: number }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${project.title}, live`}
-              className="tap inline-flex items-center gap-1 text-[12px] text-accent-2 transition-colors hover:text-accent"
+              className="tap inline-flex items-center gap-1 text-[13px] text-accent-2 transition-colors hover:text-accent"
             >
               Live
               <ArrowUpRightIcon size={11} weight="bold" />
@@ -84,7 +84,7 @@ function Row({ project, n }: { project: Project; n: number }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${project.title} source on GitHub`}
-            className="tap inline-flex items-center gap-1 text-[12px] text-ink transition-colors hover:text-accent"
+            className="tap inline-flex items-center gap-1 text-[13px] text-ink transition-colors hover:text-accent"
           >
             Code
             <ArrowUpRightIcon size={11} weight="bold" />
@@ -120,7 +120,7 @@ export default function Repositories() {
           >
             <MaskText text="Everything, listed." />
           </h1>
-          <p className="mt-2 max-w-[62ch] text-[14px] leading-snug text-muted">
+          <p className="mt-2 max-w-[62ch] text-[15px] leading-snug text-muted">
             All {all.length} projects, {live} of them with something running you can
             open. Source on every row. Where a repository is not mine, the row says
             whose it is and what I did on it.
@@ -165,7 +165,7 @@ export default function Repositories() {
         </Reveal>
 
         <Reveal index={2}>
-          <p className="mt-6 text-[13px] leading-snug text-muted">
+          <p className="mt-6 text-[14px] leading-snug text-muted">
             There is more on the account that is not a project: coursework, notes
             and a few small experiments.{" "}
             <a

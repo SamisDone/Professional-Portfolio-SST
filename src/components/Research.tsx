@@ -12,7 +12,7 @@ import MaskText from "./MaskText";
  */
 function Authors({ names, self }: { names: string[]; self?: number }) {
   return (
-    <p className="mt-1.5 max-w-measure text-[13px] leading-snug text-muted">
+    <p className="mt-2 max-w-measure text-[14px] leading-relaxed text-muted">
       {names.map((name, i) => (
         <span key={name}>
           {i > 0 && ", "}
@@ -43,7 +43,7 @@ export default function Research() {
           <h1 className="max-w-[22ch] h-section font-display text-ink">
             <MaskText text="Research." />
           </h1>
-          <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
+          <p className="mt-2 max-w-[46ch] text-[15px] leading-snug text-muted">
             Published work, and what is on the bench now.
           </p>
         </Reveal>
@@ -53,12 +53,12 @@ export default function Research() {
             {years.map((year, gi) => (
               <div
                 key={year}
-                className="border-t border-ink/15 pt-3 first:border-ink/30 [&:not(:last-child)]:pb-5"
+                className="border-t border-ink/15 pt-5 first:border-ink/30 [&:not(:last-child)]:pb-8"
               >
               <div className="grid gap-4 md:grid-cols-12">
                 <h2 className="font-mono text-[12px] text-accent md:col-span-2">{year}</h2>
 
-                <ul className="flex flex-col gap-4 md:col-span-10">
+                <ul className="flex flex-col gap-9 md:col-span-10">
                   {research
                     .filter((m) => m.year === year)
                     .map((m, i) => (
@@ -67,7 +67,7 @@ export default function Research() {
                       // the link to the paper now and the code repository sits
                       // on the venue line, costing no extra row.
                       <Reveal as="li" key={m.title} index={gi + i}>
-                        <h3 className="flex items-start gap-2 text-[15px] font-medium leading-snug text-ink">
+                        <h3 className="flex items-start gap-2 text-[18px] font-medium leading-snug text-ink">
                           {m.href ? (
                             <a
                               href={m.href}
@@ -78,14 +78,14 @@ export default function Research() {
                               {m.title}
                               <ArrowUpRightIcon
                                 size={16}
-                                className="mt-1.5 shrink-0 text-muted transition-transform group-hover:-translate-y-0.5 group-hover:text-ink"
+                                className="mt-1 shrink-0 text-muted transition-transform group-hover:-translate-y-0.5 group-hover:text-ink"
                               />
                             </a>
                           ) : (
                             m.title
                           )}
                         </h3>
-                        <p className="mt-1.5 font-mono text-[12px] text-muted">
+                        <p className="mt-2 font-mono text-[12px] text-muted">
                           <span className="text-[12px] uppercase tracking-[0.16em] text-accent">
                             {m.kind}
                           </span>
@@ -107,7 +107,7 @@ export default function Research() {
                           )}
                         </p>
                         {m.authors && <Authors names={m.authors} self={m.selfIndex} />}
-                        <p className="mt-1.5 max-w-measure text-[14px] leading-snug text-muted">
+                        <p className="mt-2 max-w-measure text-[15px] leading-relaxed text-muted">
                           {m.note}
                         </p>
                       </Reveal>
@@ -123,10 +123,10 @@ export default function Research() {
               <span className="font-mono text-[12px] uppercase tracking-[0.16em] text-accent">
                 {currentResearch.kind}
               </span>
-              <h2 className="mt-2 text-[15px] font-medium leading-snug text-ink">
+              <h2 className="mt-2 text-[18px] font-medium leading-snug text-ink">
                 {currentResearch.title}
               </h2>
-              <p className="mt-1.5 max-w-measure text-[14px] leading-snug text-muted">
+              <p className="mt-2 max-w-measure text-[15px] leading-relaxed text-muted">
                 {currentResearch.note}
               </p>
             </div>

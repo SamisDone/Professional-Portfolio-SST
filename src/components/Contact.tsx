@@ -130,7 +130,7 @@ export default function Contact() {
                       className="tap group flex items-center justify-between gap-4"
                     >
                       <dt className="font-mono text-[12px] text-muted">{s.label}</dt>
-                      <dd className="flex items-center gap-1.5 text-[13px] font-medium text-ink">
+                      <dd className="flex items-center gap-1.5 text-[14px] font-medium text-ink">
                         {s.handle}
                         <ArrowUpRightIcon
                           size={13}
