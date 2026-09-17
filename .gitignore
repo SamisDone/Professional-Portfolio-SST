@@ -30,7 +30,12 @@ dist-ssr
 # Local probe scripts
 _*.mjs
 
-# Font source archives, kept locally
+# Local working notes, kept out of the public repository
+CONTEXT.md
+SESSION_CONTEXT.md
+github_repositories.csv
+
+# Font source archives
 *.zip
 
 # LaTeX build output for the CV; the PDF that ships is public/Samonwita_Sarker_CV.pdf

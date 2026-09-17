@@ -5,7 +5,7 @@
 export const profile = {
   name: "Samonwita Sarker",
   initials: "SS",
-  location: "Chattogram, Bangladesh",
+  location: "Dhaka and Chattogram, Bangladesh",
   email: "sarker.samonwita@gmail.com",
   github: "https://github.com/SamisDone",
   /**
@@ -768,7 +768,7 @@ export const experience: Role[] = [
     // team; five people commit to its branch.
     org: "BdREN Innovation - Cortex",
     role: "Team Lead, crawler team (industrial attachment)",
-    period: "3 to 23 September 2026",
+    period: "3 September 2026 to Present",
     points: [
       "Lead Team A, the five-person crawler team: split the CUET capture into portions with named owners, and take the team's work through review in its pull requests.",
       "Cortex crawls a website, embeds it into a vector database and answers questions about it with citations. I built its CUET scraper: cuet.ac.bd is a Next.js app whose pages ship no content, so it reads the public JSON API first and renders only what the API misses, capturing 735 documents, all 382 faculty profiles and 1,106 linked files.",
