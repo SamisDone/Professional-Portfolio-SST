@@ -761,12 +761,20 @@ export type Role = {
 
 export const experience: Role[] = [
   {
-    // Dates from her. What the attachment covers, and where, are hers to add;
-    // the entry says nothing it cannot back up until then.
+    // From the BdREN-Innovation/Cortex repository: her 47 of the 84 commits on
+    // Team A's branch, and her two pull requests. The BDREN crawl, the
+    // Crawl4AI crawler and the CUET general-portion builders are teammates'
+    // work and are not claimed here. PR #3 is still in review. She leads the
+    // team; five people commit to its branch.
     org: "BdREN Innovation - Cortex",
-    role: "Industrial attachment",
+    role: "Team Lead, crawler team (industrial attachment)",
     period: "3 to 23 September 2026",
-    points: [],
+    points: [
+      "Lead Team A, the five-person crawler team: split the CUET capture into portions with named owners, and take the team's work through review in its pull requests.",
+      "Cortex crawls a website, embeds it into a vector database and answers questions about it with citations. I built its CUET scraper: cuet.ac.bd is a Next.js app whose pages ship no content, so it reads the public JSON API first and renders only what the API misses, capturing 735 documents, all 382 faculty profiles and 1,106 linked files.",
+      "Traced every document and file back to the page and endpoint it came from, so a citation downstream points at a real source, and added a 26-check verify stage and privacy rules that drop personal fields the site does not show.",
+      "Hardened the team's shared crawler after review, with one rate limiter per host across pages, files and robots.txt, a record of every skipped page and failed download, and 13 new tests. Wrote the data guide the knowledge team builds on.",
+    ],
   },
   {
     org: "Fleet AI, Inc.",
@@ -943,7 +951,7 @@ export const trajectoryNote =
  * figure the CV prints, so this caption only has to say what each point is.
  */
 export const trajectoryCaption =
-  "CUET, six terms of eight. Each point is that term alone, not a running total.";
+  "Six terms of eight. Each point is one term alone.";
 
 /**
  * The strip under the hero, declared here rather than at the top of the file

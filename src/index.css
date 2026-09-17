@@ -515,3 +515,25 @@ body.dialog-open .section-pager {
     padding-block: 0.375rem;
   }
 }
+
+/* About on a laptop screen. The chart keeps its size, because shrinking it
+   shrinks its labels past reading; the gaps around it close up instead. */
+@media (max-height: 880px) {
+  #about .about-chart {
+    margin-top: 1rem;
+  }
+  #about .about-stack {
+    margin-top: 1.25rem;
+  }
+}
+@media (max-height: 790px) {
+  #about .about-chart {
+    margin-top: 0.5rem;
+  }
+  #about .about-stack {
+    margin-top: 0.75rem;
+  }
+  #about .about-stack > div {
+    padding-block: 0.5rem;
+  }
+}
