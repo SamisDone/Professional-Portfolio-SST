@@ -38,7 +38,7 @@ export default function Research() {
 
   return (
     <section id="research" className="scroll-mt-16 border-b border-rule">
-      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
+      <div className="mx-auto max-w-shell section-pad px-5 sm:px-8">
         <Reveal>
           <h1 className="max-w-[22ch] h-section font-display text-ink">
             <MaskText text="Research." />
@@ -86,7 +86,7 @@ export default function Research() {
                           )}
                         </h3>
                         <p className="mt-1.5 font-mono text-[12px] text-muted">
-                          <span className="text-[11px] uppercase tracking-[0.16em] text-accent">
+                          <span className="text-[12px] uppercase tracking-[0.16em] text-accent">
                             {m.kind}
                           </span>
                           {"  ·  "}
@@ -120,7 +120,7 @@ export default function Research() {
 
           <Reveal index={2} className="lg:col-span-4">
             <div className="border-t border-ink/30 pt-5">
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+              <span className="font-mono text-[12px] uppercase tracking-[0.16em] text-accent">
                 {currentResearch.kind}
               </span>
               <h2 className="mt-2 text-[15px] font-medium leading-snug text-ink">

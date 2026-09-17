@@ -77,10 +77,12 @@ export default function Header() {
             href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-1.5 border border-rule px-3 py-1.5 text-[12px] font-medium text-ink transition-colors hover:border-accent sm:inline-flex"
+            // Filled, and says what it opens. It was a small outlined box in
+            // the corner, and the CV is the thing most visitors came for.
+            className="hidden items-center gap-1.5 bg-accent-solid px-3.5 py-2 text-[13px] font-medium text-on-accent transition-transform hover:-translate-y-[1px] sm:inline-flex"
           >
-            CV
-            <ArrowUpRightIcon size={12} weight="bold" />
+            CV (PDF)
+            <ArrowUpRightIcon size={13} weight="bold" />
           </a>
           <button
             onClick={() => setOpen((v) => !v)}

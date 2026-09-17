@@ -1,8 +1,8 @@
 import { about, education, profile } from "../data/content";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
-import Trajectory from "./Trajectory";
 import Entry from "./Entry";
+import Trajectory from "./Trajectory";
 
 /**
  * Two bands. The first is who I am and what I work with; the second is where
@@ -10,8 +10,9 @@ import Entry from "./Entry";
  *
  * Education was only ever in the CV, which is a PDF a visitor has to decide to
  * download, and it is the first thing a recruiter checks, so it stays here.
- * The grade chart sits beside it: it was once next to a list of publications,
- * which is not the question it answers. The club roles, competitions and
+ * The CGPA is one line in it, the same line the CV prints, and the term-by-term
+ * trend chart sits under it so the figure and the climb read together. The
+ * club roles, competitions and
  * certificates that used to follow are on the activities page, because with
  * them this page ran well past one screen.
  */
@@ -27,7 +28,7 @@ export default function About() {
               </h1>
             </Reveal>
 
-            <div className="about-intro short-trim mt-9 flex flex-col gap-5">
+            <div className="about-intro mt-9 flex flex-col gap-5">
               {about.paragraphs.map((p, i) => (
                 <Reveal key={p.slice(0, 20)} index={i}>
                   <p className="max-w-measure text-[17px] leading-relaxed text-muted">
@@ -86,7 +87,7 @@ export default function About() {
           <dl className="about-stack mt-9 grid gap-x-8 border-t border-ink/25 sm:grid-cols-2 lg:grid-cols-4">
             {about.stack.map((group) => (
               <div key={group.group} className="border-b border-rule py-4 lg:border-b-0">
-                <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                <dt className="font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
                   {group.group}
                 </dt>
                 <dd className="mt-2 text-[14px] leading-relaxed text-ink">

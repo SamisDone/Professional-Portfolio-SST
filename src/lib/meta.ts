@@ -46,12 +46,12 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/work": {
     title: `Projects | ${NAME}`,
     description:
-      "Ten case studies: brick kiln detection from satellite imagery, a browser-driven robot arm, a paid bilingual client site and two published Chrome extensions.",
+      "Twelve case studies, led by an AI hospital platform, a privacy-first Chrome extension, a paid bilingual client site and a browser-driven robot arm.",
   },
   "/experience": {
     title: `Experience | ${NAME}`,
     description:
-      "Generalist contractor at Fleet AI, writing and reviewing long-horizon agentic AI evaluation tasks. Freelance web development for a Montreal design firm.",
+      "AI evaluation contractor at Fleet AI, writing and reviewing long-horizon agentic AI evaluation tasks. Freelance web development for a Montreal design firm.",
   },
   "/research": {
     title: `Research and publications | ${NAME}`,
@@ -61,7 +61,7 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/about": {
     title: `About | ${NAME}`,
     description:
-      "CSE undergraduate at CUET, graduating 2027. Full-stack engineering and explainable AI research, the stack behind both, and grades term by term.",
+      "CSE undergraduate at CUET, graduating 2027, CGPA 3.51 with a latest term of 3.85. Full-stack engineering and explainable AI research, and the stack behind both.",
   },
   "/activities": {
     title: `Leadership and competitions | ${NAME}`,
@@ -81,7 +81,7 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/contact": {
     title: `Contact | ${NAME}`,
     description:
-      "Open to software and ML research internships, remote or in Chattogram. Reach me by email, on LinkedIn, or through the form.",
+      "Open to software engineering and ML job opportunities, remote now or on site after graduating in 2027. Reach me by email, on LinkedIn, or through the form.",
   },
 };
 

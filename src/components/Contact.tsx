@@ -72,7 +72,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="scroll-mt-16">
-      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
+      <div className="mx-auto max-w-shell section-pad px-5 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
@@ -80,16 +80,43 @@ export default function Contact() {
                 <MaskText text="Get in touch." />
               </h1>
               <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
-                I am looking for internships and research collaborations. If you
-                have a project, a paper idea, or a question about anything above,
-                write to me.
+                I am looking for job opportunities in software engineering and ML. If
+                you are hiring, or have a project, a paper idea, or a question about
+                anything above, write to me.
               </p>
-              <a
-                href={`mailto:${profile.email}`}
-                className="tap mt-7 inline-flex items-center gap-2 text-[15px] font-medium text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
-              >
-                {profile.email}
-              </a>
+              {/* The what, how and where, above the fold. Those are the first
+                  things a recruiter filters on. */}
+              <dl className="mt-6 grid grid-cols-[7.75rem_1fr] gap-x-4 gap-y-2 border-l-2 border-accent pl-4 text-[15px] leading-snug">
+                {[
+                  ["Looking for", profile.status],
+                  ["Work", profile.workMode],
+                  ["Based", `${profile.location} (UTC+6)`],
+                ].map(([term, value]) => (
+                  <div key={term} className="contents">
+                    <dt className="pt-0.5 font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
+                      {term}
+                    </dt>
+                    <dd className="text-ink">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="tap inline-flex items-center gap-2 text-[15px] font-medium text-ink underline decoration-rule underline-offset-4 transition-colors hover:decoration-accent-2"
+                >
+                  {profile.email}
+                </a>
+                <a
+                  href={profile.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 border border-rule px-4 py-2 text-[14px] font-medium text-ink transition-colors hover:border-accent"
+                >
+                  Download the CV
+                  <ArrowUpRightIcon size={13} weight="bold" />
+                </a>
+              </div>
             </Reveal>
 
             <Reveal index={1}>
@@ -150,7 +177,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="c-name"
-                    className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted"
+                    className="mb-2 block font-mono text-[12px] uppercase tracking-[0.16em] text-muted"
                   >
                     Name
                   </label>
@@ -158,6 +185,7 @@ export default function Contact() {
                     id="c-name"
                     name="name"
                     autoComplete="name"
+                    placeholder="Your name"
                     value={form.name}
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     aria-invalid={!!errors.name}
@@ -173,7 +201,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="c-email"
-                    className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted"
+                    className="mb-2 block font-mono text-[12px] uppercase tracking-[0.16em] text-muted"
                   >
                     Email
                   </label>
@@ -182,6 +210,7 @@ export default function Contact() {
                     name="email"
                     type="email"
                     autoComplete="email"
+                    placeholder="you@company.com"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                     aria-invalid={!!errors.email}
@@ -199,7 +228,7 @@ export default function Contact() {
               <div>
                 <label
                   htmlFor="c-message"
-                  className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted"
+                  className="mb-2 block font-mono text-[12px] uppercase tracking-[0.16em] text-muted"
                 >
                   Message
                 </label>
@@ -207,6 +236,7 @@ export default function Contact() {
                   id="c-message"
                   name="message"
                   rows={6}
+                  placeholder="The role, the project, or the question."
                   value={form.message}
                   onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   aria-invalid={!!errors.message}

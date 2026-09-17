@@ -22,8 +22,11 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
  * Only projects on her own account, where authorship is not in question. The
  * list is picked by slug and read from `featured`, so the titles, kinds and
  * image paths cannot drift from the work page.
+ *
+ * MediHub leads. Greenlight led before, and its shot is a mostly white 3D
+ * canvas that reads as a blank card at this size; it goes to the back.
  */
-const SLUGS = ["greenlight", "pierra", "tabsaver", "riphours"];
+const SLUGS = ["medihub", "pierra", "riphours", "greenlight"];
 const CARDS = SLUGS.map((s) => featured.find((p) => p.slug === s)).filter(
   (p): p is (typeof featured)[number] & { shot: string } => Boolean(p?.shot),
 );

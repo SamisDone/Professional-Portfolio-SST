@@ -8,6 +8,19 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 const TYPING = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
 /**
+ * The arrow key that does the same thing as the button, shown only where there
+ * is a keyboard to press it. It used to read "KEY" on every device, which said
+ * nothing on a phone and looked like a stray label everywhere else.
+ */
+function KeyHint({ children }: { children: string }) {
+  return (
+    <kbd className="mx-1 hidden border border-rule px-1 font-mono text-[12px] normal-case tracking-normal text-muted [@media(hover:hover)]:inline">
+      {children}
+    </kbd>
+  );
+}
+
+/**
  * Left and right arrow keys walk the sections in reading order, and the same
  * two moves are on screen as buttons so the shortcut is discoverable rather
  * than a secret.
@@ -60,6 +73,21 @@ export default function Pager() {
    * mechanism.
    */
   const [atRest, setAtRest] = useState(true);
+  /*
+   * On a phone the pager is part of the page, above the footer, rather than
+   * fixed to the screen. Fixed, it sat on top of the last row of content,
+   * which on a narrow screen is always there. In the flow it can only ever be
+   * reached at the end, so it is always shown.
+   */
+  const [inFlow, setInFlow] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 639px)");
+    const sync = () => setInFlow(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
   useEffect(() => {
     const update = () => {
       const de = document.documentElement;
@@ -87,10 +115,11 @@ export default function Pager() {
   // The nav keeps its own entry animation, with the 0.9s stagger that belongs
   // to the page arriving. Showing and hiding on scroll is a separate animation
   // on the two buttons, so neither restarts the other.
+  const shown = atRest || inFlow;
   const rest = {
-    animate: { opacity: atRest ? 1 : 0, y: atRest ? 0 : 10 },
+    animate: { opacity: shown ? 1 : 0, y: shown ? 0 : 10 },
     transition: { duration: reduced ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] as const },
-    className: atRest ? "pointer-events-auto" : "pointer-events-none",
+    className: shown ? "pointer-events-auto" : "pointer-events-none",
   };
 
   return (
@@ -105,12 +134,11 @@ export default function Pager() {
           ? { duration: 0 }
           : { duration: 0.5, delay: 0.9, ease: [0.16, 1, 0.3, 1] }
       }
-      aria-hidden={!atRest}
-      // Sits clear of the footer rather than on top of it. `--footer-h` is
-      // published by Footer; the fallback keeps it sane for the one frame
-      // before that lands, and on the 404, which has no pager anyway.
-      style={{ bottom: "calc(var(--footer-h, 3.5rem) + 0.75rem)" }}
-      className="section-pager pointer-events-none fixed inset-x-0 z-40 flex items-end justify-between gap-4 px-5 sm:px-8"
+      aria-hidden={!shown}
+      // From `sm` up it is fixed and sits clear of the footer; `--footer-h`
+      // is published by Footer, and the offset is set in index.css so the
+      // prerendered HTML is right before this component knows the screen.
+      className="section-pager pointer-events-none relative z-40 flex items-end justify-between gap-4 px-5 pb-6 pt-2 sm:fixed sm:inset-x-0 sm:p-0 sm:px-8"
     >
       <motion.div {...rest}>
         {prev && (
@@ -123,7 +151,7 @@ export default function Pager() {
             aria-label={`Previous section: ${prev.label}`}
             // Hidden buttons must leave the tab order too. aria-hidden on the
             // nav alone would leave Tab landing on a control nobody can see.
-            tabIndex={atRest ? undefined : -1}
+            tabIndex={shown ? undefined : -1}
             className="group flex items-center gap-3 border border-rule bg-paper/80 py-2.5 pl-2.5 pr-4 backdrop-blur-md transition-colors hover:border-accent"
           >
             <CaretLeftIcon
@@ -132,12 +160,13 @@ export default function Pager() {
               className="text-accent-2 transition-transform group-hover:-translate-x-0.5"
             />
             <span aria-hidden className="text-left">
-              {/* The trailing space is load-bearing. These are two adjacent
-                  text nodes, and anything reading the page without a browser,
-                  an ATS or a link scraper, joins them with nothing in between
-                  and gets "keyWork". */}
-              <span className="block font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                {"← key "}
+              {/* The trailing space is load-bearing. These are adjacent text
+                  nodes, and anything reading the page without a browser, an
+                  ATS or a link scraper, joins them with nothing in between
+                  and gets "NextWork". */}
+              <span className="block font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
+                {"Previous "}
+                <KeyHint>←</KeyHint>
               </span>
               <span className="block text-[13px] font-medium text-ink">{prev.label}</span>
             </span>
@@ -150,16 +179,17 @@ export default function Pager() {
           <button
             onClick={() => navigate(next.path)}
             aria-label={`Next section: ${next.label}`}
-            tabIndex={atRest ? undefined : -1}
+            tabIndex={shown ? undefined : -1}
             className="group flex items-center gap-3 border border-rule bg-paper/80 py-2.5 pl-4 pr-2.5 backdrop-blur-md transition-colors hover:border-accent"
           >
             <span aria-hidden className="text-right">
-              {/* The trailing space is load-bearing. These are two adjacent
-                  text nodes, and anything reading the page without a browser,
-                  an ATS or a link scraper, joins them with nothing in between
-                  and gets "keyWork". */}
-              <span className="block font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                {"→ key "}
+              {/* The trailing space is load-bearing. These are adjacent text
+                  nodes, and anything reading the page without a browser, an
+                  ATS or a link scraper, joins them with nothing in between
+                  and gets "NextWork". */}
+              <span className="block font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
+                <KeyHint>→</KeyHint>
+                {"Next "}
               </span>
               <span className="block text-[13px] font-medium text-ink">{next.label}</span>
             </span>

@@ -40,7 +40,7 @@ export default function Hero() {
             className="mb-5 font-mono text-[12px] uppercase tracking-[0.16em] text-accent"
           >
             {profile.standfirst}
-            <span className="text-muted"> / Open to internships</span>
+            <span className="text-muted"> / Open to job opportunities</span>
           </motion.p>
 
           <h1 tabIndex={-1} className="hero-name font-display text-ink outline-none">

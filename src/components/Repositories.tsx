@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
-import { featured, otherWork, profile, type Project } from "../data/content";
+import { featured, notable, otherWork, profile, type Project } from "../data/content";
 import Reveal from "./Reveal";
 import MaskText from "./MaskText";
 
@@ -96,7 +96,7 @@ function Row({ project, n }: { project: Project; n: number }) {
 }
 
 export default function Repositories() {
-  const all = [...featured, ...otherWork];
+  const all = [...featured, ...notable, ...otherWork];
   const live = all.filter((p) => p.live).length;
 
   return (
@@ -138,19 +138,19 @@ export default function Repositories() {
               </caption>
               <thead>
                 <tr className="border-b border-ink/30">
-                  <th scope="col" className="pb-2 pr-4 font-mono text-[11px] font-normal uppercase tracking-[0.16em] text-muted">
+                  <th scope="col" className="pb-2 pr-4 font-mono text-[12px] font-normal uppercase tracking-[0.16em] text-muted">
                     #
                   </th>
-                  <th scope="col" className="pb-2 pr-5 font-mono text-[11px] font-normal uppercase tracking-[0.16em] text-muted">
+                  <th scope="col" className="pb-2 pr-5 font-mono text-[12px] font-normal uppercase tracking-[0.16em] text-muted">
                     Project
                   </th>
-                  <th scope="col" className="hidden pb-2 pr-5 font-mono text-[11px] font-normal uppercase tracking-[0.16em] text-muted md:table-cell">
+                  <th scope="col" className="hidden pb-2 pr-5 font-mono text-[12px] font-normal uppercase tracking-[0.16em] text-muted md:table-cell">
                     Stack
                   </th>
-                  <th scope="col" className="hidden pb-2 pr-5 font-mono text-[11px] font-normal uppercase tracking-[0.16em] text-muted lg:table-cell">
+                  <th scope="col" className="hidden pb-2 pr-5 font-mono text-[12px] font-normal uppercase tracking-[0.16em] text-muted lg:table-cell">
                     Kind
                   </th>
-                  <th scope="col" className="pb-2 text-right font-mono text-[11px] font-normal uppercase tracking-[0.16em] text-muted">
+                  <th scope="col" className="pb-2 text-right font-mono text-[12px] font-normal uppercase tracking-[0.16em] text-muted">
                     Links
                   </th>
                 </tr>
@@ -167,7 +167,7 @@ export default function Repositories() {
         <Reveal index={2}>
           <p className="mt-6 text-[13px] leading-snug text-muted">
             There is more on the account that is not a project: coursework, notes
-            and a few browser toys.{" "}
+            and a few small experiments.{" "}
             <a
               href={profile.githubRepos}
               target="_blank"

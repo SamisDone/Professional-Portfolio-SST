@@ -11,13 +11,13 @@ import MaskText from "./MaskText";
 export default function Experience() {
   return (
     <section id="experience" className="scroll-mt-16 border-b border-rule bg-raised">
-      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
+      <div className="mx-auto max-w-shell section-pad px-5 sm:px-8">
         <Reveal>
           <h1 className="max-w-[20ch] h-section font-display text-ink">
-            <MaskText text="Paid work." />
+            <MaskText text="Experience." />
           </h1>
-          <p className="mt-2 max-w-[46ch] text-[14px] leading-snug text-muted">
-            Where someone paid me for the work.
+          <p className="mt-2 max-w-[46ch] text-[15px] leading-snug text-muted">
+            Contract and freelance roles.
           </p>
         </Reveal>
 

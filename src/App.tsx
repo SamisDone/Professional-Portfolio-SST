@@ -60,9 +60,11 @@ export function AppShell() {
       <div className="relative z-10 flex min-h-[100dvh] flex-col">
         <Header />
         <Routed />
+        {/* Before the footer, because on a phone it sits in the page flow
+            there. From `sm` up it is fixed, and its place here is moot. */}
+        <Pager />
         <Footer />
       </div>
-      <Pager />
     </>
   );
 }

@@ -3,7 +3,7 @@ import Research from "../components/Research";
 
 export default function ResearchPage() {
   return (
-    <Page title="Research" center>
+    <Page title="Research">
       <Research />
     </Page>
   );

@@ -9,11 +9,10 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
- * The full case study, opened from a card in the rail.
+ * The full case study, opened from a card on the work page.
  *
- * The reasoning lives here rather than inline on the card, which is what lets
- * the rail stay one screen tall without the problem, approach and outcome
- * being cut for space.
+ * The reasoning lives here rather than inline on the card, which keeps the grid
+ * scannable without the problem, approach and outcome being cut for space.
  */
 export default function ProjectDialog({
   project,
@@ -102,7 +101,7 @@ export default function ProjectDialog({
             }}
             className="relative my-auto grid w-full max-w-4xl gap-0 border border-rule bg-raised shadow-2xl shadow-black/50 md:grid-cols-2"
           >
-            <div className="bg-surface-2/25 p-4 sm:p-5">
+            <div className="order-2 bg-surface-2/25 p-4 sm:p-5 md:order-none">
               {project.shot ? (
                 <Figure
                   src={project.shot}
@@ -140,22 +139,55 @@ export default function ProjectDialog({
                     ))}
                 </dl>
               )}
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[12px] text-muted">
-                <span className="text-ink">{project.kind}</span>
-                <span aria-hidden className="h-3 w-px bg-rule" />
-                <span>{project.year}</span>
-                {/* Every project carries a role now, but the guard stays:
-                    silence is better than a guess at who did what. */}
-                {project.role ? (
-                  <>
-                    <span aria-hidden className="h-3 w-px bg-rule" />
-                    <span className="text-accent-2">{project.role}</span>
-                  </>
-                ) : null}
-              </div>
-              <p className="mt-2 font-mono text-[12px] leading-relaxed text-muted">
-                {project.stack.join(", ")}
-              </p>
+              {/* The facts a reader wants before the prose: who, what, when,
+                  and whether there is something running. This column used to
+                  hold one line of metadata and then sit empty beside a long
+                  case study. */}
+              <dl className="mt-4 grid grid-cols-[6.5rem_1fr] gap-x-4 gap-y-2 border-t border-rule pt-4 text-[14px] leading-snug">
+                {[
+                  // Every project carries a role, but the guard stays: silence
+                  // is better than a guess at who did what.
+                  ["Role", project.role],
+                  ["Type", `${project.kind}, ${project.year}`],
+                  ["Status", project.live ? "Live" : "Source only"],
+                  ["Stack", project.stack.join(", ")],
+                ]
+                  .filter((row): row is [string, string] => Boolean(row[1]))
+                  .map(([term, value]) => (
+                    <div key={term} className="contents">
+                      <dt className="font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
+                        {term}
+                      </dt>
+                      <dd className={term === "Role" ? "text-accent-2" : "text-ink"}>{value}</dd>
+                    </div>
+                  ))}
+              </dl>
+
+              {project.flow && (
+                <div className="mt-5 border-t border-rule pt-4">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.16em] text-muted">
+                    How it works
+                  </p>
+                  <ol className="mt-3 flex flex-col">
+                    {project.flow.map((step, i) => (
+                      <li key={step} className="relative flex gap-3 pb-3 last:pb-0">
+                        {/* The connector runs from each step's marker to the
+                            next, so the list reads as one path. */}
+                        {i < project.flow!.length - 1 && (
+                          <span
+                            aria-hidden
+                            className="absolute left-[0.6875rem] top-6 h-[calc(100%-1.25rem)] w-px bg-rule"
+                          />
+                        )}
+                        <span className="num grid h-6 w-6 shrink-0 place-items-center border border-accent/60 font-mono text-[12px] text-accent">
+                          {i + 1}
+                        </span>
+                        <span className="pt-0.5 text-[14px] leading-snug text-ink">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col p-5 sm:p-7 md:border-l md:border-rule">
@@ -172,14 +204,25 @@ export default function ProjectDialog({
               <dl className="mt-5 flex flex-col gap-4 border-t border-rule pt-5">
                 {[
                   ["Problem", project.problem],
-                  ["What I built", project.approach],
+                  // On team work "What I built" claims the whole system, which
+                  // is the first thing an interviewer checks.
+                  [project.team ? "What we built" : "What I built", project.approach],
+                  ["My part", project.team ? project.myPart : undefined],
                   ["Outcome", project.outcome],
-                ].map(([term, body]) => (
+                ]
+                  .filter((row): row is [string, string] => Boolean(row[1]))
+                  .map(([term, body]) => (
                   <div key={term}>
-                    <dt className="mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+                    <dt className="mb-1 font-mono text-[12px] uppercase tracking-[0.16em] text-accent">
                       {term}
                     </dt>
-                    <dd className="text-[14px] leading-relaxed text-muted">{body}</dd>
+                    <dd
+                      className={`text-[14px] leading-relaxed ${
+                        term === "My part" ? "text-ink" : "text-muted"
+                      }`}
+                    >
+                      {body}
+                    </dd>
                   </div>
                 ))}
               </dl>

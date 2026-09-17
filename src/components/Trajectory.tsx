@@ -161,7 +161,7 @@ export default function Trajectory({ bare = false }: { bare?: boolean }) {
           </p>
         </figcaption>
         {chart}
-        <p className="mt-2 font-mono text-[11px] text-muted">{trajectoryCaption}</p>
+        <p className="mt-2 font-mono text-[12px] text-muted">{trajectoryCaption}</p>
       </figure>
     );
   }

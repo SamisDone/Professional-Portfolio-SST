@@ -3,7 +3,7 @@ import Work from "../components/Work";
 
 export default function WorkPage() {
   return (
-    <Page title="Work" center>
+    <Page title="Work">
       <Work />
     </Page>
   );

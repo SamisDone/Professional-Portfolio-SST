@@ -10,7 +10,7 @@ explainable AI and NLP.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/work.jpg" alt="The work page: a sliding rail of project cards with real screenshots"></td>
+    <td width="50%"><img src="docs/work.jpg" alt="The work page: project cards with real screenshots"></td>
     <td width="50%"><img src="docs/research.jpg" alt="The research page: two publications with author lists and a thesis in progress"></td>
   </tr>
   <tr>
@@ -56,11 +56,11 @@ product.
 
 | Route | What is on it |
 |---|---|
-| `/` | The name, one line on what she does, a shuffling stack of real screenshots, and four proof figures |
-| `/work` | Ten projects in a sliding rail, each opening a full case study, plus an index of fifteen more |
-| `/experience` | Paid work: Fleet AI, Inc. and a freelance client site |
+| `/` | The name, one line on what she does, a shuffling stack of real screenshots, four proof figures, and three flagship projects |
+| `/work` | Six projects in a grid and six more in a list, each opening a full case study |
+| `/experience` | Fleet AI, Inc. and a freelance client site |
 | `/research` | An IEEE ICECTE 2026 paper, a first-author ACL 2026 system paper, and the thesis in progress |
-| `/about` | Introduction, education, term-by-term grades, and the stack |
+| `/about` | Introduction, education with the CGPA and a term-by-term trend chart, and the stack |
 | `/activities` | Leadership roles, competitions and certificates |
 | `/contact` | Email, profiles and a contact form |
 | `/repositories` | Every project in one table with source and live links, including work on other people's repositories |
@@ -71,9 +71,10 @@ arrow keys and the on-screen pager all walk them in that order.
 
 ## What it does well
 
-- **Every page fits one screen** on a laptop, from 1920x1080 down to 1280x720.
-  Spacing and type scale against the viewport height, with extra compression
-  for short screens.
+- **Pages scroll when they need to.** Every page used to be forced into one
+  laptop screen, which cost empty bands, 11px text and a home page with no
+  projects on it. Spacing still scales with the viewport height, but text is
+  never shrunk to fit.
 - **Arrow-key navigation** between sections, with a curtain transition that
   shows the name of the page you are moving to.
 - **It works without JavaScript.** Every route is prerendered to real HTML, so
@@ -138,7 +139,7 @@ src/
   components/       Page sections and shared pieces:
                       Hero, ShotDeck, Proof, Work, ProjectDialog, Experience,
                       Research, About, Activities, Contact, Repositories,
-                      Entry, Figure, MaskText, Reveal, Trajectory,
+                      Entry, Figure, Flagships, MaskText, Reveal,
                       Header, Footer, Pager, PageTransition, Backdrop
   data/content.ts   Every string a visitor reads
   lib/routes.ts     The reading order, used by the nav, the arrow keys and the pager
@@ -162,10 +163,13 @@ CONTEXT.md          The design history: every instruction, reversal and hard-won
 publications, experience, education, leadership, competitions and
 certifications. Change it there and every page that shows it updates.
 
-**Adding a project.** Add an entry to `featured` (the rail on `/work`) or to
-`otherWork` (the index). Write it from the project's own README, not from
-memory: every number on the site came from a real source. Set `role`, and if
-the repository is not hers, say what she did on it. Then:
+**Adding a project.** Add an entry to `featured` (the grid on `/work`, and the
+first three on the home page), `notable` (the list under it) or `otherWork`
+(named only on `/repositories`). Write it from the project's own README, not
+from memory: every number on the site came from a real source. Set `role`. On
+work done with other people set `team: true`, which makes the case study say
+"What we built", and set `myPart` from her own commits on the repository, never
+from a guess. `flow` draws a short "How it works" path in the case study. Then:
 
 1. Add the live URL to `TARGETS` in `scripts/capture-shots.mjs` and run it.
 2. Run `scripts/optimise-shots.mjs`.
@@ -256,8 +260,8 @@ Rules that keep it consistent:
 
 Motion is there to show hierarchy or a change of state, never as decoration.
 Headings rise out of a mask word by word, sections reveal as they enter, the
-page transition is a curtain carrying the next section's name, the work rail
-drifts, and the home page's screenshots shuffle. Everything checks
+page transition is a curtain carrying the next section's name, and the home
+page's screenshots shuffle. Nothing a visitor is reading moves on its own. Everything checks
 `useReducedMotion` and renders its final state when motion is reduced.
 
 ## How the build works
@@ -301,12 +305,14 @@ Each of these was a real bug. `CONTEXT.md` has the full story behind them.
   see empty skeleton boxes forever.
 - **Frames match the image's ratio.** Card height follows card width. A height
   cap on an image silently crops it.
-- **The rail recycles cards by rewriting flex `order`,** not by rotating a React
-  array, which lags a frame and makes the rail jump.
+- **`Figure` must never clip its image while it loads.** A lazy image clipped to
+  nothing never intersects the viewport, so it never loads and the reveal never
+  runs. The wipe is a cover over the image instead.
 - **The pager must not cover the footer.** `Footer` publishes its height as
-  `--footer-h` and the pager offsets itself by it. On a page that scrolls, the
-  pager only appears once the reader reaches the end, and hidden buttons leave
-  the tab order.
+  `--footer-h` and, from `sm` up, the pager offsets itself by it. On a page that
+  scrolls, the pager only appears once the reader reaches the end, and hidden
+  buttons leave the tab order. On a phone it sits in the page flow above the
+  footer, and it hides while a dialog or the menu is open.
 - **A bare four-number `ease` array next to a keyframe track** is read by
   framer-motion as one easing per segment, and the animation silently does not
   run. Use a named easing on keyframed tracks.
@@ -317,8 +323,8 @@ Each of these was a real bug. `CONTEXT.md` has the full story behind them.
 - **There is no catch-all rewrite,** deliberately. Every route is a real file, so
   Vercel serves `404.html` with a real 404 for anything else. A rewrite would
   answer 200 for junk URLs.
-- **Check the one-screen fit after any layout change,** at 1920x1080, 1536x864,
-  1440x900, 1366x768 and 1280x720. Test against the built site: `vite preview`
+- **Check layouts after any change** at 1920x1080, 1440x900, 1280x720 and a
+  390px phone. Test against the built site: `vite preview`
   is fine for layout, but it falls back to the home page's metadata on every
   route, so check metadata against the files in `dist/` instead.
 
@@ -354,14 +360,19 @@ Things that need the owner or a change outside this repository:
   IEEE entry has no start year or real description yet.
 - **Confirm the CGPA** (3.51, the equal-credit mean of six terms) against the
   official transcript.
-- **Confirm the roles on KilnWatch and Narrative Guard,** both labelled
-  "Contributor" for now.
+- **KilnWatch:** none of the repository's commits are hers, so the site shows no
+  "My part" for it. Say what she did and it can move back up.
+- **Numbers for Fleet AI** (tasks written and reviewed), **her part in the IEEE
+  paper**, the **thesis supervisor and expected date**, and **field sizes** for
+  the competition finals. Each has a place on the site waiting for a real figure.
 - **Test the contact form end to end** on the live site. FormSubmit holds the
   first message to a new address until a confirmation link is clicked.
-- **Redeploy KanDesk** to put it back on the rail, and give FinPulse a working
-  host so it can be captured.
-- **Take down the old portfolio** at `samonwitaportfolio.netlify.app`, which
-  competes with this one in search.
+- **Enable Web Analytics** for the project in the Vercel dashboard. The script
+  is already in `main.tsx` and 404s until then.
+- **GitHub profile:** point the website field at this site (it still points at
+  the old Netlify portfolio, which is gone), replace the bio, and pin six repos.
+- **Redeploy KanDesk** to put it back among the featured work, and give FinPulse
+  a working host so it can be captured.
 - Two certificates named on the site and the CV (freeCodeCamp Full-Stack
   Development, DataCamp Data Science and Python) have no file in the linked
   Drive folder yet.

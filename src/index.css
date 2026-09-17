@@ -271,6 +271,21 @@ body.dialog-open {
   }
 }
 
+/* From sm up the pager is fixed above the footer. Set here rather than inline
+   so the prerendered HTML is right on a phone, where it sits in the flow and a
+   bottom offset would push it up over the content. */
+@media (min-width: 640px) {
+  .section-pager {
+    bottom: calc(var(--footer-h, 3.5rem) + 0.75rem);
+  }
+}
+
+/* A case study or the phone menu is open. The pager showed through the
+   blurred backdrop, looking clickable when it was not. */
+body.dialog-open .section-pager {
+  visibility: hidden;
+}
+
 /*
  * Enlarges a small control's tap area to 44px without changing how it looks.
  *
@@ -302,44 +317,6 @@ body.dialog-open {
   transform: scaleX(1);
 }
 
-
-/*
- * Rail gutters. Real CSS rather than Tailwind arbitrary values, because the
- * nested calc() inside max() did not survive the class parser and the first
- * card ended up flush to the viewport edge instead of on the page gutter.
- */
-@media (min-width: 1024px) {
-  /* Doubled class so this beats the sm:px-8 utility on the same element.
-     Tailwind emits its responsive utilities after this file's own rules. */
-  .work-rail.work-rail {
-    padding-left: calc(max(0px, (100vw - 1240px) / 2) + 2rem);
-  }
-
-  /*
-   * The rail runs off both edges of the screen, and without this the card at
-   * the right edge is simply sliced down the middle. Fading the two edges
-   * makes cards arrive and leave rather than get cut, and it reads as the
-   * strip continuing past the window instead of being clipped by it.
-   *
-   * Wider on the right, where cards enter and there is more of one showing.
-   */
-  .work-rail {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      #000 5rem,
-      #000 calc(100% - 7rem),
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      #000 5rem,
-      #000 calc(100% - 7rem),
-      transparent 100%
-    );
-  }
-}
 
 /* Backdrop layers. Both are static paint; only the two colour fields move. */
 .backdrop-grid {
@@ -439,13 +416,6 @@ body.dialog-open {
   .page-pad {
     padding-bottom: clamp(2.7rem, 4.5vh, 3.5rem);
   }
-  /* Trim the largest body copy a step so measures stay readable but shorter. */
-  .short-trim p,
-  .short-trim dd,
-  .short-trim li {
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
 }
 
 /* The experience list carries the most body copy of any page, so it is the one
@@ -496,46 +466,6 @@ body.dialog-open {
   }
 }
 
-/* The work rail card and the research ledger are the last two blocks that do
-   not fit a 720px-tall screen.
-
-   This used to shrink the card title, through a selector naming an `h3` the
-   card had stopped having, so it had been doing nothing for a while. The title
-   is display type now and 28px is the floor for the face, so the height comes
-   off the frame around it instead: the row the title sits in, and the padding
-   of the card itself. */
-@media (max-height: 790px) {
-  .work-rail [data-card] {
-    padding: 0.75rem;
-  }
-  .work-rail [data-card] > div:first-of-type {
-    min-height: 2em;
-    margin-bottom: 0.25rem;
-  }
-  .work-rail [data-case] p {
-    font-size: 0.8125rem;
-    line-height: 1.4;
-  }
-  .work-rail a,
-  .work-rail button {
-    padding-block: 0.4rem;
-    font-size: 0.75rem;
-  }
-  .work-rail {
-    padding-bottom: 0.5rem;
-  }
-  #research li h3 {
-    font-size: 0.95rem;
-  }
-  #research li p {
-    font-size: 0.8125rem;
-    line-height: 1.4;
-  }
-  #research figure svg {
-    max-height: 150px;
-  }
-}
-
 /* About and Activities are the two record pages, and both carry more rows
    than any other route. On a short screen the rows close up and the chart
    gives up height before anything is cut. */
@@ -553,15 +483,8 @@ body.dialog-open {
   #about .about-stack > div {
     padding-block: 0.6rem;
   }
-  #about .about-chart {
-    margin-top: 1rem;
-  }
   #about li {
     padding-block: 0.5rem;
-  }
-  #about li p {
-    font-size: 0.8125rem;
-    line-height: 1.4;
   }
 }
 /* Activities has ten rows and a certificate list, so it starts closing up
@@ -570,18 +493,11 @@ body.dialog-open {
   #about .about-intro {
     margin-top: 1.75rem;
   }
-  #about .about-chart {
-    margin-top: 1.25rem;
-  }
   #activities > div > div:nth-of-type(2) {
     margin-top: 1rem;
   }
   #activities li {
     padding-block: 0.5rem;
-  }
-  #activities li p {
-    font-size: 0.8125rem;
-    line-height: 1.4;
   }
   #activities ol,
   #activities ul {
@@ -592,73 +508,10 @@ body.dialog-open {
   }
 }
 @media (max-height: 790px) {
-  #about figure svg {
-    max-height: 120px;
-  }
   #about .about-cta a {
     padding-block: 0.5rem;
   }
   #activities li {
     padding-block: 0.375rem;
-  }
-}
-
-/* The index band under the rail. It is the last block on the page, so it is
-   the one that gives ground first when the screen is short: the standfirst
-   goes, and the heading and the link close up on the rule above them. */
-@media (max-height: 790px) {
-  .index-band {
-    padding-bottom: 0.5rem;
-  }
-  .index-band > div {
-    padding-top: 0.625rem;
-  }
-  .index-band h2 {
-    font-size: 0.9375rem;
-  }
-}
-
-/* 1280x720 is the shortest screen worth supporting, and the rail is the one
-   place still a little over on it. */
-
-/*
- * The rail card's width sets the height of its screenshot, because the frame
- * is locked to the image's own ratio. Narrowing the card on a short screen
- * shrinks the shot without ever cropping it or padding it with bars.
- *
- * Flattened rather than nested: the build does not process @media inside
- * @media, so the nested variants were silently dropped.
- */
-@media (min-width: 1024px) {
-  .work-rail [data-case] {
-    width: min(36vw, 430px);
-  }
-}
-@media (min-width: 1024px) and (max-height: 900px) {
-  .work-rail [data-case] {
-    width: min(30vw, 360px);
-  }
-}
-@media (min-width: 1024px) and (max-height: 820px) {
-  .work-rail [data-case] {
-    width: min(24vw, 290px);
-  }
-}
-@media (min-width: 1024px) and (max-height: 760px) {
-  .work-rail [data-case] {
-    width: min(22vw, 265px);
-  }
-}
-
-
-@media (max-height: 780px) {
-  .work-rail {
-    padding-bottom: 0.5rem;
-  }
-  .work-rail [data-card] {
-    padding: 0.625rem;
-  }
-  .work-rail [data-case] p {
-    display: none;
   }
 }

@@ -71,8 +71,8 @@ export default function Figure({
   }, []);
 
   // Reveals as soon as the pixels are there, rather than waiting to be
-  // scrolled into view. The work rail slides on its own, so an in-view gate
-  // left cards sitting as skeletons while their image was already decoded.
+  // scrolled into view. An in-view gate left cards sitting as skeletons while
+  // their image was already decoded.
   const revealed = loaded;
 
   return (
@@ -82,7 +82,7 @@ export default function Figure({
       className={`relative overflow-hidden border border-rule bg-raised ${className}`}
     >
       {!revealed && (
-        <div className="absolute inset-0 skeleton" aria-hidden="true">
+        <div className="absolute inset-0 z-[2] skeleton" aria-hidden="true">
           <div className="flex h-full flex-col gap-3 p-4 sm:p-6">
             <div className="flex items-center gap-2">
               <span className="skeleton-bar h-3 w-3 rounded-full" />
@@ -99,14 +99,21 @@ export default function Figure({
         </div>
       )}
 
+      {/* The wipe is a cover lifting off the image, not a clip-path on it. A
+          lazy image clipped to nothing never intersects the viewport, so the
+          browser never starts loading it, and it never loads, so the clip
+          never opens: every lazy shot sat as a skeleton for good. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] origin-top bg-raised"
+        initial={reduced ? false : { scaleY: 1 }}
+        animate={{ scaleY: revealed ? 0 : 1 }}
+        transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
+      />
       <motion.div
         className="h-full w-full"
-        initial={reduced ? false : { clipPath: "inset(100% 0 0 0)", scale: 1.04 }}
-        animate={
-          revealed
-            ? { clipPath: "inset(0% 0 0 0)", scale: 1 }
-            : { clipPath: "inset(100% 0 0 0)", scale: 1.04 }
-        }
+        initial={reduced ? false : { scale: 1.04 }}
+        animate={{ scale: revealed ? 1 : 1.04 }}
         transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
       >
         <img

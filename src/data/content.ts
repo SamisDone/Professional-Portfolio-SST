@@ -23,11 +23,13 @@ export const profile = {
   resumeUrl: "/Samonwita_Sarker_CV.pdf",
   standfirst: "CSE '27, CUET",
   /**
-   * "Open to internships and research" told a recruiter nothing they could act
-   * on. What kind of role, and whether the candidate can work where they are,
-   * is the part that decides whether the tab stays open.
+   * Jobs, not internships. What kind of role, and whether the
+   * candidate can work where the team is, is the part that decides whether the
+   * tab stays open.
    */
-  status: "Software and ML research internships",
+  status: "Software engineering and ML roles",
+  /** Remote now, on site once the degree is done. */
+  workMode: "Remote, or on site after graduating in 2027",
   // Hero subtext. Kept under 20 words so the hero always fits one viewport.
   positioning:
     "I build software that ships, and I research how to make a model's predictions explainable.",
@@ -62,6 +64,24 @@ export type Project = {
    * beside the owner's name.
    */
   role?: string;
+  /**
+   * Set on work done with other people. The case study then says "What we
+   * built" rather than "What I built", which on a team project is a claim to
+   * the whole system that an interviewer will test.
+   */
+  team?: boolean;
+  /**
+   * What she personally did on team work, taken from her own commits on the
+   * repository rather than from memory. Left unset where the commit history
+   * does not show it; nothing is shown rather than a guess.
+   */
+  myPart?: string;
+  /**
+   * How the system fits together, as the steps a request passes through. Drawn
+   * in the case study beside the screenshot. Every step comes from the
+   * project's own description, never invented for the diagram.
+   */
+  flow?: string[];
   repo: string;
   live?: string;
   liveLabel?: string;
@@ -87,85 +107,15 @@ export type Project = {
 };
 
 /**
- * The ten that carry the most weight, every one with a real screenshot.
+ * The six that carry the most weight, every one live and with a real
+ * screenshot, and every one either solo work or work where the commit history
+ * shows she wrote most of it. These are the grid on /work and, in the first
+ * three, the rows on the home page.
  *
- * The order is deliberate. Paid client work sits second, above anything built
- * for its own sake, the strongest build third, and MediHub stays fourth.
- * KanDesk is not on the rail while its deployment is down; it goes back when
- * there is something running to open.
+ * Team work where her part is smaller, or not shown by the commits, sits in
+ * `notable` instead, so the first thing a recruiter opens is her own.
  */
 export const featured: Project[] = [
-  {
-    slug: "greenlight",
-    title: "Greenlight",
-    kind: "Hackathon build",
-    year: "2026",
-    summary:
-      "A robot arm you drive in the browser, six different ways, through one motion pipeline.",
-    stack: ["Next.js", "Three.js", "TypeScript", "Zustand", "Gemini API"],
-    role: "Team build",
-    repo: "https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon",
-    live: "https://greenlight-ptsd.vercel.app/",
-    liveLabel: "Open the simulator",
-    shot: "/shots/greenlight.jpg",
-    shotAlt:
-      "The Greenlight control suite: a 3D robot arm with jog control, voice input and joint readouts.",
-    problem:
-      "Vantage Robotics tests every software change on a real arm, which is slow, risky and expensive. A motion change should be provable before hardware is involved at all.",
-    approach:
-      "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
-    outcome:
-      "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
-  },
-  {
-    slug: "pierra",
-    title: "PIERRA",
-    kind: "Client work",
-    year: "2025",
-    summary:
-      "A bilingual site for a Montreal exterior design firm. My first paid engagement.",
-    stack: ["Next.js", "Tailwind CSS"],
-    role: "Frontend developer, freelance",
-    repo: "https://github.com/SamisDone/Pierra",
-    live: "https://pierrafinal.vercel.app/",
-    liveLabel: "Open the site",
-    shot: "/shots/pierra.jpg",
-    shotAlt: "The PIERRA homepage for a Montreal exterior design firm.",
-    problem:
-      "The firm sells into a market where English and French customers are equally common, so a translated afterthought would have quietly cost them half their audience.",
-    approach:
-      "Both languages are first class. Copy is lifted into a shared layer keyed by locale rather than duplicated per page, so the gallery, the testimonial carousel and the booking form all stay in step when either language changes.",
-    outcome:
-      "Delivered end to end in both languages, from brief to deployed site. My first paid engagement.",
-  },
-  {
-    /**
-     * Another repository that is not on her account, and the one where the
-     * label matters most: the commit history names two other people and not
-     * her, and the README credits its author. `role` says contributor and
-     * nothing stronger until she says what it should be.
-     */
-    slug: "kilnwatch",
-    title: "KilnWatch",
-    kind: "Earth observation",
-    year: "2026",
-    summary:
-      "Finds brick kilns across Bangladesh in satellite imagery, then screens each for the rules it looks to be breaking.",
-    stack: ["Next.js", "YOLO11-OBB", "TFLite", "MapLibre", "Sentinel-2"],
-    role: "Contributor",
-    repo: "https://github.com/PratikDev/illegal-brick-kiln-detector",
-    live: "https://sciblitz-ptsd-ibkd.vercel.app",
-    liveLabel: "Open the scanner",
-    shot: "/shots/kilnwatch.jpg",
-    shotAlt:
-      "KilnWatch over Sentinel-2 imagery of Bangladesh, with detection counts and a national replay feed.",
-    problem:
-      "Illegal brick kilns are a serious air quality problem in Bangladesh and the enforcement bottleneck is not the law, it is knowing where they are. Finding them by inspection means driving to them.",
-    approach:
-      "Detection and legality are deliberately kept apart. Computer vision finds the kiln, an ensemble of a rotated-box YOLO11, an RT-DETR validator and a ViT context reviewer, working on 128px Sentinel-2 tiles at roughly 10m resolution. A separate rule engine then screens each detection against the measurable parts of the Brick Kilns Act 2013, on location, technology and land use. What needs a human or a government record to confirm is marked as needing one rather than asserted.",
-    outcome:
-      "Deployed and openable, with 50 georeferenced signals across five priority districts, real TFLite inference behind a Live AI mode, and an A4 evidence brief generated in the browser.",
-  },
   {
     slug: "medihub",
     title: "MediHub",
@@ -175,6 +125,13 @@ export const featured: Project[] = [
       "Hospital management with Gemini-written summaries of medical reports and three separate roles.",
     stack: ["React", "Node.js", "Firebase", "Gemini API"],
     role: "Full-stack developer",
+    flow: [
+      "Sign-in through Firebase Auth",
+      "Session resolves to admin, doctor or patient",
+      "Role picks the routes and the reads allowed",
+      "Uploaded report goes to Gemini with a structured prompt",
+      "Summary of findings, tests and recommendations",
+    ],
     repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
     live: "https://ai-powered-hospital-management-syst.vercel.app/",
     liveLabel: "Open the demo",
@@ -210,58 +167,60 @@ export const featured: Project[] = [
       "Published and installable today. The zero-request claim is the kind you can check yourself in the network panel.",
   },
   {
-    /**
-     * The repo is Huntrix_friction, after the team; the product is Unread, and
-     * the product is what the card names.
-     */
-    slug: "unread",
-    title: "Unread",
+    slug: "pierra",
+    title: "PIERRA",
+    kind: "Client work",
+    year: "2025",
+    summary:
+      "A bilingual site for a Montreal exterior design firm. My first paid engagement.",
+    stack: ["Next.js", "Tailwind CSS"],
+    role: "Frontend developer, freelance",
+    repo: "https://github.com/SamisDone/Pierra",
+    live: "https://pierrafinal.vercel.app/",
+    liveLabel: "Open the site",
+    shot: "/shots/pierra.jpg",
+    shotAlt: "The PIERRA homepage for a Montreal exterior design firm.",
+    problem:
+      "The firm sells into a market where English and French customers are equally common, so a translated afterthought would have quietly cost them half their audience.",
+    approach:
+      "Both languages are first class. Copy is lifted into a shared layer keyed by locale rather than duplicated per page, so the gallery, the testimonial carousel and the booking form all stay in step when either language changes.",
+    outcome:
+      "Delivered end to end in both languages, from brief to deployed site. My first paid engagement.",
+  },
+  {
+    slug: "greenlight",
+    title: "Greenlight",
     kind: "Hackathon build",
     year: "2026",
     summary:
-      "A reader that will not let you move on until you have shown you understood the last part.",
-    stack: ["TanStack Start", "React", "TypeScript", "Claude API"],
-    role: "Team build",
-    repo: "https://github.com/Seyamalam/Huntrix_friction",
-    live: "https://huntrix-friction.vercel.app/",
-    liveLabel: "Try the friction",
-    shot: "/shots/huntrix.jpg",
+      "A robot arm you drive in the browser, six different ways, through one motion pipeline.",
+    stack: ["Next.js", "Three.js", "TypeScript", "Zustand", "Gemini API"],
+    role: "Lead developer",
+    team: true,
+    // From the commit history: 56 of 61 commits, every pipeline module and
+    // input path. The teammate's commits are the electrical schematic and the
+    // architecture write-up.
+    myPart:
+      "I wrote the software: forward and inverse kinematics, the safety gate, the planner and executor, and every input path from the joystick to agentic voice control. A teammate drew the electrical schematic.",
+    flow: [
+      "Six inputs: joystick, keyboard, voice keyword, voice agent, PIN entry, natural language",
+      "One MotionCommand",
+      "Inverse-kinematics planner",
+      "Safety gate validates the move",
+      "Executor animates the arm",
+    ],
+    repo: "https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon",
+    live: "https://greenlight-ptsd.vercel.app/",
+    liveLabel: "Open the simulator",
+    shot: "/shots/greenlight.jpg",
     shotAlt:
-      "The Unread landing page: AI should stop you from pretending you read.",
+      "The Greenlight control suite: a 3D robot arm with jog control, voice input and joint readouts.",
     problem:
-      "The hackathon theme was friction, where the obvious move is to remove it. Summaries have made it trivial to finish an article without reading it, and nothing in the tooling can tell having read something apart from having skimmed a summary of it.",
+      "Vantage Robotics tests every software change on a real arm, which is slow, risky and expensive. A motion change should be provable before hardware is involved at all.",
     approach:
-      "An article becomes a locked reading room. One section opens, and the next stays shut until the reader puts the claim in their own words at a checkpoint, with the model pushing back on a vague answer rather than giving the point away. The completion report is built from what the reader proved, not from what the article said. Friction is the product here rather than a feature bolted onto one, which is the whole argument.",
+      "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
     outcome:
-      "Deployed and open to try, with a public reading room and author-side analytics on top of the checkpoints.",
-  },
-  {
-    /**
-     * The repository is not on her account: this is someone else's project
-     * that she worked on, which is exactly why `role` is set. A card that
-     * links to another person's repo and says nothing about authorship is the
-     * reading to avoid.
-     */
-    slug: "narrativeguard",
-    title: "Narrative Guard",
-    kind: "AI governance tool",
-    year: "2026",
-    summary:
-      "Audits a draft against a team's own brand rules before it goes out, and says where it breaks them.",
-    stack: ["Next.js", "TypeScript", "Convex", "RAG", "Gemini API"],
-    role: "Contributor",
-    repo: "https://github.com/PratikDev/narrative-guard",
-    live: "https://narrative-guard.vercel.app/",
-    liveLabel: "Open the app",
-    shot: "/shots/narrativeguard.jpg",
-    shotAlt:
-      "The Narrative Guard landing page, showing its audit dashboard with scored reports.",
-    problem:
-      "Brand guidelines are a document nobody rereads. By the time a post, an email or a press release is off-message it has usually already been approved by someone going from memory.",
-    approach:
-      "A team writes its brand constitution once and it is indexed into a RAG namespace, so an audit is scored against the rules that were actually retrieved rather than against whatever the model believes about the brand. The model writes the report and the findings; the score itself is computed in the backend, which is what stops two runs over the same draft from disagreeing. Workspaces carry owner, admin and member roles, and a finished report exports as a PDF.",
-    outcome:
-      "Deployed and usable, covering social posts, emails, ads, press releases and website copy, with trend analytics across saved reports.",
+      "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
   },
   {
     slug: "tabsaver",
@@ -272,7 +231,7 @@ export const featured: Project[] = [
       "Restores a whole working session, tab groups intact, in one click.",
     stack: ["JavaScript", "Chrome APIs"],
     role: "Solo developer",
-    repo: "https://github.com/SamisDone/TabSaver-2.0",
+    repo: "https://github.com/SamisDone/TabSaver-New",
     live: "https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk",
     liveLabel: "Chrome Web Store",
     shot: "/shots/tabsaver.jpg",
@@ -303,43 +262,112 @@ export const featured: Project[] = [
       "Editing and preview render from the same state, so the page you are looking at is the page you get. Export runs entirely in the browser, which means no account, no upload, and no copy of your resume sitting on someone else's server.",
     outcome: "Deployed and free to use, with no sign-up in the way.",
   },
-  {
-    slug: "stockmaster",
-    title: "StockMaster",
-    kind: "Inventory tracker",
-    year: "2025",
-    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    role: "Full-stack developer",
-    repo: "https://github.com/SamisDone/StockMaster",
-    shot: "/shots/stockmaster.jpg",
-    shotAlt: "The StockMaster landing page for its inventory management system.",
-    problem:
-      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
-    approach:
-      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
-    outcome: "Working application with the component library and state layer built out.",
-  },
 ];
 
-/** The rest of the shelf. A compact index, not a second grid of cards. */
-export const otherWork: Project[] = [
+/**
+ * The next six. Listed under the grid on /work as a compact index that still
+ * opens each case study.
+ */
+export const notable: Project[] = [
   {
-    slug: "kandesk",
-    title: "KanDesk",
-    kind: "Task manager",
+    /**
+     * The repo is Huntrix_friction, after the team; the product is Unread, and
+     * the product is what the card names.
+     */
+    slug: "unread",
+    title: "Unread",
+    kind: "Hackathon build",
     year: "2026",
-    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
-    stack: ["React", "Tailwind CSS", "TanStack Router"],
-    role: "Solo developer",
-    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
-    shot: "/shots/kandesk.jpg",
-    shotAlt: "The KanDesk landing page above its three-column board.",
+    summary:
+      "A reader that will not let you move on until you have shown you understood the last part.",
+    stack: ["TanStack Start", "React", "TypeScript", "Claude API"],
+    role: "Team build",
+    team: true,
+    // Her 9 commits on the repository are the theme work.
+    myPart:
+      "I built the light and dark theme support across the app, replacing hardcoded colours with theme-aware variables on every page.",
+    repo: "https://github.com/Seyamalam/Huntrix_friction",
+    live: "https://huntrix-friction.vercel.app/",
+    liveLabel: "Try the friction",
+    shot: "/shots/huntrix.jpg",
+    shotAlt:
+      "The Unread landing page: AI should stop you from pretending you read.",
     problem:
-      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+      "The hackathon theme was friction, where the obvious move is to remove it. Summaries have made it trivial to finish an article without reading it, and nothing in the tooling can tell having read something apart from having skimmed a summary of it.",
     approach:
-      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
-    outcome: "Working board with the full task lifecycle and protected routing in place.",
+      "An article becomes a locked reading room. One section opens, and the next stays shut until the reader puts the claim in their own words at a checkpoint, with the model pushing back on a vague answer rather than giving the point away. The completion report is built from what the reader proved, not from what the article said. Friction is the product here rather than a feature bolted onto one, which is the whole argument.",
+    outcome:
+      "Deployed and open to try, with a public reading room and author-side analytics on top of the checkpoints.",
+  },
+  {
+    /**
+     * The repository is not on her account: this is someone else's project
+     * that she worked on, which is exactly why `role` is set. A card that
+     * links to another person's repo and says nothing about authorship is the
+     * reading to avoid.
+     */
+    slug: "narrativeguard",
+    title: "Narrative Guard",
+    kind: "AI governance tool",
+    year: "2026",
+    summary:
+      "Audits a draft against a team's own brand rules before it goes out, and says where it breaks them.",
+    stack: ["Next.js", "TypeScript", "Convex", "RAG", "Gemini API"],
+    role: "Contributor",
+    team: true,
+    // Her 3 commits on the repository.
+    myPart:
+      "I built the analytics page: the charts, the filters and the Convex queries behind them.",
+    repo: "https://github.com/PratikDev/narrative-guard",
+    live: "https://narrative-guard.vercel.app/",
+    liveLabel: "Open the app",
+    shot: "/shots/narrativeguard.jpg",
+    shotAlt:
+      "The Narrative Guard landing page, showing its audit dashboard with scored reports.",
+    problem:
+      "Brand guidelines are a document nobody rereads. By the time a post, an email or a press release is off-message it has usually already been approved by someone going from memory.",
+    approach:
+      "A team writes its brand constitution once and it is indexed into a RAG namespace, so an audit is scored against the rules that were actually retrieved rather than against whatever the model believes about the brand. The model writes the report and the findings; the score itself is computed in the backend, which is what stops two runs over the same draft from disagreeing. Workspaces carry owner, admin and member roles, and a finished report exports as a PDF.",
+    outcome:
+      "Deployed and usable, covering social posts, emails, ads, press releases and website copy, with trend analytics across saved reports.",
+  },
+  {
+    /**
+     * Another repository that is not on her account, and the one where the
+     * label matters most: the commit history names two other people and not
+     * her, and the README credits its author. `role` says contributor and
+     * nothing stronger until she says what it should be.
+     */
+    slug: "kilnwatch",
+    title: "KilnWatch",
+    kind: "Earth observation",
+    year: "2026",
+    summary:
+      "Finds brick kilns across Bangladesh in satellite imagery, then screens each for the rules it looks to be breaking.",
+    stack: ["Next.js", "YOLO11-OBB", "TFLite", "MapLibre", "Sentinel-2"],
+    role: "Contributor",
+    team: true,
+    // No `myPart`: none of the repository's commits are hers, so the history
+    // cannot say what she did. It stays off the top six until she does.
+    flow: [
+      "Sentinel-2 tiles, 128px at about 10m",
+      "YOLO11-OBB finds the kiln",
+      "RT-DETR validates, ViT reviews context",
+      "Rule engine screens against the Brick Kilns Act 2013",
+      "Flagged, or marked as needing a human to confirm",
+    ],
+    repo: "https://github.com/PratikDev/illegal-brick-kiln-detector",
+    live: "https://sciblitz-ptsd-ibkd.vercel.app",
+    liveLabel: "Open the scanner",
+    shot: "/shots/kilnwatch.jpg",
+    shotAlt:
+      "KilnWatch over Sentinel-2 imagery of Bangladesh, with detection counts and a national replay feed.",
+    problem:
+      "Illegal brick kilns are a serious air quality problem in Bangladesh and the enforcement bottleneck is not the law, it is knowing where they are. Finding them by inspection means driving to them.",
+    approach:
+      "Detection and legality are deliberately kept apart. Computer vision finds the kiln, an ensemble of a rotated-box YOLO11, an RT-DETR validator and a ViT context reviewer, working on 128px Sentinel-2 tiles at roughly 10m resolution. A separate rule engine then screens each detection against the measurable parts of the Brick Kilns Act 2013, on location, technology and land use. What needs a human or a government record to confirm is marked as needing one rather than asserted.",
+    outcome:
+      "Deployed and openable, with 50 georeferenced signals across five priority districts, real TFLite inference behind a Live AI mode, and an A4 evidence brief generated in the browser.",
   },
   {
     slug: "anomlite",
@@ -380,6 +408,47 @@ export const otherWork: Project[] = [
       "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
     outcome:
       "Complete application covering tracking, budgeting, goals and reporting.",
+  },
+  {
+    slug: "stockmaster",
+    title: "StockMaster",
+    kind: "Inventory tracker",
+    year: "2025",
+    summary: "Real-time stock auditing on one centralized store, so every view agrees.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    role: "Full-stack developer",
+    repo: "https://github.com/SamisDone/StockMaster",
+    shot: "/shots/stockmaster.jpg",
+    shotAlt: "The StockMaster landing page for its inventory management system.",
+    problem:
+      "Stock audits run from spreadsheets drift the moment two people count at once, and the disagreement surfaces weeks later when it is expensive to reconcile.",
+    approach:
+      "Counts live in one centralized store rather than in per-screen local state, and the UI is assembled from a small typed component set, which is what keeps a new audit screen cheap to add.",
+    outcome: "Working application with the component library and state layer built out.",
+  },
+];
+
+/**
+ * Everything else: coursework, small browser games, and projects with no
+ * deployment. Named only on /repositories, so they do not dilute the work above.
+ */
+export const otherWork: Project[] = [
+  {
+    slug: "kandesk",
+    title: "KanDesk",
+    kind: "Task manager",
+    year: "2026",
+    summary: "A Kanban board with full CRUD, priorities, filtering and protected routes.",
+    stack: ["React", "Tailwind CSS", "TanStack Router"],
+    role: "Solo developer",
+    repo: "https://github.com/SamisDone/KanDesk-A-full-featured-Kanban-task-manager",
+    shot: "/shots/kandesk.jpg",
+    shotAlt: "The KanDesk landing page above its three-column board.",
+    problem:
+      "Most Kanban demos stop at dragging a card between three columns and skip everything that makes one usable past the first day.",
+    approach:
+      "Three columns with counts, create, edit and delete with confirmation, colour-coded priority that can be filtered across every column at once, and routing that keeps the board behind an auth check.",
+    outcome: "Working board with the full task lifecycle and protected routing in place.",
   },
   {
     slug: "sortnplay",
@@ -513,6 +582,7 @@ export const otherWork: Project[] = [
     summary: "A full-stack MVP taken end to end inside a 24 hour deadline.",
     stack: ["REST API", "React"],
     role: "Team build",
+    team: true,
     repo: "https://github.com/SamisDone/Microops-Hackathon",
     problem:
       "A 24 hour hackathon rewards scope control more than it rewards code. The failure mode is a beautiful half of a product.",
@@ -529,6 +599,10 @@ export const otherWork: Project[] = [
       "An office power dashboard and a Discord bot reading the same live backend.",
     stack: ["React", "TypeScript", "Discord API"],
     role: "Contributor",
+    team: true,
+    // Her 10 commits on the repository.
+    myPart:
+      "I wrote the documentation, including the bot guide and the hardware section, and the link-preview metadata.",
     repo: "https://github.com/PratikDev/energy-monitoring-system",
     problem:
       "Office power gets audited from a meter reading at the end of the month, which gives you the total and nothing about which light was left on over a weekend.",
@@ -546,6 +620,10 @@ export const otherWork: Project[] = [
       "Properties, units, leases, payments and utilities, with landlords and tenants seeing different halves of it.",
     stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL"],
     role: "Contributor",
+    team: true,
+    // Her 6 commits on the repository.
+    myPart:
+      "I fixed the tenant logout redirect and wrote the project and codebase documentation.",
     repo: "https://github.com/maha-shweta/Rent_Ease",
     problem:
       "A landlord and a tenant need the same lease, the same payment record and the same utility bill, and almost none of the same controls over any of them.",
@@ -684,7 +762,9 @@ export type Role = {
 export const experience: Role[] = [
   {
     org: "Fleet AI, Inc.",
-    role: "Generalist, independent contractor",
+    // "Generalist" is the contract title and means nothing to a reader on its
+    // own, so the work comes first and the title stays in brackets.
+    role: "AI evaluation contractor (Generalist)",
     period: "May to August 2026",
     location: "Remote",
     points: [
@@ -698,8 +778,8 @@ export const experience: Role[] = [
     period: "2025",
     location: "Contract",
     points: [
-      "Built and shipped the site for PIERRA, a Montreal exterior design firm, in English and French.",
-      "An interactive project gallery, a testimonial carousel and a consultation request form, with the copy in one locale-keyed layer so the two languages cannot drift apart.",
+      // One line. The full case study is the second card on /work.
+      "Built and shipped the English and French site for PIERRA, a Montreal exterior design firm, from brief to deployment.",
     ],
   },
 ];
@@ -728,7 +808,13 @@ export const education = [
     school: "Chittagong University of Engineering and Technology",
     award: "B.Sc. in Computer Science and Engineering",
     period: "2023 to 2027",
-    note: "Six terms sat, two to go.",
+    /**
+     * The same line the CV prints, so a reader who has both sees one figure.
+     * The site used to plot term GPAs instead and print no cumulative at all,
+     * which put the Level 2 dip front and centre and still disagreed with the
+     * CV. Confirm 3.51 against the transcript before changing it.
+     */
+    note: "CGPA 3.51 after six of eight terms, latest term 3.85.",
   },
   {
     school: "Viqarunnisa Noon College",
@@ -831,6 +917,7 @@ export const certifications = {
 
 export type CgpaPoint = { label: string; full: string; value: number };
 
+/** Term GPAs, drawn as the trend chart on About beside the CGPA line. */
 export const cgpaHistory: CgpaPoint[] = [
   { label: "L1-T1", full: "Level 1, Term I", value: 3.45 },
   { label: "L1-T2", full: "Level 1, Term II", value: 3.44 },
@@ -844,9 +931,8 @@ export const trajectoryNote =
   "Level 2 was the low point. The climb after it is the part I would rather be judged on.";
 
 /**
- * Six terms of eight. No cumulative figure appears anywhere on this site, on
- * purpose: the degree is not finished, and a single number standing in for it
- * would be read as the final one.
+ * The education entry above the chart carries the cumulative 3.51, the same
+ * figure the CV prints, so this caption only has to say what each point is.
  */
 export const trajectoryCaption =
   "CUET, six terms of eight. Each point is that term alone, not a running total.";
@@ -856,7 +942,7 @@ export const trajectoryCaption =
  * because the last claim counts the project lists and has to read them after
  * they exist.
  */
-const deployed = [...featured, ...otherWork].filter((p) => p.live).length;
+const deployed = [...featured, ...notable].filter((p) => p.live).length;
 
 export const proof: Proof[] = [
   {
@@ -888,8 +974,11 @@ export const proof: Proof[] = [
     // the opposite on the first click, which costs more than the claim is
     // worth. What replaces it is checkable in full: every one of these has a
     // live URL on the work page.
+    //
+    // It counts the twelve on /work only. Counting the small browser games as
+    // well made the number bigger and the claim weaker.
     value: String(deployed),
-    label: "projects deployed and open to try right now",
+    label: "projects live and open to try right now",
     href: "/work",
     internal: true,
   },
