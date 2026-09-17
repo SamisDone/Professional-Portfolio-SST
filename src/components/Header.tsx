@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ListIcon, XIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
 import { ROUTES } from "../lib/routes";
@@ -22,11 +22,17 @@ export default function Header() {
   // Read position for a long single page. useScroll rather than a scroll
   // listener, so this never runs work on the main thread per frame.
   const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, {
+  const spring = useSpring(scrollYProgress, {
     stiffness: 180,
     damping: 30,
     restDelta: 0.001,
   });
+  // Clamped. A spring can overshoot past 1 on a fast scroll to the bottom, and
+  // a bar even a fraction of a pixel wider than the page adds a horizontal
+  // scrollbar. That shortens the window, which drops the progress, which
+  // removes the scrollbar again. A screen recording at the bottom of the home
+  // page showed exactly that loop, and it read as the page shaking.
+  const progress = useTransform(spring, (v) => Math.min(1, Math.max(0, v)));
 
   useEffect(() => {
     document.body.classList.toggle("dialog-open", open);
@@ -95,12 +101,11 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Read position. Sits on the header's own bottom rule. */}
-      <motion.div
-        aria-hidden
-        style={{ scaleX: progress }}
-        className="absolute inset-x-0 bottom-[-1px] h-[2px] origin-left bg-accent"
-      />
+      {/* Read position. Sits on the header's own bottom rule, inside a clip
+          so it can never be wider than the header. */}
+      <div aria-hidden className="absolute inset-x-0 bottom-[-1px] h-[2px] overflow-hidden">
+        <motion.div style={{ scaleX: progress }} className="h-full w-full origin-left bg-accent" />
+      </div>
 
       {open && (
         <nav className="border-t border-rule bg-paper sm:hidden">

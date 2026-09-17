@@ -92,6 +92,10 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* The page never scrolls sideways. A horizontal scrollbar that comes and
+     goes changes the window height, and at the bottom of a page that moves
+     everything. Wide tables scroll inside their own container instead. */
+  overflow-x: clip;
 }
 
 body {
