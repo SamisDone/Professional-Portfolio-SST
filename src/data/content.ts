@@ -107,7 +107,7 @@ export type Project = {
 };
 
 /**
- * The six that carry the most weight, every one live and with a real
+ * The work that carries the most weight, every one live and with a real
  * screenshot, and every one either solo work or work where the commit history
  * shows she wrote most of it. These are the grid on /work and, in the first
  * three, the rows on the home page.
@@ -262,10 +262,44 @@ export const featured: Project[] = [
       "Editing and preview render from the same state, so the page you are looking at is the page you get. Export runs entirely in the browser, which means no account, no upload, and no copy of your resume sitting on someone else's server.",
     outcome: "Deployed and free to use, with no sign-up in the way.",
   },
+  {
+    /**
+     * Renamed from FinPulse, and rewritten rather than retitled: the MySQL
+     * coursework app became a PostgreSQL one with its own PDF engine, its own
+     * SMTP client and a test suite. The old repository URL redirects here.
+     */
+    slug: "sixpence",
+    title: "Sixpence",
+    kind: "Personal finance app",
+    year: "2026",
+    summary:
+      "A ledger for income, budgets and savings goals that never asks for a bank login.",
+    stack: ["PHP 8", "PostgreSQL", "Chart.js", "Docker"],
+    role: "Solo developer",
+    flow: [
+      "Every request enters through one file, public/index.php",
+      "The router resolves a clean URL to a single page handler",
+      "Session, CSRF token and ownership checked before any write",
+      "Post, redirect, get, so a refresh never posts twice",
+      "Schema migrations run on the first database connection",
+    ],
+    repo: "https://github.com/SamisDone/SixPence",
+    live: "https://sixpence.onrender.com/",
+    liveLabel: "Open the app",
+    shot: "/shots/sixpence.jpg",
+    shotAlt:
+      "The Sixpence landing page, showing a sample month's ledger and a groceries budget on pace.",
+    problem:
+      "Finance apps want a bank login before they will show you anything, and the mid-month figure they show you is usually flattering: a running total this month set against a finished one last month, which always reads as progress. The honest alternative, a spreadsheet, tells you what you spent and never whether you are on pace to overspend.",
+    approach:
+      "Everything is entered by hand, so there is no bank connection to trust and nothing to leak. PHP 8 with no framework and no Composer dependencies, one entry point, prepared statements throughout, per-session CSRF tokens on every form, and five failed sign-ins locking an account for fifteen minutes. Budgets are pace-aware: they answer what is left per day rather than what is left in total, and month-to-date is compared against the same point last month rather than the whole of it. The PDF exporter and the SMTP client are written from scratch for the same reason as the rest, which is that there is then no dependency to audit. The interface works with JavaScript switched off.",
+    outcome:
+      "Deployed and open to sign up for, with twelve display currencies, CSV and PDF export, and email and in-app alerts. A 68-test suite covers the money arithmetic, recurrence, migrations and the security properties, and runs against PHP 8.1 through 8.4 and PostgreSQL 16 on every push.",
+  },
 ];
 
 /**
- * The next six. Listed under the grid on /work as a compact index that still
+ * The next tier. Listed under the grid on /work as a compact index that still
  * opens each case study.
  */
 export const notable: Project[] = [
@@ -385,29 +419,6 @@ export const notable: Project[] = [
       "MobileNetV2 handles the spatial features and an LSTM handles the temporal ones, which keeps the whole network to roughly 11 million parameters. Trained on the UCF-Crime dataset across 14 classes, from abuse and arson through to normal video.",
     outcome:
       "79 percent accuracy, 0.97 ROC AUC and a 0.75 macro F1, at a size that suits real-time deployment on constrained devices.",
-  },
-  {
-    slug: "finpulse",
-    title: "FinPulse",
-    kind: "Personal finance app",
-    year: "2026",
-    summary:
-      "Income, expenses, budgets and savings goals, with the security work actually done.",
-    stack: ["PHP 8", "PDO", "MySQL", "Chart.js"],
-    role: "Solo developer",
-    repo: "https://github.com/SamisDone/FinPulse",
-    highlights: [
-      "Parameterised queries throughout, via PDO",
-      "CSRF tokens on every form",
-      "Rate-limited login",
-      "Budgets, goals and charted reports",
-    ],
-    problem:
-      "A finance app holds the most sensitive data a small project will ever touch, and student projects routinely ship one with the auth left as an afterthought.",
-    approach:
-      "Built on PHP 8 with PDO throughout, so queries are parameterised by default. Login is rate limited and forms carry CSRF tokens. On top of that sit income and expense tracking with recurring entries and receipts, category budgets, savings goals, and charted monthly reports.",
-    outcome:
-      "Complete application covering tracking, budgeting, goals and reporting.",
   },
   {
     slug: "stockmaster",

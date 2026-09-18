@@ -13,7 +13,13 @@
  * The encoding runs in Chromium through a canvas rather than an image library,
  * because Playwright is already a dev dependency and this needs no new one.
  *
- *   node scripts/optimise-shots.mjs
+ *   node scripts/optimise-shots.mjs             # all of them
+ *   node scripts/optimise-shots.mjs sixpence    # just this one
+ *
+ * Name the shots you want when only one has been re-captured. A shot that is
+ * already optimised gains nothing from a second pass and loses a little to
+ * the re-encode, so the whole folder is worth running only after a full
+ * re-capture.
  */
 import { chromium } from "playwright";
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
@@ -33,10 +39,17 @@ const JPEG_QUALITY = 0.82;
 // Both capture formats. One shot is a PNG, and an extension filter that only
 // looked for .jpg quietly skipped it.
 const SOURCE_EXT = new Set([".jpg", ".png"]);
+const only = new Set(process.argv.slice(2));
 const sources = readdirSync(dir).filter(
-  (f) => SOURCE_EXT.has(extname(f)) && !f.includes("-700"),
+  (f) =>
+    SOURCE_EXT.has(extname(f)) &&
+    !f.includes("-700") &&
+    (only.size === 0 || only.has(basename(f, extname(f)))),
 );
-if (sources.length === 0) throw new Error(`no source images in ${dir}`);
+if (sources.length === 0)
+  throw new Error(
+    only.size ? `no source image for ${[...only].join(", ")}` : `no source images in ${dir}`,
+  );
 
 const browser = await chromium.launch();
 const page = await browser.newPage();

@@ -124,6 +124,10 @@ Maintenance scripts, run by hand when their inputs change:
 ```bash
 node scripts/capture-shots.mjs     # re-capture project screenshots from the live sites
 node scripts/optimise-shots.mjs    # rebuild the 1400px and 700px WebP variants
+
+# Both take ids, for when only one site has changed:
+node scripts/capture-shots.mjs sixpence
+node scripts/optimise-shots.mjs sixpence
 node scripts/make-og.mjs           # re-render public/og.png, the social card
 ```
 
@@ -163,16 +167,21 @@ publications, experience, education, leadership, competitions and
 certifications. Change it there and every page that shows it updates.
 
 **Adding a project.** Add an entry to `featured` (the grid on `/work`, and the
-first three on the home page), `notable` (the list under it) or `otherWork`
+first three in the rows on the home page), `notable` (the list under it) or `otherWork`
 (named only on `/repositories`). Write it from the project's own README, not
 from memory: every number on the site came from a real source. Set `role`. On
 work done with other people set `team: true`, which makes the case study say
 "What we built", and set `myPart` from her own commits on the repository, never
 from a guess. `flow` draws a short "How it works" path in the case study. Then:
 
-1. Add the live URL to `TARGETS` in `scripts/capture-shots.mjs` and run it.
-2. Run `scripts/optimise-shots.mjs`.
+1. Add the live URL to `TARGETS` in `scripts/capture-shots.mjs`, then run it
+   with that id: `node scripts/capture-shots.mjs <name>`.
+2. Run `node scripts/optimise-shots.mjs <name>`. Pass the id here too, so the
+   shots that were already optimised are not put through a second re-encode.
 3. Point `shot` at `/shots/<name>.jpg`. Every shot is 16:10.
+4. Adding it to `featured` only puts it on `/work`. The home page hero stack is
+   its own list, `SLUGS` in `src/components/ShotDeck.tsx`, and it needs one
+   entry in `SLOTS` per slug or the new card never arrives.
 
 A project with no deployment gets no image rather than an invented one. It can
 be run locally and captured, or carry real `figures` instead.

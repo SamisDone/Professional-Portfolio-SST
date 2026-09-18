@@ -17,29 +17,40 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
  *
  * The home page used to carry an abstract attribution diagram here. It was on
  * theme, but it was a drawing of an idea, and the first screen is where a
- * visitor decides whether to keep going. Four real, running products say more
+ * visitor decides whether to keep going. Five real, running products say more
  * in that second than any motif can.
  *
  * Only projects on her own account, where authorship is not in question. The
  * list is picked by slug and read from `featured`, so the titles, kinds and
  * image paths cannot drift from the work page.
  *
- * MediHub leads. Greenlight led before, and its shot is a mostly white 3D
- * canvas that reads as a blank card at this size; it goes to the back.
+ * MediHub leads and Sixpence follows it, so the newest of the five is seen
+ * before a visitor has to sit through a full cycle. Greenlight led before,
+ * and its shot is a mostly white 3D canvas that reads as a blank card at this
+ * size; it goes to the back.
  */
-const SLUGS = ["medihub", "pierra", "riphours", "greenlight"];
+const SLUGS = ["medihub", "sixpence", "pierra", "riphours", "greenlight"];
 const CARDS = SLUGS.map((s) => featured.find((p) => p.slug === s)).filter(
   (p): p is (typeof featured)[number] & { shot: string } => Boolean(p?.shot),
 );
 
 const CYCLE_MS = 4200;
 
-/** Where a card sits for its place in the stack, front first. */
+/**
+ * Where a card sits for its place in the stack, front first. One slot per
+ * card: `place` indexes straight into this, so a slug added without a slot
+ * here animates to `undefined` and never arrives.
+ *
+ * The fifth card did not widen the spread. The offsets were compressed
+ * instead, so five cards occupy the envelope the four used to and the back
+ * of the stack still clears the hero column on a narrow screen.
+ */
 const SLOTS = [
   { x: "0%", y: "0%", rotate: -3, scale: 1, opacity: 1 },
-  { x: "7%", y: "-6%", rotate: 3, scale: 0.93, opacity: 0.9 },
-  { x: "13%", y: "-11%", rotate: 8, scale: 0.86, opacity: 0.7 },
-  { x: "18%", y: "-15%", rotate: 13, scale: 0.79, opacity: 0.45 },
+  { x: "5.5%", y: "-4.5%", rotate: 2.5, scale: 0.94, opacity: 0.92 },
+  { x: "10.5%", y: "-8.5%", rotate: 7, scale: 0.88, opacity: 0.76 },
+  { x: "15%", y: "-12%", rotate: 11.5, scale: 0.82, opacity: 0.55 },
+  { x: "19%", y: "-15%", rotate: 16, scale: 0.76, opacity: 0.32 },
 ];
 
 function sources(src: string) {
@@ -168,7 +179,7 @@ export default function ShotDeck() {
                     stack reads as depth rather than as four equal images. */}
                 <motion.div
                   initial={false}
-                  animate={{ opacity: place === 0 ? 0 : 0.35 + place * 0.12 }}
+                  animate={{ opacity: place === 0 ? 0 : 0.3 + place * 0.1 }}
                   transition={{ duration: reduced ? 0 : 0.5 }}
                   className="pointer-events-none absolute inset-0 bg-paper"
                 />
