@@ -349,8 +349,12 @@ Pushing to `main` deploys to Vercel. `vercel.json` sets the caching and security
 headers:
 
 - Hashed files under `/assets/` are cached for a year and marked immutable.
-- Screenshots, the social card and the CV keep stable filenames, so they are
-  fresh for a day and served stale while revalidating for a week.
+- Screenshots and the social card keep stable filenames, so they are fresh for
+  a day and served stale while revalidating for a week.
+- The CV revalidates on every request, and the link the site renders carries a
+  content hash as `?v=`, stamped in by `vite.config.ts`. The filename stays
+  stable because it gets pasted into applications, but the token changes
+  whenever the PDF does, so an updated CV can never be served from a cache.
 - Every response carries `X-Content-Type-Options`, `Referrer-Policy` and
   `X-Frame-Options`.
 

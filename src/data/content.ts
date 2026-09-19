@@ -20,7 +20,12 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/samonwita-sarker-a87737262/",
   codeforces: "https://codeforces.com/profile/jinxed_sam",
   codeforcesHandle: "jinxed_sam",
-  resumeUrl: "/Samonwita_Sarker_CV.pdf",
+  /**
+   * The `?v=` is a content hash stamped in by vite.config.ts, not decoration.
+   * The path is stable so pasted links keep working; the token is what stops a
+   * browser serving a CV it cached before the last rebuild.
+   */
+  resumeUrl: `/Samonwita_Sarker_CV.pdf?v=${__CV_VERSION__}`,
   standfirst: "CSE '27, CUET",
   /**
    * Jobs, not internships. What kind of role, and whether the

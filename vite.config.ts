@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import { ROUTE_META, DEFAULT_META, NOT_FOUND_META } from "./src/lib/meta.js";
@@ -128,6 +130,32 @@ function routeMetaPlugin(): Plugin {
   };
 }
 
+/**
+ * A short content hash of the CV, stamped onto the link the site renders as
+ * `?v=`. The filename itself stays put, because it is a URL people paste into
+ * applications and it must not rot.
+ *
+ * Without this the CV was unfixable once wrong. It is one path that never
+ * changes, so a browser that fetched it kept whatever it had until its
+ * max-age ran out, and every link on the site points at that one cache entry.
+ * An updated CV therefore kept opening as the previous one, for the owner and
+ * for anyone who had looked at it recently, with nothing on the site to say
+ * so. Deriving the token from the file means it cannot be forgotten on a
+ * rebuild, which a hand-bumped version number would eventually be.
+ */
+function cvVersion() {
+  try {
+    return createHash("sha1")
+      .update(readFileSync("public/Samonwita_Sarker_CV.pdf"))
+      .digest("hex")
+      .slice(0, 8);
+  } catch {
+    // The PDF is built from cv/ and may be absent on a fresh clone. A missing
+    // CV is not a reason to fail the build; the link still resolves.
+    return "dev";
+  }
+}
+
 export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "");
   // Vercel and Netlify both expose the deployed host at build time, so a
@@ -141,6 +169,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
   ).replace(/\/$/, "");
 
   return {
+    // Available in both the client and SSR passes, so the prerendered HTML
+    // and the hydrated app agree on the link.
+    define: { __CV_VERSION__: JSON.stringify(cvVersion()) },
     plugins: [
       react(),
       // The SSR pass exists only to produce a render function for
