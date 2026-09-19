@@ -35,6 +35,9 @@ CONTEXT.md
 SESSION_CONTEXT.md
 github_repositories.csv
 
+# Recorded showcase video: large binaries, rebuildable from scripts/showcase.mjs
+showcase/
+
 # Font source archives
 *.zip
 

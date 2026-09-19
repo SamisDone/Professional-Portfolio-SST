@@ -129,9 +129,16 @@ node scripts/optimise-shots.mjs    # rebuild the 1400px and 700px WebP variants
 node scripts/capture-shots.mjs sixpence
 node scripts/optimise-shots.mjs sixpence
 node scripts/make-og.mjs           # re-render public/og.png, the social card
+node scripts/showcase.mjs          # record the 2 minute showcase video (needs a running preview)
 ```
 
-All three need a Playwright browser: `npx playwright install chromium`.
+All of them need a Playwright browser: `npx playwright install chromium`.
+`showcase.mjs` also needs `ffmpeg` on the PATH and `npm run preview` already
+serving on port 4173. It writes `showcase/`, which is gitignored: an MP4 at
+1920x1080, an SRT of the same captions, and the raw WebM. Captions are burned
+into the frame as well, because most places a recruiter opens a video ignore a
+subtitle track. Edit the `BEATS` array to change the script; each beat declares
+its own screen time, so the beats sum to the finished runtime.
 
 ## Project structure
 

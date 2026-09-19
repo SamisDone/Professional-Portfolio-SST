@@ -49,18 +49,20 @@ const OVERLAY = `
   css.textContent = \`
     #sc-layer { position: fixed; inset: 0; z-index: 2147483647; pointer-events: none;
                 font-family: "Instrument Sans", system-ui, sans-serif; }
-    #sc-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 210px;
-                background: linear-gradient(to top, rgba(10,4,14,0.93) 0%,
-                            rgba(10,4,14,0.78) 42%, rgba(10,4,14,0) 100%);
+    /* Kept shallow on purpose. The case study dialog is 889px tall in an 810px
+       frame, so every pixel the scrim takes is a pixel of it a viewer loses. */
+    #sc-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 132px;
+                background: linear-gradient(to top, rgba(10,4,14,0.94) 0%,
+                            rgba(10,4,14,0.74) 46%, rgba(10,4,14,0) 100%);
                 opacity: 0; transition: opacity .45s ease; }
-    #sc-cap  { position: absolute; left: 50%; bottom: 62px; transform: translateX(-50%);
+    #sc-cap  { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%);
                width: min(1080px, 82vw); text-align: center; color: #fff;
-               font-size: 27px; line-height: 1.34; letter-spacing: -0.005em;
+               font-size: 25px; line-height: 1.32; letter-spacing: -0.005em;
                opacity: 0; transition: opacity .38s ease, transform .38s ease;
-               text-shadow: 0 2px 18px rgba(0,0,0,.55); }
+               text-shadow: 0 2px 18px rgba(0,0,0,.7); }
     #sc-cap.in { opacity: 1; }
-    #sc-rule { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%);
-               width: 46px; height: 2px; background: #ff2d87; opacity: 0;
+    #sc-rule { position: absolute; left: 50%; bottom: 17px; transform: translateX(-50%);
+               width: 40px; height: 2px; background: #ff2d87; opacity: 0;
                transition: opacity .38s ease; }
     #sc-bar  { position: absolute; left: 0; bottom: 0; height: 3px; width: 0%;
                background: #ff2d87; opacity: .9; }
@@ -123,15 +125,39 @@ const OVERLAY = `
     },
     uncard() { $("sc-card").style.opacity = "0"; },
     scrollTo(target, ms) {
+      return this._ease(
+        () => window.scrollY,
+        (v) => window.scrollTo(0, v),
+        target,
+        ms,
+      );
+    },
+    /**
+     * The case study opens in its own scroll container, not the document, and
+     * it opens scrolled to the bottom because the panel takes focus. Reading
+     * it on camera means driving that element rather than the window.
+     */
+    dialogTo(frac, ms) {
+      const el = document.querySelector("div.fixed.inset-0.overflow-y-auto");
+      if (!el) return Promise.resolve();
+      const max = el.scrollHeight - el.clientHeight;
+      return this._ease(
+        () => el.scrollTop,
+        (v) => { el.scrollTop = v; },
+        Math.max(0, max) * frac,
+        ms,
+      );
+    },
+    _ease(get, set, target, ms) {
       return new Promise((done) => {
-        const start = window.scrollY;
+        const start = get();
         const delta = target - start;
-        if (Math.abs(delta) < 2 || ms <= 0) { window.scrollTo(0, target); return done(); }
+        if (Math.abs(delta) < 2 || ms <= 0) { set(target); return done(); }
         const t0 = performance.now();
         const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
         const step = (now) => {
           const t = Math.min(1, (now - t0) / ms);
-          window.scrollTo(0, start + delta * ease(t));
+          set(start + delta * ease(t));
           t < 1 ? requestAnimationFrame(step) : done();
         };
         requestAnimationFrame(step);
@@ -189,27 +215,45 @@ const BEATS = [
     caption: "Open any card for the problem it solved, what was built, and how it turned out.",
     async run(c) {
       await c.clickAt('button[aria-label="Open the Sixpence case study"]');
-      await c.wait(6400);
-      await c.page.keyboard.press("Escape");
-    },
-  },
-  {
-    hold: 9000,
-    caption: "On team projects it names her share, taken from the commit history.",
-    async run(c) {
-      await c.wait(700);
-      await c.scroll(760, 900);
-      await c.clickAt('button[aria-label="Open the DimSum case study"]');
+      await c.dialog(0, 0);
       await c.wait(4600);
+      await c.dialog(1, 2400);
+      await c.wait(4200);
       await c.page.keyboard.press("Escape");
     },
   },
   {
-    hold: 7000,
-    caption: "Eighteen more sit below it, down to the coursework and the browser games.",
+    hold: 10000,
+    caption: "On team projects it names my share, taken from the commit history.",
     async run(c) {
       await c.wait(600);
-      await c.scroll(1560, 1600);
+      await c.scroll(760, 900);
+      await c.clickAt('button[aria-label="Open the DimSum case study"]');
+      await c.dialog(0, 0);
+      await c.wait(2600);
+      await c.dialog(1, 2200);
+      await c.wait(2400);
+      await c.page.keyboard.press("Escape");
+    },
+  },
+  {
+    hold: 6000,
+    caption: "Eighteen more sit below it, down to the coursework and the browser games.",
+    async run(c) {
+      await c.wait(500);
+      await c.scroll(1560, 1500);
+    },
+  },
+  {
+    // Straight after the rows, because the only link to /repositories in the
+    // whole site sits at the top of them. Reaching it from anywhere else means
+    // a page load, and a page load takes the caption overlay with it.
+    hold: 9000,
+    caption: "Every repository in one table, with the owner named on each.",
+    async run(c) {
+      await c.goLink('a[href="/repositories"]');
+      await c.wait(1100);
+      await c.scroll(520, 2600);
     },
   },
   {
@@ -253,18 +297,8 @@ const BEATS = [
     },
   },
   {
-    hold: 9000,
-    caption: "Every repository in one table, with the owner named on each.",
-    async run(c) {
-      await c.scroll(0, 600);
-      await c.goLink('a[href="/repositories"]');
-      await c.wait(1100);
-      await c.scroll(520, 2600);
-    },
-  },
-  {
     hold: 7000,
-    caption: "A contact form that reaches her inbox directly.",
+    caption: "A contact form that reaches my inbox directly.",
     async run(c) {
       await c.scroll(0, 600);
       await c.nav("Get in touch");
@@ -277,6 +311,9 @@ const BEATS = [
     caption: "Arrow keys walk the whole site in reading order.",
     async run(c) {
       await c.scroll(0, 500);
+      // The handler in `Pager` ignores arrow keys raised from an input, which
+      // is exactly where focus lands after the contact form scrolls into view.
+      await c.page.evaluate(() => document.activeElement?.blur());
       for (const _ of [0, 1, 2]) {
         await c.page.keyboard.press("ArrowLeft");
         await c.wait(1500);
@@ -348,10 +385,11 @@ async function clickAt(selector) {
 }
 
 const scroll = (y, ms) => page.evaluate(([a, b]) => window.__sc.scrollTo(a, b), [y, ms]);
+const dialog = (frac, ms) => page.evaluate(([a, b]) => window.__sc.dialogTo(a, b), [frac, ms]);
 const nav = (label) => clickAt(`header a:has-text("${label}")`);
 const goLink = (sel) => clickAt(sel);
 
-const ctx = { page, wait, glide, clickAt, scroll, nav, goLink };
+const ctx = { page, wait, glide, clickAt, scroll, dialog, nav, goLink };
 
 const cues = [];
 let elapsed = 0;
