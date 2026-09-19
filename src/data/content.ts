@@ -305,6 +305,46 @@ export const featured: Project[] = [
 export const notable: Project[] = [
   {
     /**
+     * Her own account, but a four-person team, so `role` and `myPart` both
+     * matter here. 18 of the 48 commits are hers and they name what she did:
+     * "Implement LLM interpreter and guardrail validator (role B)". The
+     * optimizer is prism-rkive's, the scaffolding and CI are PratikDev's, and
+     * the final validator is altafur-fuad's. None of those are claimed below.
+     */
+    slug: "dimsum",
+    title: "DimSum",
+    kind: "Hackathon build",
+    year: "2026",
+    summary:
+      "Turns a campus operator's plain-English notes into the cheapest 24-hour power plan that provably breaks no rules.",
+    stack: ["Bun", "TypeScript", "Gemini API", "HiGHS", "Zod"],
+    role: "Interpreter and guardrails",
+    team: true,
+    myPart:
+      "I built stages two and three: the Gemini call that turns each note into a structured directive, and the deterministic guardrail layer that repairs or discards what comes back. That includes the retry ladder and the regex fallback for when the model is rate limited, and the extractor cases for notes that wrap past midnight or mix units. Dropping the thinking config cut median model latency from about 5.7 seconds to 2.3 without costing accuracy.",
+    flow: [
+      "Energy data and operator notes, checked against a Zod schema",
+      "Gemini turns each note into a flat, structured directive",
+      "Guardrails repair the unsafe ones and discard the rest",
+      "HiGHS solves a linear program for the cheapest legal plan",
+      "A second validator replays all twelve checks independently",
+      "Totals recomputed from the hourly plan, never carried over",
+    ],
+    repo: "https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD",
+    live: "https://dimsum-y32f.onrender.com/",
+    liveLabel: "Open the console",
+    shot: "/shots/dimsum.jpg",
+    shotAlt:
+      "The DimSum operator console, showing its six named pipeline stages above a scenario ready to run.",
+    problem:
+      "A campus operator writes notes in plain English, and only some of them are instructions: one says solar will drop to 20 percent after lunch, the next says the cafeteria menu changes tomorrow. Acting on the wrong one is expensive. Handing the whole job to a language model is worse, because what comes back is a plausible schedule that quietly violates a battery reserve.",
+    approach:
+      "Six stages, each one distrusting the stage before it. The model never writes the schedule; it only emits flat fields, never a nested object, so a malformed response cannot reach the solver, and the guardrails assemble the structure themselves rather than taking the model's word for whether a directive even applies. A linear program decides the plan, and a final validator written from the problem statement rather than copied from the optimizer replays every check on the result. Where the program is infeasible, the softest families of directive are dropped in order until it is not.",
+    outcome:
+      "Deployed and runnable on the organisers' published scenarios, all ten reproducing the reference cost exactly, with 22 of 22 guardrail tests, 18 of 18 extractor tests and 53 unit tests across the optimizer and validator.",
+  },
+  {
+    /**
      * The repo is Huntrix_friction, after the team; the product is Unread, and
      * the product is what the card names.
      */

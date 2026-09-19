@@ -25,6 +25,8 @@ const TARGETS = [
   { id: "pierra", url: "https://pierrafinal.vercel.app/" },
   { id: "resumeforge", url: "https://resumeforge-sam.netlify.app/" },
   { id: "sixpence", url: "https://sixpence.onrender.com/" },
+  // Render free tier: the first request can take ~30s to wake the service.
+  { id: "dimsum", url: "https://dimsum-y32f.onrender.com/" },
   { id: "sortnplay", url: "https://sortnplay.netlify.app/" },
 ];
 
