@@ -241,7 +241,7 @@ const BEATS = [
     caption: "Eighteen more sit below it, down to the coursework and the browser games.",
     async run(c) {
       await c.wait(500);
-      await c.scroll(1560, 1500);
+      await c.scroll(1560, 4000);
     },
   },
   {
@@ -260,7 +260,6 @@ const BEATS = [
     hold: 8000,
     caption: "Experience, with what each role actually involved.",
     async run(c) {
-      await c.scroll(0, 600);
       await c.nav("Experience");
       await c.wait(1000);
       await c.scroll(300, 1900);
@@ -270,7 +269,6 @@ const BEATS = [
     hold: 9000,
     caption: "Two published papers, and a thesis in progress on reading Bangla off photographs.",
     async run(c) {
-      await c.scroll(0, 600);
       await c.nav("Research");
       await c.wait(1000);
       await c.scroll(380, 2300);
@@ -280,7 +278,6 @@ const BEATS = [
     hold: 10000,
     caption: "The grades are plotted in full, including the term that went badly.",
     async run(c) {
-      await c.scroll(0, 600);
       await c.nav("About");
       await c.wait(1000);
       await c.scroll(620, 2600);
@@ -290,7 +287,6 @@ const BEATS = [
     hold: 8000,
     caption: "Leadership, certifications and competition placings.",
     async run(c) {
-      await c.scroll(0, 600);
       await c.nav("Activities");
       await c.wait(1000);
       await c.scroll(340, 1900);
@@ -300,7 +296,6 @@ const BEATS = [
     hold: 7000,
     caption: "A contact form that reaches my inbox directly.",
     async run(c) {
-      await c.scroll(0, 600);
       await c.nav("Get in touch");
       await c.wait(1000);
       await c.scroll(240, 1500);
@@ -310,7 +305,6 @@ const BEATS = [
     hold: 8000,
     caption: "Arrow keys walk the whole site in reading order.",
     async run(c) {
-      await c.scroll(0, 500);
       // The handler in `Pager` ignores arrow keys raised from an input, which
       // is exactly where focus lands after the contact form scrolls into view.
       await c.page.evaluate(() => document.activeElement?.blur());
@@ -448,7 +442,8 @@ execFileSync(
     "-y", "-ss", skip,
     "-i", join(outDir, "showcase-raw.webm"),
     "-t", String(TOTAL / 1000),
-    "-vf", "scale=1920:1080:flags=lanczos,fps=30",
+    "-vf", "scale=1920:1080:flags=lanczos",
+    "-r", "25", "-fps_mode", "cfr",
     "-c:v", "libx264", "-preset", "slow", "-crf", "20",
     "-pix_fmt", "yuv420p", "-movflags", "+faststart",
     "-an",
