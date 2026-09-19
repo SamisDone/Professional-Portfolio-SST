@@ -108,42 +108,22 @@ export type Project = {
 
 /**
  * The work that carries the most weight, every one live and with a real
- * screenshot, and every one either solo work or work where the commit history
- * shows she wrote most of it. These are the grid on /work and, in the first
+ * screenshot, and every one either solo work or team work where her own
+ * commits name what she did. These are the grid on /work and, in the first
  * three, the rows on the home page.
  *
- * Team work where her part is smaller, or not shown by the commits, sits in
- * `notable` instead, so the first thing a recruiter opens is her own.
+ * Team work where her part is smaller, or is not shown by the commits at
+ * all, sits in `notable` instead, so the first thing a recruiter opens is
+ * her own.
+ *
+ * The order is deliberate and is not chronological. MediHub is last by
+ * choice. It led this grid and the home page rows for a long time, and the
+ * front of the list is worth rotating. Reordering here moves the home page
+ * too: `Flagships` takes the first three of this list, and `ShotDeck` reads
+ * the hero cards from it by slug, so a project dropped from `featured`
+ * disappears from both.
  */
 export const featured: Project[] = [
-  {
-    slug: "medihub",
-    title: "MediHub",
-    kind: "AI healthcare platform",
-    year: "2026",
-    summary:
-      "Hospital management with Gemini-written summaries of medical reports and three separate roles.",
-    stack: ["React", "Node.js", "Firebase", "Gemini API"],
-    role: "Full-stack developer",
-    flow: [
-      "Sign-in through Firebase Auth",
-      "Session resolves to admin, doctor or patient",
-      "Role picks the routes and the reads allowed",
-      "Uploaded report goes to Gemini with a structured prompt",
-      "Summary of findings, tests and recommendations",
-    ],
-    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
-    live: "https://ai-powered-hospital-management-syst.vercel.app/",
-    liveLabel: "Open the demo",
-    shot: "/shots/medihub.jpg",
-    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
-    problem:
-      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. And a medical report is written for specialists, so a patient reading their own, or a doctor going through a new patient's history, has to wade through the whole document to find what matters.",
-    approach:
-      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. An uploaded report goes to the Gemini API with a structured prompt that returns its key findings, test results and recommendations, so patients and doctors read a short summary before the full record.",
-    outcome:
-      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
-  },
   {
     slug: "riphours",
     title: "RIPHours",
@@ -296,13 +276,6 @@ export const featured: Project[] = [
     outcome:
       "Deployed and open to sign up for, with twelve display currencies, CSV and PDF export, and email and in-app alerts. A 68-test suite covers the money arithmetic, recurrence, migrations and the security properties, and runs against PHP 8.1 through 8.4 and PostgreSQL 16 on every push.",
   },
-];
-
-/**
- * The next tier. Listed under the grid on /work as a compact index that still
- * opens each case study.
- */
-export const notable: Project[] = [
   {
     /**
      * Her own account, but a four-person team, so `role` and `myPart` both
@@ -343,6 +316,43 @@ export const notable: Project[] = [
     outcome:
       "Deployed and runnable on the organisers' published scenarios, all ten reproducing the reference cost exactly, with 22 of 22 guardrail tests, 18 of 18 extractor tests and 53 unit tests across the optimizer and validator.",
   },
+  {
+    slug: "medihub",
+    title: "MediHub",
+    kind: "AI healthcare platform",
+    year: "2026",
+    summary:
+      "Hospital management with Gemini-written summaries of medical reports and three separate roles.",
+    stack: ["React", "Node.js", "Firebase", "Gemini API"],
+    role: "Full-stack developer",
+    flow: [
+      "Sign-in through Firebase Auth",
+      "Session resolves to admin, doctor or patient",
+      "Role picks the routes and the reads allowed",
+      "Uploaded report goes to Gemini with a structured prompt",
+      "Summary of findings, tests and recommendations",
+    ],
+    repo: "https://github.com/SamisDone/AI-Powered-Hospital-Management-System",
+    live: "https://ai-powered-hospital-management-syst.vercel.app/",
+    liveLabel: "Open the demo",
+    shot: "/shots/medihub.jpg",
+    shotAlt: "The MediHub landing page, showing the hospital's AI triage product.",
+    problem:
+      "Admins, doctors and patients all need the same hospital records, but each should see a different slice of them. And a medical report is written for specialists, so a patient reading their own, or a doctor going through a new patient's history, has to wade through the whole document to find what matters.",
+    approach:
+      "Every session resolves through Firebase Auth to one of three roles, and the role decides both the route tree the user gets and the reads they are allowed to make. An uploaded report goes to the Gemini API with a structured prompt that returns its key findings, test results and recommendations, so patients and doctors read a short summary before the full record.",
+    outcome:
+      "Deployed and publicly reachable, with the full role-separated flow working end to end.",
+  },
+];
+
+/**
+ * The next tier. Listed under the grid on /work as a compact index that still
+ * opens each case study. Everything here is either team work where her share
+ * is small or not visible in the commits, or solo work with no deployment to
+ * link to.
+ */
+export const notable: Project[] = [
   {
     /**
      * The repo is Huntrix_friction, after the team; the product is Unread, and
