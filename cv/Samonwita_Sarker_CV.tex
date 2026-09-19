@@ -119,9 +119,6 @@ PIERRA, Montreal (Remote) --- \cvlink{https://pierrafinal.vercel.app/}{Website}\
 % ---------------------------------------------------------------- projects
 \cvsection{Projects}
 \begin{entries}
-\entry{MediHub: AI-Powered Hospital Management}{\cvlink{https://ai-powered-hospital-management-syst.vercel.app/}{Healthcare Portal} --- \cvlink{https://github.com/SamisDone/AI-Powered-Hospital-Management-System}{GitHub}}
-{\small\textbf{Full-Stack Developer.} Engineered a healthcare management platform using \textbf{React, Node.js, and Firebase}. Integrated the \textbf{Gemini API} to summarize uploaded medical reports into key findings, test results, and recommendations, so patients and doctors read a condensed summary instead of the full record. Implemented role-based access control (RBAC) across patient, doctor, and admin dashboards to enforce per-role data privacy.}
-
 \entry{RIPHours: Productivity Chrome Extension}{\cvlink{https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb}{Chrome Web Store} --- \cvlink{https://github.com/SamisDone/RIPHours}{GitHub}}
 {\small\textbf{Solo Developer.} Built and published a privacy-first Chrome Extension using \textbf{JavaScript, Chrome APIs, and Chrome Storage Sync}. Engineered accurate time-tracking via the Page Visibility API with auto-idle detection, per-site daily limits with hard-block enforcement, and a 7-day trend analytics dashboard. Implemented zero-network-request architecture ensuring all user data remains local.}
 
@@ -136,6 +133,12 @@ PIERRA, Montreal (Remote) --- \cvlink{https://pierrafinal.vercel.app/}{Website}\
 
 \entry{Sixpence: Personal Finance Ledger}{\cvlink{https://sixpence.onrender.com/}{Live App} --- \cvlink{https://github.com/SamisDone/SixPence}{GitHub}}
 {\small\textbf{Solo Developer.} Built and deployed a personal finance application in \textbf{PHP 8 and PostgreSQL} with no framework and no third-party dependencies, writing the PDF export engine and SMTP mail client from scratch. Engineered pace-aware budgets and like-for-like month-to-date comparisons, alongside recurring income and bills, savings goals, and CSV/PDF reports across 12 display currencies. Hardened it with prepared statements throughout, per-session CSRF tokens, account lockout after 5 failed sign-ins, and a strict Content Security Policy, all covered by a \textbf{68-test suite} running on PHP 8.1--8.4 against PostgreSQL 16 in CI.}
+
+\entry{DimSum: LLM-Assisted Campus Energy Optimizer}{\cvlink{https://dimsum-y32f.onrender.com/}{Live Console} --- \cvlink{https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD}{GitHub}}
+{\small\textbf{Interpreter and Guardrails, BUP CSE Fest 2026 Preliminary (Team PTSD).} Built stages two and three of a six-stage \textbf{Bun and TypeScript} service that turns plain-English campus operator notes into a provably legal 24-hour energy plan: the \textbf{Gemini} call converting each note into a structured directive, and the deterministic guardrail layer that repairs or discards unsafe model output, with a retry ladder and regex fallback for rate limits. Cut median model latency from 5.7s to 2.3s. All ten published scenarios reproduce the organisers' reference cost exactly.}
+
+\entry{MediHub: AI-Powered Hospital Management}{\cvlink{https://ai-powered-hospital-management-syst.vercel.app/}{Healthcare Portal} --- \cvlink{https://github.com/SamisDone/AI-Powered-Hospital-Management-System}{GitHub}}
+{\small\textbf{Full-Stack Developer.} Engineered a healthcare management platform using \textbf{React, Node.js, and Firebase}. Integrated the \textbf{Gemini API} to summarize uploaded medical reports into key findings, test results, and recommendations, so patients and doctors read a condensed summary instead of the full record. Implemented role-based access control (RBAC) across patient, doctor, and admin dashboards to enforce per-role data privacy.}
 
 \entry{AnomLite: Lightweight Crime Detection in Surveillance Video}{\cvlink{https://github.com/SamisDone/Violence-Detection}{GitHub}}
 {\small\textbf{Solo Developer.} Built a hybrid \textbf{MobileNetV2 + LSTM} model in \textbf{PyTorch} for 14-class crime detection on the UCF-Crime dataset, kept to roughly 11 million parameters so it suits real-time use on constrained hardware. Reached \textbf{79\% accuracy, 0.97 ROC AUC, and 0.75 macro F1}.}
