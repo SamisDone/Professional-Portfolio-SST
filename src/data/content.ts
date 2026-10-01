@@ -135,7 +135,7 @@ export const featured: Project[] = [
     kind: "Chrome extension",
     year: "2025",
     summary:
-      "A time tracker that makes no network requests, so your browsing history stays on your machine.",
+      "A time tracker with 300+ installs that makes no network requests, so your browsing history stays on your machine.",
     stack: ["JavaScript", "Chrome APIs", "Storage Sync"],
     role: "Solo developer",
     repo: "https://github.com/SamisDone/RIPHours",
@@ -149,7 +149,7 @@ export const featured: Project[] = [
     approach:
       "The extension makes no network requests at all. State lives in chrome.storage.sync so it follows you between devices without a backend, the idle API stops the clock when you step away so the totals stay honest, and per-site budgets are enforced as a hard block rather than a dismissible nudge.",
     outcome:
-      "Published and installable today. The zero-request claim is the kind you can check yourself in the network panel.",
+      "Published on the Chrome Web Store, with 300+ installs. The zero-request claim is the kind you can check yourself in the network panel.",
   },
   {
     slug: "pierra",
@@ -213,7 +213,7 @@ export const featured: Project[] = [
     kind: "Chrome extension",
     year: "2025",
     summary:
-      "Restores a whole working session, tab groups intact, in one click.",
+      "Restores a whole working session, tab groups intact, in one click. 400+ installs.",
     stack: ["JavaScript", "Chrome APIs"],
     role: "Solo developer",
     repo: "https://github.com/SamisDone/TabSaver-New",
@@ -225,7 +225,7 @@ export const featured: Project[] = [
       "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful in the first place.",
     approach:
       "A session is captured as a structured snapshot that preserves tab groups rather than a flat list of URLs, so restoring puts the workspace back the way it was. Sessions are named, searchable and exportable, which is what makes it usable past the first week.",
-    outcome: "Published on the Chrome Web Store alongside RIPHours.",
+    outcome: "Published on the Chrome Web Store alongside RIPHours, with 400+ installs.",
   },
   {
     slug: "resumeforge",
@@ -850,7 +850,7 @@ export const experience: Role[] = [
     period: "May to August 2026",
     location: "Remote",
     points: [
-      "Wrote evaluation tasks for agentic AI: long multi-step workflows inside simulated enterprise software, each grounded in data that genuinely exists in that environment.",
+      "Wrote 70+ evaluation tasks for agentic AI: long multi-step workflows inside simulated enterprise software, each grounded in data that genuinely exists in that environment.",
       "Reviewed other contributors' tasks before they shipped, checking each was solvable, unambiguous, not a repeat, and correct at the edges where an agent goes wrong.",
     ],
   },
