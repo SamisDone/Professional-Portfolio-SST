@@ -1,208 +1,191 @@
-% Samonwita Sarker, CV.
-%
-% Source for public/Samonwita_Sarker_CV.pdf. Build with:
-%
-%   pdflatex -output-directory=cv cv/Samonwita_Sarker_CV.tex
-%   cp cv/Samonwita_Sarker_CV.pdf public/
-%
-% Rebuilt from the published PDF, which had no source, keeping its fonts,
-% sizes and spacing. Palatino (URW Palladio) for text, Latin Modern Mono for
-% the contact lines.
+%-------------------------
+% Samonwita Sarker, Resume
+% Based on Jake's Resume (Jake Gutierrez, MIT License)
+% https://github.com/jakeryang/resume
+%-------------------------
 
-\documentclass[10pt,a4paper]{article}
+\documentclass[a4paper,11pt]{article}
 
-\usepackage[T1]{fontenc}
-\usepackage{mathpazo}
-\renewcommand{\ttdefault}{lmtt}
-\usepackage[a4paper,left=0.75in,right=0.75in,top=52.3pt,bottom=0.6in]{geometry}
+\usepackage{latexsym}
+\usepackage[a4paper,top=0.45in,bottom=0.4in,left=0.5in,right=0.5in]{geometry}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
 \usepackage{enumitem}
-\usepackage{needspace}
-\usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{
-  colorlinks=true,
-  urlcolor=blue,
-  linkcolor=blue,
-  pdftitle={Samonwita Sarker, CV},
-  pdfauthor={Samonwita Sarker},
-  pdfsubject={Curriculum vitae},
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Make the PDF machine readable / ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
 }
 
-\linespread{1.25}
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0pt}
-
-% A section: indented heading over a full-width rule.
-% The heading needs room for itself and the start of its first entry, or it
-% moves to the next page with it rather than sitting alone at the bottom.
-\newcommand{\cvsection}[1]{%
-  \Needspace{7\baselineskip}%
-  \vspace{15pt}%
-  {\large\bfseries\hspace*{1.2em}\MakeUppercase{#1}\par}%
-  \nobreak\vspace{7.2pt}\nobreak\hrule height 0.4pt\nobreak\vspace{7pt}\nobreak%
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
 }
 
-% The list every entry sits in.
-% Pages break between entries, never inside one: no line of a paragraph is
-% separated from the rest, and a title never sits apart from its description.
-\newenvironment{entries}{%
-  \begin{itemize}[leftmargin=11.5pt,labelsep=5pt,itemsep=5pt,topsep=0pt,parsep=0pt,partopsep=0pt,label=\textbullet]%
-  \interlinepenalty=10000\clubpenalty=10000\widowpenalty=10000%
-}{\end{itemize}}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{1.0\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \small #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
 
-% Links on the right of an entry, italic, in brackets.
-\newcommand{\cvlink}[2]{\href{#1}{\textit{[#2]}}}
+\renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
 
-% \entry{title}{right-hand side}
-\newcommand{\entry}[2]{\item \textbf{#1}\hfill #2\par\nobreak}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-9pt}}
 
+% A link shown as underlined text
+\newcommand{\lnk}[2]{\href{#1}{\underline{#2}}}
+
+%-------------------------------------------
 \begin{document}
 
-% ---------------------------------------------------------------- header
-{\large\bfseries Samonwita Sarker\par}
-\vspace{2pt}
-Dhaka and Chattogram, Bangladesh\par
-\vspace{2pt}
-{\ttfamily\color{blue}%
-\href{mailto:sarker.samonwita@gmail.com}{sarker.samonwita@gmail.com} {\bfseries\textperiodcentered}
-\href{tel:+8801602088135}{+8801602088135} {\bfseries\textperiodcentered}
-\href{https://www.linkedin.com/in/samonwita-sarker-a87737262/}{LinkedIn} {\bfseries\textperiodcentered}
-\href{https://samonwita.vercel.app/}{Portfolio}\par
-\vspace{2pt}
-\href{https://github.com/SamisDone}{GitHub: SamisDone} {\bfseries\textperiodcentered}
-\href{https://codeforces.com/profile/jinxed_sam}{Codeforces: jinxed\_sam}\par}
+%----------HEADING----------
+\begin{center}
+    {\Huge \scshape Samonwita Sarker} \\ \vspace{2pt}
+    \small Dhaka \& Chattogram, Bangladesh (open to remote roles) $|$ +8801602088135 $|$
+    \lnk{mailto:sarker.samonwita@gmail.com}{sarker.samonwita@gmail.com} \\ \vspace{1pt}
+    \lnk{https://www.linkedin.com/in/samonwita-sarker-a87737262/}{LinkedIn} $|$
+    \lnk{https://github.com/SamisDone}{github.com/SamisDone} $|$
+    \lnk{https://samonwita.vercel.app/}{samonwita.vercel.app}
+    \vspace{-8pt}
+\end{center}
 
-% ---------------------------------------------------------------- summary
-\vspace{7.8pt}
-\cvsection{Summary}
-\begin{entries}
-\item {\small I'm a CSE undergraduate at CUET, graduating in 2027, who builds full-stack web applications with React, Node.js, and PostgreSQL. I recently worked as an AI evaluation contractor at Fleet AI, Inc., authoring and QA-reviewing long-horizon agentic AI evaluation tasks. Along the way, I've published two Chrome extensions on the Web Store, co-authored an IEEE paper on explainable AI, and written a first-author system paper that placed 7th in a shared task at ACL 2026. \textbf{Open to software engineering and ML job opportunities: remote, or on site after graduating in 2027.}\par}
-\end{entries}
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Chittagong University of Engineering and Technology (CUET)}{2023 -- 2027 (Expected)}
+      {B.Sc. in Computer Science and Engineering; CGPA: 3.51/4.00 (latest term: 3.85)}{Chattogram, Bangladesh}
+  \resumeSubHeadingListEnd
 
-% ---------------------------------------------------------------- education
-\cvsection{Education}
-\begin{entries}
-\entry{B.Sc. in Computer Science and Engineering}{\textbf{(2023 -- 2027, expected)}}
-Chittagong University of Engineering and Technology (CUET) --- \textbf{CGPA: 3.51/4.00, rising: latest term 3.85}
-\entry{Higher Secondary Certificate (HSC)}{\textbf{(2021)}}
-Viqarunnisa Noon College --- \textbf{GPA: 5.00/5.00}
-\end{entries}
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
 
-% ---------------------------------------------------------------- experience
-\cvsection{Experience}
-\begin{entries}
-\entry{Team Lead, Crawler Team (Industrial Attachment)}{\textbf{(3 Sep 2026 -- 21 Sep 2026)}}
-BdREN Innovation - Cortex --- \cvlink{https://github.com/BdREN-Innovation/Cortex}{GitHub}\par\nobreak
-{\small Cortex crawls a website, embeds it into a vector database, and answers questions about it with citations. \textbf{Lead the five-person crawler team}, splitting the work into portions with named owners and taking it through review. Built its \textbf{CUET scraper in Python}: the site is a Next.js app whose pages ship no content, so it reads the public JSON API first and falls back to a headless browser, capturing \textbf{735 documents, 382 faculty profiles, and 1,106 linked files} with source provenance for every citation and a 26-check verification stage. Added a per-host rate limiter, skip and failure records, and 13 tests to the team's shared crawler, and wrote the data guide the knowledge team builds on.}
+    \resumeSubheading
+      {BdREN Innovation (Cortex)}{Sep 2026}
+      {Team Lead, Crawler Team (Industrial Attachment) $|$ \lnk{https://github.com/BdREN-Innovation/Cortex}{GitHub}}{Bangladesh}
+      \resumeItemListStart
+        \resumeItem{Led the five-person crawler team for Cortex, which crawls a website into a vector database and answers questions with citations; split the work into owned portions and took it through review.}
+        \resumeItem{Built the CUET scraper in \textbf{Python} (JSON API first, headless-browser fallback, 26-check verification), capturing \textbf{735 documents, 382 faculty profiles, and 1,106 linked files} with source provenance.}
+      \resumeItemListEnd
 
-\entry{AI Evaluation Contractor (Generalist)}{\textbf{(May 2026 -- Aug 2026)}}
-Fleet AI, Inc. (Remote)\par\nobreak
-{\small Authored long-horizon, multi-step agentic AI evaluation tasks across multiple simulated enterprise application environments, grounding realistic workflows in verified environment data. Conducted QA review on other contributors' tasks, assessing must-have/should-have coverage, action counts, ambiguity, codename compliance, and project-specific rules to ensure correctness, novelty, and robust edge-case coverage.}
+    \resumeSubheading
+      {Fleet AI, Inc.}{May 2026 -- Aug 2026}
+      {AI Evaluation Contractor}{Remote}
+      \resumeItemListStart
+        \resumeItem{Authored \textbf{70+ long-horizon agentic AI evaluation tasks} across simulated enterprise environments.}
+        \resumeItem{QA-reviewed peers' tasks for rubric coverage, action counts, ambiguity, and project-rule compliance.}
+      \resumeItemListEnd
 
-\entry{Web Developer (Freelance)}{\textbf{(2025)}}
-PIERRA, Montreal (Remote) --- \cvlink{https://pierrafinal.vercel.app/}{Website}\par\nobreak
-{\small Designed and shipped a bilingual (English/French) business website for a Montreal-based exterior design firm using \textbf{Next.js and Tailwind CSS}, from brief to deployment. Kept all copy in one locale-keyed layer so the two languages stay in step, and built an interactive project gallery, a testimonial carousel, and a consultation request form.}
-\end{entries}
+    \resumeSubheading
+      {PIERRA}{2025}
+      {Freelance Web Developer $|$ \lnk{https://pierrafinal.vercel.app/}{Website}}{Montreal (Remote)}
+      \resumeItemListStart
+        \resumeItem{Shipped a bilingual (EN/FR) site for an exterior design firm, brief to launch, in \textbf{Next.js and Tailwind CSS}.}
+        \resumeItem{Kept all copy in one locale-keyed layer so both languages stay in step; built the gallery and consultation form.}
+      \resumeItemListEnd
 
-% ---------------------------------------------------------------- skills
-\cvsection{Skills}
-\begin{entries}
-\small
-\item \textbf{Languages:} C++, JavaScript (ES6+), TypeScript, Python, Java, C, SQL.
-\item \textbf{Web Development:} React.js, Node.js, Next.js, Express.js, PostgreSQL, Firebase, Tailwind CSS, Three.js, shadcn/ui.
-\item \textbf{AI \& Machine Learning:} PyTorch, scikit-learn, Transformers, NLP, Multimodal Deep Learning, Explainable AI (SHAP), Gemini API.
-\item \textbf{Systems \& Architecture:} MVC Architecture, Data Structures, Algorithms, Object-Oriented Programming (OOP), DBMS, OS Scheduling.
-\item \textbf{Tools:} Docker, Git/GitHub, TanStack Router, LaTeX, Linux.
-\end{entries}
+  \resumeSubHeadingListEnd
+\vspace{-9pt}
 
-% ---------------------------------------------------------------- projects
-\cvsection{Projects}
-\begin{entries}
-\entry{RIPHours: Productivity Chrome Extension}{\cvlink{https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb}{Chrome Web Store} --- \cvlink{https://github.com/SamisDone/RIPHours}{GitHub}}
-{\small\textbf{Solo Developer.} Built and published a privacy-first Chrome Extension using \textbf{JavaScript, Chrome APIs, and Chrome Storage Sync}. Engineered accurate time-tracking via the Page Visibility API with auto-idle detection, per-site daily limits with hard-block enforcement, and a 7-day trend analytics dashboard. Implemented zero-network-request architecture ensuring all user data remains local.}
+%-----------PROJECTS-----------
+\section{Projects}
+    \vspace{-5pt}
+    \resumeSubHeadingListStart
 
-\entry{Greenlight: Browser-Driven Robot Arm Simulator}{\cvlink{https://greenlight-ptsd.vercel.app/}{Simulator} --- \cvlink{https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon}{GitHub}}
-{\small\textbf{Lead Developer, IUT Techathon 2026 (Finalist).} Built a 3D robot arm simulator in \textbf{Next.js, Three.js, TypeScript, and Zustand} where six input methods (joystick, keyboard, voice keyword, a Gemini voice agent, autonomous PIN entry, and natural language) all resolve to one motion command and run through a single pipeline: an \textbf{inverse-kinematics planner}, a \textbf{safety gate} that validates every move, and an executor. Wrote the kinematics, the safety gate, the planner and executor, and every input path.}
+      \resumeProjectHeading
+          {\textbf{Greenlight: Robot Arm Simulator} $|$ \emph{Next.js, Three.js, TypeScript, Zustand}}{2026 $|$ \lnk{https://greenlight-ptsd.vercel.app/}{Live} $|$ \lnk{https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon}{GitHub}}
+          \resumeItemListStart
+            \resumeItem{Led development of an \textbf{IUT Techathon 2026 finalist}: a 3D robot arm driven six ways (joystick, keyboard, voice, a Gemini voice agent, PIN entry, natural language) through one motion pipeline.}
+            \resumeItem{Wrote the \textbf{IK planner}, the \textbf{safety gate} that validates every move, the executor, and the input paths.}
+          \resumeItemListEnd
 
-\entry{TabSaver: Session Management Chrome Extension}{\cvlink{https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk}{Chrome Web Store} --- \cvlink{https://github.com/SamisDone/TabSaver-New}{GitHub}}
-{\small\textbf{Solo Developer.} Developed and published a browser productivity extension using \textbf{JavaScript and Chrome Extension APIs}. Implemented session persistence and one-click restoration that lets users close entire tab groups and reopen them later, freeing the memory held by open tabs without losing context.}
+      \resumeProjectHeading
+          {\textbf{Sixpence: Personal Finance Ledger} $|$ \emph{PHP 8, PostgreSQL}}{2026 $|$ \lnk{https://sixpence.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/SixPence}{GitHub}}
+          \resumeItemListStart
+            \resumeItem{Built and deployed a finance app with \textbf{no framework and no third-party dependencies}, writing the PDF export engine and SMTP client from scratch; budgets, recurring bills, savings goals, and reports in 12 currencies.}
+            \resumeItem{Secured with prepared statements, CSRF tokens, lockout, and a strict CSP; \textbf{68 tests} run in CI on PHP 8.1--8.4.}
+          \resumeItemListEnd
 
-\entry{ResumeForge: Dynamic Resume Builder}{\cvlink{https://resumeforge-sam.netlify.app/}{Resume Builder} --- \cvlink{https://github.com/SamisDone/ResumeForge}{GitHub}}
-{\small\textbf{Solo Developer.} Built a complete resume-building web application using \textbf{React, Tailwind CSS, and React Router}. Engineered a real-time live-preview engine with multiple professional templates, client-side PDF export, and auto-save via local storage using React Context API.}
+      \resumeProjectHeading
+          {\textbf{DimSum: LLM-Assisted Energy Optimizer} $|$ \emph{Bun, TypeScript, Gemini API}}{2026 $|$ \lnk{https://dimsum-y32f.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD}{GitHub}}
+          \resumeItemListStart
+            \resumeItem{Built the Gemini stage turning plain-English operator notes into structured directives for a 24-hour campus energy plan, and a \textbf{deterministic guardrail layer} that repairs or discards unsafe model output.}
+            \resumeItem{Cut median model latency from \textbf{5.7s to 2.3s}; all ten published scenarios match the organisers' reference cost.}
+          \resumeItemListEnd
 
-\entry{Sixpence: Personal Finance Ledger}{\cvlink{https://sixpence.onrender.com/}{Live App} --- \cvlink{https://github.com/SamisDone/SixPence}{GitHub}}
-{\small\textbf{Solo Developer.} Built and deployed a personal finance application in \textbf{PHP 8 and PostgreSQL} with no framework and no third-party dependencies, writing the PDF export engine and SMTP mail client from scratch. Engineered pace-aware budgets and like-for-like month-to-date comparisons, alongside recurring income and bills, savings goals, and CSV/PDF reports across 12 display currencies. Hardened it with prepared statements throughout, per-session CSRF tokens, account lockout after 5 failed sign-ins, and a strict Content Security Policy, all covered by a \textbf{68-test suite} running on PHP 8.1--8.4 against PostgreSQL 16 in CI.}
+      \resumeProjectHeading
+          {\textbf{Chrome Extensions (Solo): RIPHours \& TabSaver} $|$ \emph{JavaScript, Chrome APIs}}{2025 $|$ \lnk{https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb}{RIPHours} $|$ \lnk{https://chromewebstore.google.com/detail/tabsaver/emjeegpjecaljggipjdaofmlkoolikdk}{TabSaver}}
+          \resumeItemListStart
+            \resumeItem{RIPHours (\textbf{300+ installs}): privacy-first time tracking with per-site limits and zero network requests.}
+            \resumeItem{TabSaver (\textbf{400+ installs}): restores whole tab groups in one click, freeing memory without losing context.}
+          \resumeItemListEnd
 
-\entry{DimSum: LLM-Assisted Campus Energy Optimizer}{\cvlink{https://dimsum-y32f.onrender.com/}{Live Console} --- \cvlink{https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD}{GitHub}}
-{\small\textbf{Interpreter and Guardrails, BUP CSE Fest 2026 Preliminary (Team PTSD).} Built stages two and three of a six-stage \textbf{Bun and TypeScript} service that turns plain-English campus operator notes into a provably legal 24-hour energy plan: the \textbf{Gemini} call converting each note into a structured directive, and the deterministic guardrail layer that repairs or discards unsafe model output, with a retry ladder and regex fallback for rate limits. Cut median model latency from 5.7s to 2.3s. All ten published scenarios reproduce the organisers' reference cost exactly.}
 
-\entry{MediHub: AI-Powered Hospital Management}{\cvlink{https://ai-powered-hospital-management-syst.vercel.app/}{Healthcare Portal} --- \cvlink{https://github.com/SamisDone/AI-Powered-Hospital-Management-System}{GitHub}}
-{\small\textbf{Full-Stack Developer.} Engineered a healthcare management platform using \textbf{React, Node.js, and Firebase}. Integrated the \textbf{Gemini API} to summarize uploaded medical reports into key findings, test results, and recommendations, so patients and doctors read a condensed summary instead of the full record. Implemented role-based access control (RBAC) across patient, doctor, and admin dashboards to enforce per-role data privacy.}
+    \resumeSubHeadingListEnd
+\vspace{-12pt}
 
-\entry{AnomLite: Lightweight Crime Detection in Surveillance Video}{\cvlink{https://github.com/SamisDone/Violence-Detection}{GitHub}}
-{\small\textbf{Solo Developer.} Built a hybrid \textbf{MobileNetV2 + LSTM} model in \textbf{PyTorch} for 14-class crime detection on the UCF-Crime dataset, kept to roughly 11 million parameters so it suits real-time use on constrained hardware. Reached \textbf{79\% accuracy, 0.97 ROC AUC, and 0.75 macro F1}.}
+%-----------RESEARCH-----------
+\section{Research \& Publications}
+  \begin{itemize}[leftmargin=2.2em]
+    \resumeItem{\textbf{A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability.} M. Chowdhury, J. Islam, Md. A. I. Semon, \textbf{S. Sarker}, M. M. Barua, A. Akter. \emph{ICECTE 2026}, IEEE. \lnk{https://ieeexplore.ieee.org/document/11429440}{IEEE Xplore}}
+    % Macro F1 (0.1703, chance about 0.11) left out on purpose; add it back for research-focused applications.
+    \resumeItem{\textbf{7th place, DravidianLangTech @ ACL 2026 Shared Task (Telugu Prompt-Style Recovery).} First-author system paper on nine-way Telugu style classification. \lnk{https://aclanthology.org/2026.dravidianlangtech-1.58/}{Paper} $|$ \lnk{https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu}{Code}}
+  \end{itemize}\vspace{-9pt}
 
-\entry{StockMaster: Enterprise Inventory Tracker}{\cvlink{https://github.com/SamisDone/StockMaster}{GitHub}}
-{\small\textbf{Full-Stack Developer.} Built an inventory management web application using \textbf{Next.js, TypeScript, and Tailwind CSS}. Engineered a reusable component architecture with custom hooks and centralized state management for real-time stock auditing and data visualization.}
+%-----------SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: C++, Python, TypeScript, JavaScript, Java, C, PHP, SQL} $|$ \textbf{Tools}{: Git, Docker, Linux, LaTeX} \\
+     \textbf{Web}{: React, Next.js, Node.js, Express.js, PostgreSQL, Firebase, Tailwind CSS, Three.js} \\
+     \textbf{AI/ML}{: PyTorch, scikit-learn, Hugging Face Transformers, NLP, multimodal deep learning, SHAP, Gemini API}
+    }}
+ \end{itemize}
+ \vspace{-14pt}
 
-\entry{Adaptive Priority Round Robin Simulator}{\cvlink{https://github.com/SamisDone/Adaptive-Priority-Round-Robin}{GitHub}}
-{\small\textbf{Systems Programmer.} Developed a custom OS scheduling algorithm simulation in \textbf{C++} to measure CPU performance metrics such as turnaround and average wait time. Designed a \textbf{React} frontend that animates the dynamic process queue and plots these metrics live as scheduling parameters change.}
-\end{entries}
-
-% ---------------------------------------------------------------- research
-\cvsection{Research \& Publications}
-\begin{entries}
-\item \textbf{A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability}\par\nobreak
-{\small M. Chowdhury, J. Islam, Md. A. I. Semon, \textbf{S. Sarker}, M. M. Barua, A. Akter\par\nobreak
-\textit{2026 5th International Conference on Electrical, Computer \& Telecommunication Engineering (ICECTE)}, IEEE\par\nobreak
-DOI: \href{https://ieeexplore.ieee.org/document/11429440}{https://ieeexplore.ieee.org/document/11429440}}
-
-\entry{7th Rank, DravidianLangTech @ ACL 2026 Shared Task: Telugu Prompt-Style Recovery}{\textbf{(Feb 2026)}}
-{\small\textbf{S. Sarker}, I. M. Sami, P. Mojumder, A. Mallik, H. Murad\par\nobreak
-First-author system paper. Classified Telugu text into \textbf{nine communicative styles}, comparing four multilingual transformers trained with focal loss; the \textbf{MuRIL} system placed 7th with a macro F1 of 0.1703, against a chance level of about 0.11. \textit{Published in the Proceedings of DravidianLangTech @ ACL 2026.} \cvlink{https://aclanthology.org/2026.dravidianlangtech-1.58/}{Paper} --- \cvlink{https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu}{Code}}
-
-\entry{Finalist, PoliMemeDecode Datathon (CUET CSE FEST 2025)}{\textbf{(Dec 2025)}}
-{\small Built a multimodal classifier for political memes, fusing visual and textual features (DenseNet-121 and BanglaBERT, with EasyOCR) to reach a macro F1 of 0.9008.}
-\end{entries}
-
-% ---------------------------------------------------------------- competitions
-\cvsection{Competitions}
-\begin{entries}
-\small
-\item \textbf{Finalist,} IUT Techathon 2026 --- built Greenlight, above.
-\item \textbf{Finalist,} AI Hackathon, SciBlitz 2.0 (IEEE CUET Student Branch with SheSTEM), 2026.
-\item \textbf{Finalist,} The Infinity AI BuildFest 2026.
-\item \textbf{Finalist,} MicroOps Hackathon 2025 --- a full-stack MVP, API and client, built inside 24 hours.
-\end{entries}
-
-% ---------------------------------------------------------------- certifications
-\cvsection{Certifications}
-\begin{entries}
-\entry{All Certifications}{\cvlink{https://drive.google.com/drive/folders/1ybnT2oynox40j0Shpx_cueBbHoDCKC4j?usp=sharing}{View All on Google Drive}}
-{\small Full-Stack Development (freeCodeCamp), Data Science \& Python (DataCamp), Responsive Web Design, JavaScript Algorithms and Data Structures.}
-\end{entries}
-
-% ---------------------------------------------------------------- leadership
-\cvsection{Leadership \& Extracurricular}
-\begin{entries}
-\entry{President, CUET MUN Club}{(Present)}
-{\small Leads the club and its national conferences. Represented delegations in committee sessions, focusing on international technological governance and resolution drafting.}
-
-\entry{Vice President (Organizing), CUET Computer Club (CCC)}{(2023 -- Present)}
-{\small Competed in inter-university programming contests and collaborative algorithmic challenges. Actively contributed to organizing technical workshops, bootcamps, and intra-university events.}
-
-\entry{General Secretary, Development Wing, IEEE CS CUET Student Branch Chapter}{(Present)}
-{\small Secretary of the development wing of the IEEE Computer Society student branch chapter at CUET.}
-
-\entry{Joint General Secretary, CUET Debating Society}{(2023 -- Present)}
-{\small Competed in inter-university parliamentary debates, developing high-level logical rebuttals and analytical thinking. Helps run the society and organize its inter-departmental debate tournaments.}
-\end{entries}
-
-% ---------------------------------------------------------------- references
-\cvsection{References}
-\begin{entries}
-\item {\small Available upon request.}
-\end{entries}
+%-----------LEADERSHIP-----------
+\section{Leadership \& Competitions}
+  \begin{itemize}[leftmargin=2.2em]
+    \resumeItem{\textbf{Leadership:} President, \emph{CUET MUN Club} $|$ Vice President (Organizing), \emph{CUET Computer Club} $|$ General~Secretary, \emph{IEEE CS CUET Development Wing} $|$ Joint General Secretary, \emph{CUET Debating Society}}
+    \resumeItem{\textbf{Competitions:} Finalist at IUT Techathon 2026, SciBlitz 2.0 AI Hackathon 2026, Infinity AI BuildFest 2026, PoliMemeDecode Datathon (CUET CSE Fest 2025), and MicroOps Hackathon 2025.}
+  \end{itemize}
 
 \end{document}
