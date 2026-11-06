@@ -44,12 +44,16 @@ export default function Pager() {
         if (TYPING.has(el.tagName) || el.isContentEditable) return;
         if (el.closest("[data-arrow-surface]")) return;
       }
-      const target = event.key === "ArrowRight" ? next : prev;
+      // From the address bar, not the rendered page: during a page change the
+      // URL has already moved and the page has not, and a second press in
+      // that window must go on from the new address, not repeat the last one.
+      const here = neighbours(window.location.pathname);
+      const target = event.key === "ArrowRight" ? here.next : here.prev;
       if (!target) return;
       event.preventDefault();
       navigate(target.path);
     },
-    [navigate, next, prev],
+    [navigate],
   );
 
   useEffect(() => {

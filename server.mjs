@@ -1,13 +1,25 @@
 /**
- * Lightweight production server for Render.
+ * Production server for Render.
  *
- * Serves the pre-rendered static files from dist/ with proper caching headers
- * and a /health endpoint for Render's health checks.
+ * Serves the prerendered files in dist/ the way Cloudflare Pages does, so the
+ * two hosts answer the same URLs the same way:
+ *
+ *   - /about is dist/about.html, / is dist/index.html (routes are flat files);
+ *   - the 301s in dist/_redirects apply, including the generated
+ *     trailing-slash ones, so /about/ answers 301 to /about;
+ *   - anything else is dist/404.html with a real 404 status;
+ *   - text responses are compressed, brotli where the client takes it and
+ *     gzip otherwise, and the compressed copy is kept in memory.
+ *
+ * Every page's canonical link is SITE_URL, written into the HTML at build
+ * time, so a page served from here still canonicalises to the main address.
+ * /health answers Render's health check.
  */
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
-import { join, extname } from "node:path";
+import { join, extname, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
+import { brotliCompressSync, gzipSync, constants } from "node:zlib";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const DIST = join(__dirname, "dist");
@@ -22,31 +34,14 @@ const MIME_TYPES = {
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".webp": "image/webp",
-  ".avif": "image/avif",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
-  ".woff": "font/woff",
   ".woff2": "font/woff2",
   ".pdf": "application/pdf",
   ".xml": "application/xml; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
 };
-
-/** Immutable assets live under /assets/ (Vite's hashed output). */
-const isImmutable = (path) => path.startsWith("/assets/");
-
-/** Shots and og.png can be cached for a day with stale-while-revalidate. */
-const isShotOrOG = (path) => path.startsWith("/shots/") || path === "/og.png";
-
-/** The CV should always be revalidated. */
-const isCV = (path) => path === "/Samonwita_Sarker_CV.pdf";
-
-function cacheControl(urlPath) {
-  if (isImmutable(urlPath)) return "public, max-age=31536000, immutable";
-  if (isShotOrOG(urlPath)) return "public, max-age=86400, stale-while-revalidate=604800";
-  if (isCV(urlPath)) return "public, max-age=0, must-revalidate";
-  return "public, max-age=3600, stale-while-revalidate=86400";
-}
+const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".svg", ".xml", ".txt"]);
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -54,67 +49,111 @@ const SECURITY_HEADERS = {
   "X-Frame-Options": "SAMEORIGIN",
 };
 
-/**
- * Resolve a URL path to a file in dist/.
- * /about  →  dist/about/index.html
- * /       →  dist/index.html
- */
+function cacheControl(urlPath) {
+  if (urlPath.startsWith("/assets/")) return "public, max-age=31536000, immutable";
+  return "public, max-age=0, must-revalidate";
+}
+
+/** The static 301s from dist/_redirects: one "source destination 301" a line. */
+const REDIRECTS = new Map();
+try {
+  for (const line of readFileSync(join(DIST, "_redirects"), "utf8").split("\n")) {
+    const [from, to, code] = line.trim().split(/\s+/);
+    if (!from || from.startsWith("#") || from.includes("*") || from.includes(":")) continue;
+    REDIRECTS.set(from, { to, code: Number(code) || 302 });
+  }
+} catch {
+  // No _redirects in the build: serve without redirects rather than fail.
+}
+
+/** A URL path to a file in dist/, or null. Never escapes dist/. */
 function resolveFile(urlPath) {
-  // Direct file match (assets, images, PDF, etc.)
-  const direct = join(DIST, urlPath);
-  if (existsSync(direct) && statSync(direct).isFile()) return direct;
-
-  // Directory with index.html (clean URLs)
-  const withIndex = join(DIST, urlPath, "index.html");
-  if (existsSync(withIndex)) return withIndex;
-
+  const candidates = urlPath === "/" ? ["index.html"] : [urlPath, `${urlPath}.html`];
+  for (const candidate of candidates) {
+    const file = normalize(join(DIST, candidate));
+    if (!file.startsWith(DIST)) return null;
+    if (existsSync(file) && statSync(file).isFile()) return file;
+  }
   return null;
+}
+
+const compressed = new Map();
+function body(file, encoding) {
+  const raw = readFileSync(file);
+  if (!encoding) return raw;
+  // Keyed on the file's modification time too, so a rebuild under a running
+  // server is never answered from the previous build's compressed copy.
+  const key = `${encoding}:${file}:${statSync(file).mtimeMs}`;
+  if (!compressed.has(key)) {
+    compressed.set(
+      key,
+      encoding === "br"
+        ? brotliCompressSync(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } })
+        : gzipSync(raw, { level: 9 }),
+    );
+  }
+  return compressed.get(key);
+}
+
+function send(req, res, status, file, extraHeaders = {}) {
+  const ext = extname(file);
+  const accepts = String(req.headers["accept-encoding"] || "");
+  const encoding = COMPRESSIBLE.has(ext) ? (/\bbr\b/.test(accepts) ? "br" : /\bgzip\b/.test(accepts) ? "gzip" : null) : null;
+  res.writeHead(status, {
+    "Content-Type": MIME_TYPES[ext] || "application/octet-stream",
+    ...(encoding ? { "Content-Encoding": encoding } : {}),
+    Vary: "Accept-Encoding",
+    ...SECURITY_HEADERS,
+    ...extraHeaders,
+  });
+  res.end(req.method === "HEAD" ? undefined : body(file, encoding));
 }
 
 const server = createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
-  const pathname = decodeURIComponent(url.pathname);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    pathname = "/";
+  }
 
-  // ── Health check ──────────────────────────────────────────────
   if (pathname === "/health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: "ok", timestamp: new Date().toISOString() }));
     return;
   }
 
-  // ── Static file serving ───────────────────────────────────────
-  const file = resolveFile(pathname);
-
-  if (!file) {
-    // Serve 404.html with a real 404 status
-    const notFound = join(DIST, "404.html");
-    if (existsSync(notFound)) {
-      const body = readFileSync(notFound);
-      res.writeHead(404, {
-        "Content-Type": "text/html; charset=utf-8",
-        ...SECURITY_HEADERS,
-      });
-      res.end(body);
-    } else {
-      res.writeHead(404, { "Content-Type": "text/plain" });
-      res.end("Not Found");
-    }
+  // /about.html to /about, and /index.html to /, as Cloudflare Pages does:
+  // one address per page.
+  if (pathname.endsWith(".html") && pathname !== "/404.html") {
+    const clean = pathname === "/index.html" ? "/" : pathname.slice(0, -".html".length);
+    res.writeHead(301, { Location: clean + url.search, ...SECURITY_HEADERS });
+    res.end();
     return;
   }
 
-  const ext = extname(file);
-  const contentType = MIME_TYPES[ext] || "application/octet-stream";
-  const body = readFileSync(file);
+  const redirect = REDIRECTS.get(pathname);
+  if (redirect) {
+    res.writeHead(redirect.code, { Location: redirect.to + url.search, ...SECURITY_HEADERS });
+    res.end();
+    return;
+  }
 
-  res.writeHead(200, {
-    "Content-Type": contentType,
-    "Cache-Control": cacheControl(pathname),
-    ...SECURITY_HEADERS,
-  });
-  res.end(body);
+  const file = resolveFile(pathname);
+  if (file) {
+    send(req, res, 200, file, { "Cache-Control": cacheControl(pathname) });
+    return;
+  }
+
+  const notFound = join(DIST, "404.html");
+  if (existsSync(notFound)) send(req, res, 404, notFound, { "Cache-Control": "no-cache" });
+  else {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Not Found");
+  }
 });
 
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server listening on http://0.0.0.0:${PORT}`);
-  console.log(`Health check at http://0.0.0.0:${PORT}/health`);
 });

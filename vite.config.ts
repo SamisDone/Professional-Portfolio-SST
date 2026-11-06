@@ -1,58 +1,70 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { appendFileSync, existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig, loadEnv, type Plugin } from "vite";
-import { ROUTE_META, DEFAULT_META, NOT_FOUND_META } from "./src/lib/meta.js";
+import { defineConfig, type Plugin } from "vite";
+import { ROUTE_META, NOT_FOUND_META, ogKey, type PageMeta } from "./src/lib/meta.js";
 import { sectionFor } from "./src/lib/routes.js";
-
-/**
- * The site's own absolute URL, needed anywhere a relative path will not do:
- * the canonical link, the Open Graph tags (crawlers do not resolve relative
- * image paths, so a relative one silently yields a blank link preview), and
- * sitemap.xml.
- *
- * The default is the deployed origin, so a plain `npm run build` anywhere
- * produces correct tags. Override with VITE_SITE_URL for a custom domain.
- */
-const SITE_URL = "https://samonwita.vercel.app";
+import { GOOGLE_SITE_VERIFICATION, SITE_URL, absolute } from "./src/lib/site.js";
 
 const escape = (s: string) =>
-  s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+  s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 
-function siteUrlPlugin(siteUrl: string): Plugin {
+/**
+ * Where each route's own content comes from, for its sitemap `lastmod`. Every
+ * page also reads src/data/content.ts, so that is added to all of them.
+ */
+const SOURCES: Record<string, string[]> = {
+  "/": ["src/components/Hero.tsx", "src/components/Proof.tsx", "src/components/Flagships.tsx"],
+  "/work": ["src/components/Work.tsx"],
+  "/experience": ["src/components/Experience.tsx"],
+  "/research": ["src/components/Research.tsx"],
+  "/about": ["src/components/About.tsx", "src/components/Trajectory.tsx"],
+  "/activities": ["src/components/Activities.tsx", "src/components/Entry.tsx"],
+  "/contact": ["src/components/Contact.tsx"],
+  "/repositories": ["src/components/Repositories.tsx"],
+  "/privacy": ["src/components/Privacy.tsx"],
+};
+
+/**
+ * The date of the latest commit touching a page's sources, as YYYY-MM-DD, or
+ * nothing when git cannot answer (no history in the build container). A
+ * wrong lastmod is worse than none: crawlers learn to ignore a sitemap whose
+ * dates do not match the pages.
+ */
+function lastmod(path: string) {
+  const files = [
+    "src/data/content.ts",
+    ...(SOURCES[path] ?? (path.startsWith("/work/") ? ["src/components/CaseStudy.tsx", "public/shots"] : [])),
+  ];
+  try {
+    const out = execFileSync("git", ["log", "-1", "--format=%cs", "--", ...files], { encoding: "utf8" }).trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(out) ? out : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** robots.txt and sitemap.xml, generated so they carry SITE_URL. */
+function crawlFilesPlugin(): Plugin {
   return {
-    name: "site-url",
-
-    // Rewrite the origin token in index.html. The per-route tokens are left
-    // for routeMetaPlugin, which runs over the finished HTML.
-    transformIndexHtml(html) {
-      return html.replaceAll("__SITE_URL__", siteUrl);
-    },
-
-    // robots.txt and sitemap.xml are generated rather than kept in public/,
-    // because a file copied verbatim cannot carry the deployed origin. Every
-    // route is listed: a sitemap naming only the home page tells a crawler
-    // the other five are not worth indexing.
+    name: "crawl-files",
     generateBundle() {
       this.emitFile({
         type: "asset",
         fileName: "robots.txt",
-        source: `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
+        source: `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
       });
 
-      const urls = Object.keys(ROUTE_META)
-        .map(
-          (path) =>
-            `  <url>\n` +
-            `    <loc>${siteUrl}${path}</loc>\n` +
-            `    <changefreq>monthly</changefreq>\n` +
-            `    <priority>${path === "/" ? "1.0" : "0.8"}</priority>\n` +
-            `  </url>\n`,
-        )
+      // Every indexable route: ROUTES, /repositories, /privacy and every case
+      // study. The 404 and the form's thank-you page are noindex and left out.
+      const urls = Object.entries(ROUTE_META)
+        .filter(([, meta]) => !meta.noindex)
+        .map(([path]) => {
+          const date = lastmod(path);
+          return `  <url>\n    <loc>${absolute(path)}</loc>\n${date ? `    <lastmod>${date}</lastmod>\n` : ""}  </url>\n`;
+        })
         .join("");
 
       this.emitFile({
@@ -60,25 +72,34 @@ function siteUrlPlugin(siteUrl: string): Plugin {
         fileName: "sitemap.xml",
         source:
           `<?xml version="1.0" encoding="UTF-8"?>\n` +
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-          urls +
-          `</urlset>\n`,
+          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`,
       });
+    },
+
+    // One 301 per route from the trailing-slash form to the plain one, added
+    // to the _redirects copied from public/. Generated, so a new page cannot
+    // be missed. The slash-free address is the only form that answers 200.
+    writeBundle(options) {
+      const file = join(options.dir ?? "dist", "_redirects");
+      if (!existsSync(file)) return;
+      const rules = Object.keys(ROUTE_META)
+        .filter((path) => path !== "/")
+        .map((path) => `${path}/ ${path} 301`)
+        .join("\n");
+      appendFileSync(file, `\n# Trailing slashes, generated by vite.config.ts.\n${rules}\n`);
     },
   };
 }
 
 /**
- * Emits one real HTML file per route, each carrying that route's own title,
- * description, canonical link and Open Graph tags.
+ * Emits one real HTML file per route, each with its own title, description,
+ * canonical link, Open Graph and Twitter tags, section colour, and robots
+ * meta where the page is kept out of search.
  *
- * Without this every route serves the same index.html, so a crawler that does
- * not execute JavaScript reads one identical title and description for all six
- * pages. Most social-preview crawlers are exactly that.
- *
- * The files sit at `work/index.html` and so on, and are resolved off the
- * filesystem, so these are what a crawler gets, while a visitor still lands in
- * the same single-page app and navigates client-side from there.
+ * Routes are written flat: /about is about.html, /work/dimsum is
+ * work/dimsum.html. Cloudflare Pages serves those at /about and /work/dimsum
+ * with a 200 and no redirect, where about/index.html would be served at
+ * /about/ with /about redirecting to it.
  */
 function routeMetaPlugin(): Plugin {
   return {
@@ -88,103 +109,67 @@ function routeMetaPlugin(): Plugin {
     generateBundle(_options, bundle) {
       const index = bundle["index.html"];
       if (!index || index.type !== "asset") return;
-
-      const fill = (html: string, path: string) => {
-        const meta = ROUTE_META[path] ?? DEFAULT_META;
-        return html
-          .replaceAll("__PAGE_TITLE__", escape(meta.title))
-          .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
-          // The section colour on <html> as well as on the page root, so the
-          // transition's edge strip can read it from the very first page.
-          .replaceAll("__PAGE_SECTION__", sectionFor(path))
-          // The canonical for the home page is "/", not the empty string.
-          .replaceAll("__PAGE_PATH__", path === "/" ? "/" : path);
-      };
-
       const template = String(index.source);
 
-      for (const path of Object.keys(ROUTE_META)) {
+      const fill = (path: string, meta: PageMeta, canonicalPath: string) => {
+        const extra = [
+          meta.noindex ? `<meta name="robots" content="noindex" />` : "",
+          GOOGLE_SITE_VERIFICATION && path === "/"
+            ? `<meta name="google-site-verification" content="${escape(GOOGLE_SITE_VERIFICATION)}" />`
+            : "",
+        ]
+          .filter(Boolean)
+          .join("\n    ");
+        // A 404 has no address of its own, so it gets no canonical: pointing
+        // it at the home page reads to Google as a soft 404.
+        const canonical = path === "/404" ? "" : `<link rel="canonical" href="${absolute(canonicalPath)}" />`;
+        return template
+          .replace("__CANONICAL__", canonical)
+          .replaceAll("__PAGE_TITLE__", escape(meta.title))
+          .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
+          .replaceAll("__PAGE_SECTION__", sectionFor(path))
+          .replaceAll("__PAGE_URL__", absolute(canonicalPath))
+          .replaceAll("__OG_IMAGE__", `${SITE_URL}/og/${ogKey(canonicalPath)}.png`)
+          .replaceAll("__OG_IMAGE_ALT__", escape(`${meta.heading}, on a card with the name ${SITE_NAME_TEXT}`))
+          .replace("<!--__HEAD_EXTRA__-->", extra);
+      };
+
+      for (const [path, meta] of Object.entries(ROUTE_META)) {
         if (path === "/") continue;
-        this.emitFile({
-          type: "asset",
-          fileName: `${path.replace(/^\//, "")}/index.html`,
-          source: fill(template, path),
-        });
+        this.emitFile({ type: "asset", fileName: `${path.slice(1)}.html`, source: fill(path, meta, path) });
       }
 
-      /*
-       * A real 404 document. There is no catch-all rewrite: every route is a
-       * real file, so the host resolves those from disk and serves this one,
-       * with a genuine 404 status, for everything else. An unknown URL used to
-       * fall through to index.html and serve the home page's title and, once
-       * prerendering landed, the home page's content too.
-       */
-      this.emitFile({
-        type: "asset",
-        fileName: "404.html",
-        source: template
-          .replaceAll("__PAGE_TITLE__", escape(NOT_FOUND_META.title))
-          .replaceAll("__PAGE_DESCRIPTION__", escape(NOT_FOUND_META.description))
-          .replaceAll("__PAGE_SECTION__", sectionFor("/404"))
-          .replaceAll("__PAGE_PATH__", "/404"),
-      });
+      // A real 404 document, served with a 404 status for every unknown URL.
+      // Its card and canonical are the home page's: a 404 has no address.
+      this.emitFile({ type: "asset", fileName: "404.html", source: fill("/404", NOT_FOUND_META, "/") });
 
-      // The root last, so the template is still untouched for the loop above.
-      index.source = fill(template, "/");
+      // The root last, so the template is untouched for the loop above.
+      index.source = fill("/", ROUTE_META["/"], "/");
     },
   };
 }
 
+const SITE_NAME_TEXT = "Samonwita Sarker";
+
 /**
  * A short content hash of the CV, stamped onto the link the site renders as
- * `?v=`. The filename itself stays put, because it is a URL people paste into
- * applications and it must not rot.
- *
- * Without this the CV was unfixable once wrong. It is one path that never
- * changes, so a browser that fetched it kept whatever it had until its
- * max-age ran out, and every link on the site points at that one cache entry.
- * An updated CV therefore kept opening as the previous one, for the owner and
- * for anyone who had looked at it recently, with nothing on the site to say
- * so. Deriving the token from the file means it cannot be forgotten on a
- * rebuild, which a hand-bumped version number would eventually be.
+ * `?v=`, so an updated CV is never served from a stale cache while its path,
+ * which people paste into applications, stays the same.
  */
 function cvVersion() {
   try {
-    return createHash("sha1")
-      .update(readFileSync("public/Samonwita_Sarker_CV.pdf"))
-      .digest("hex")
-      .slice(0, 8);
+    return createHash("sha1").update(readFileSync("public/Samonwita_Sarker_CV.pdf")).digest("hex").slice(0, 8);
   } catch {
-    // The PDF is built from cv/ and may be absent on a fresh clone. A missing
-    // CV is not a reason to fail the build; the link still resolves.
     return "dev";
   }
 }
 
-export default defineConfig(({ mode, isSsrBuild }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-  // Vercel and Netlify both expose the deployed host at build time, so a
-  // preview deployment gets its own origin rather than the production one.
-  const siteUrl = (
-    env.VITE_SITE_URL ||
-    (env.VERCEL_ENV && env.VERCEL_ENV !== "production" && env.VERCEL_URL
-      ? `https://${env.VERCEL_URL}`
-      : "") ||
-    SITE_URL
-  ).replace(/\/$/, "");
-
-  return {
-    // Available in both the client and SSR passes, so the prerendered HTML
-    // and the hydrated app agree on the link.
-    define: { __CV_VERSION__: JSON.stringify(cvVersion()) },
-    plugins: [
-      react(),
-      // The SSR pass exists only to produce a render function for
-      // scripts/prerender.mjs. It emits no HTML, so the plugins that stamp
-      // metadata into HTML have nothing to do and would only litter the SSR
-      // output with a second robots.txt and sitemap.
-      ...(isSsrBuild ? [] : [siteUrlPlugin(siteUrl), routeMetaPlugin()]),
-    ],
-    build: isSsrBuild ? { outDir: "dist-ssr", ssr: "src/entry-server.tsx" } : {},
-  };
-});
+export default defineConfig(({ isSsrBuild }) => ({
+  define: { __CV_VERSION__: JSON.stringify(cvVersion()) },
+  plugins: [
+    react(),
+    // The SSR pass only produces a render function for scripts/prerender.mjs.
+    ...(isSsrBuild ? [] : [crawlFilesPlugin(), routeMetaPlugin()]),
+  ],
+  build: isSsrBuild ? { outDir: "dist-ssr", ssr: "src/entry-server.tsx" } : {},
+}));

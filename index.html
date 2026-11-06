@@ -5,79 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
-      __SITE_URL__ is replaced at build time from VITE_SITE_URL (see
-      vite.config.ts). These have to be absolute: Open Graph crawlers do not
-      resolve relative paths, so a relative image silently yields a blank card.
-
-      The per-route title and description placeholders below are filled in the
-      same way, once per route. This is a single-page app, so without that
-      every route would ship one identical title and description to any
-      crawler that does not run JavaScript.
+      Every __TOKEN__ below is filled per route at build time by the route-meta
+      plugin in vite.config.ts, from src/lib/meta.ts and the single SITE_URL
+      in src/lib/site.ts. Absolute URLs, because Open Graph crawlers do not
+      resolve relative ones. Structured data is rendered by the pages
+      themselves (src/lib/structured.ts), so each page carries its own.
     -->
-    <link rel="canonical" href="__SITE_URL____PAGE_PATH__" />
-
+    __CANONICAL__
     <title>__PAGE_TITLE__</title>
     <meta name="description" content="__PAGE_DESCRIPTION__" />
     <meta name="author" content="Samonwita Sarker" />
     <meta name="theme-color" content="#f3f1ec" />
+    <!--__HEAD_EXTRA__-->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- iOS ignores an SVG here, so the home-screen icon is a 180px PNG. -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-
     <!-- Open Graph: what LinkedIn, Slack and iMessage render for the link. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Samonwita Sarker" />
-    <meta property="og:url" content="__SITE_URL____PAGE_PATH__" />
+    <meta property="og:url" content="__PAGE_URL__" />
     <meta property="og:title" content="__PAGE_TITLE__" />
     <meta property="og:description" content="__PAGE_DESCRIPTION__" />
-    <meta property="og:image" content="__SITE_URL__/og.png" />
+    <meta property="og:image" content="__OG_IMAGE__" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="Samonwita Sarker. CSE '27 at CUET, open to software engineering and ML roles."
-    />
+    <meta property="og:image:alt" content="__OG_IMAGE_ALT__" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="__PAGE_TITLE__" />
     <meta name="twitter:description" content="__PAGE_DESCRIPTION__" />
-    <meta name="twitter:image" content="__SITE_URL__/og.png" />
-
-    <!-- Structured data, so a search result can show the role and affiliation. -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Samonwita Sarker",
-        "url": "__SITE_URL__/",
-        "email": "mailto:sarker.samonwita@gmail.com",
-        "jobTitle": "Full-stack engineer and explainable AI researcher",
-        "description": "CSE undergraduate at CUET, graduating 2027. Builds full-stack products and researches how to make a model's predictions explainable.",
-        "affiliation": {
-          "@type": "CollegeOrUniversity",
-          "name": "Chittagong University of Engineering & Technology"
-        },
-        "homeLocation": [
-          { "@type": "City", "name": "Dhaka, Bangladesh" },
-          { "@type": "City", "name": "Chattogram, Bangladesh" }
-        ],
-        "knowsAbout": [
-          "Full-stack web development",
-          "Explainable AI",
-          "Natural language processing",
-          "React",
-          "Node.js",
-          "PostgreSQL"
-        ],
-        "sameAs": [
-          "https://github.com/SamisDone",
-          "https://www.linkedin.com/in/samonwita-sarker-a87737262/",
-          "https://codeforces.com/profile/jinxed_sam"
-        ]
-      }
-    </script>
+    <meta name="twitter:image" content="__OG_IMAGE__" />
+    <meta name="twitter:image:alt" content="__OG_IMAGE_ALT__" />
 
     <!--
       Boot shell. Inlined so it paints before the CSS arrives, and shaped like

@@ -13,6 +13,14 @@ import { metaFor } from "../lib/meta";
  * dialog at /work#slug; they are pages at /work/slug now, and any link still
  * pointing at the hash lands on the right one.
  */
+/**
+ * Slugs that were renamed. Finance Tracker became FinPulse, which became
+ * Sixpence; both old repositories now resolve to SixPence on GitHub. Old case
+ * study links only ever had the slug in the hash, which never reaches the
+ * server, so this is the one place they can be forwarded.
+ */
+const OLD_SLUGS: Record<string, string> = { financetracker: "sixpence", finpulse: "sixpence" };
+
 export default function RouteEffects() {
   const { pathname, hash } = useLocation();
   const navigate = useNavigate();
@@ -20,7 +28,8 @@ export default function RouteEffects() {
 
   useEffect(() => {
     if (pathname !== "/work" || !hash) return;
-    const project = findProject(decodeURIComponent(hash.slice(1)));
+    const slug = decodeURIComponent(hash.slice(1));
+    const project = findProject(OLD_SLUGS[slug] ?? slug);
     if (project) navigate(`/work/${project.slug}`, { replace: true });
   }, [pathname, hash, navigate]);
 

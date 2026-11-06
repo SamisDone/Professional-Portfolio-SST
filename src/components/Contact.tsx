@@ -1,12 +1,18 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { profile } from "../data/content";
+import { absolute } from "../lib/site";
 import { Button, Label, TextLink } from "./ui";
 
-// FormSubmit needs no signup and no API key. It forwards whatever hits this
-// endpoint to profile.email. The very first message sent to a given address
-// triggers a one-time confirmation mail; after that link is clicked, every
-// later message arrives normally.
+// FormSubmit needs no signup and no API key. It forwards whatever is posted
+// to profile.email. The very first message sent to a given address triggers
+// a one-time confirmation mail; until that link is clicked, nothing arrives.
+//
+// Two ways in. With JavaScript, the form posts to the AJAX endpoint and shows
+// its own confirmation. Without it, the browser posts the form itself to the
+// plain endpoint, and FormSubmit sends it back to /contact/sent (`_next`).
 const ENDPOINT = `https://formsubmit.co/ajax/${profile.email}`;
+const NATIVE_ENDPOINT = `https://formsubmit.co/${profile.email}`;
+const SUBJECT = "Portfolio message";
 
 const SOCIALS = [
   { label: "GitHub", href: profile.github, handle: profile.githubHandle },
@@ -42,6 +48,14 @@ function FieldError({ id, children }: { id: string; children?: string }) {
 
 export default function Contact() {
   const [form, setForm] = useState<Fields>({ name: "", email: "", message: "" });
+  // The honeypot. People never see it; a bot that fills every field does.
+  const [honey, setHoney] = useState("");
+  // Native validation guards the form while there is no script; once the
+  // script runs it takes over with its own messages.
+  const formRef = useRef<HTMLFormElement | null>(null);
+  useEffect(() => {
+    if (formRef.current) formRef.current.noValidate = true;
+  }, []);
   const [status, setStatus] = useState<Status>("idle");
   const [touched, setTouched] = useState(false);
   const errors: Errors = touched ? validate(form) : {};
@@ -58,13 +72,23 @@ export default function Contact() {
     if (Object.keys(validate(form)).length > 0) return;
 
     setStatus("sending");
+    // A filled honeypot is a bot. It is told the message went, and nothing is
+    // sent, so it learns nothing about the trap.
+    if (honey) {
+      setStatus("sent");
+      return;
+    }
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...form, _subject: `Portfolio message from ${form.name}` }),
+        body: JSON.stringify({ ...form, _subject: `${SUBJECT} from ${form.name}`, _honey: honey }),
       });
       if (!res.ok) throw new Error(String(res.status));
+      // FormSubmit answers 200 with success "false" when it refuses a message,
+      // for example before the address has been activated.
+      const body = (await res.json().catch(() => ({}))) as { success?: string | boolean };
+      if (body.success === "false" || body.success === false) throw new Error("refused");
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
       setTouched(false);
@@ -86,6 +110,7 @@ export default function Contact() {
           placeholder={placeholder}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+          required
           aria-invalid={!!errors.message}
           aria-describedby={errors.message ? "c-message-err" : undefined}
           className="field t-body block w-full resize-y py-3"
@@ -99,6 +124,7 @@ export default function Contact() {
           placeholder={placeholder}
           value={form[k]}
           onChange={(e) => setForm((f) => ({ ...f, [k]: e.target.value }))}
+          required
           aria-invalid={!!errors[k]}
           aria-describedby={errors[k] ? `c-${k}-err` : undefined}
           className="field t-body block h-12 w-full"
@@ -152,7 +178,31 @@ export default function Contact() {
       </section>
 
       <section aria-label="Contact form" className="lg:col-span-7">
-        <form onSubmit={submit} noValidate className="flex flex-col gap-6">
+        <form
+          action={NATIVE_ENDPOINT}
+          method="POST"
+          onSubmit={submit}
+          ref={formRef}
+          className="flex flex-col gap-6"
+        >
+          {/* For the post the browser makes with JavaScript off. */}
+          <input type="hidden" name="_subject" value={SUBJECT} />
+          <input type="hidden" name="_next" value={absolute("/contact/sent")} />
+          <input type="hidden" name="_captcha" value="false" />
+          {/* The honeypot: off screen, out of the tab order, hidden from
+              screen readers. FormSubmit drops any submission that fills it. */}
+          <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+            <label htmlFor="c-honey">Leave this empty</label>
+            <input
+              id="c-honey"
+              type="text"
+              name="_honey"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honey}
+              onChange={(e) => setHoney(e.target.value)}
+            />
+          </div>
           {status === "sent" && (
             <p role="status" className="t-body border-2 border-ink bg-paper-2 px-4 py-3">
               Message sent. I will get back to you.

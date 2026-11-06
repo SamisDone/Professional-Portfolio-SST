@@ -114,6 +114,9 @@ export type Project = {
    */
   figures?: { value: string; label: string }[];
   highlights?: string[];
+  /** The page's meta description, where the one built from the summary in
+      lib/meta.ts falls outside 120 to 160 characters or reads badly. */
+  metaDescription?: string;
   problem: string;
   approach: string;
   outcome: string;
@@ -314,7 +317,7 @@ export const featured: Project[] = [
     liveLabel: "Open the app",
     shot: "/shots/sixpence.jpg",
     shotAlt:
-      "The Sixpence landing page, showing a sample month's ledger and a groceries budget on pace.",
+      "The Sixpence budgets page: three active budgets with a marker for where an even pace would be today, one flagged as spending fast, and a past month that went over.",
     problem:
       "Finance apps want a bank login before they will show you anything, and the mid-month figure they show you is usually flattering: a running total this month set against a finished one last month, which always reads as progress. The honest alternative, a spreadsheet, tells you what you spent and never whether you are on pace to overspend.",
     approach:
@@ -1116,3 +1119,53 @@ export const proof: Proof[] = [
   },
 ];
 
+/**
+ * The privacy page, written from what the site actually does.
+ *
+ * Points marked CHECK are ones that could not be verified from here:
+ * formsubmit.co did not answer (HTTP 522) while this was written, so nothing
+ * is said about FormSubmit beyond what the form itself does. Confirm or edit
+ * each before launch. The analytics section is filled in once the analytics
+ * choice is made.
+ */
+export const privacy = {
+  updated: "2026-11-06",
+  sections: [
+    {
+      heading: "In short",
+      body: [
+        "This site sets no cookies and stores nothing in your browser. The only personal data it handles is what you type into the contact form, and only if you send it.",
+      ],
+    },
+    {
+      heading: "The contact form",
+      body: [
+        "When you send the form, your name, your email address and your message go to FormSubmit (formsubmit.co), a third-party form service, which forwards them to my email inbox. Nothing is sent until you press Send message.",
+        "The form also carries a hidden field that people never see or fill in. It is there to catch automated spam, and it holds no data about you.",
+        // CHECK: how long FormSubmit keeps a copy, and what it logs, is set by
+        // FormSubmit. Link its own policy here once it can be read.
+        "FormSubmit handles the message on its own servers under its own terms, which I do not control.",
+        // CHECK: confirm this is how you actually keep and delete messages.
+        "I keep your message in my email for as long as I need it to reply, and I will delete it if you ask me to.",
+      ],
+    },
+    {
+      heading: "Analytics",
+      body: ["This section is completed once the site's analytics are chosen and set up."],
+    },
+    {
+      heading: "Hosting",
+      // CHECK: confirm against Cloudflare's privacy policy before launch.
+      body: [
+        "The site is served by Cloudflare Pages. Like any web host, Cloudflare receives your IP address and the page you asked for in order to deliver it.",
+      ],
+    },
+    {
+      heading: "Your data",
+      body: [
+        "You can ask me what I hold from a message you sent, and ask me to delete it, by writing to the address below.",
+      ],
+    },
+  ],
+  note: "This page describes what the site does in plain language. It is not legal advice and has not been reviewed by a lawyer.",
+};

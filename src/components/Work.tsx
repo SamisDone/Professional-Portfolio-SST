@@ -10,19 +10,22 @@ const STACK = 3;
 const COLS =
   "md:grid-cols-[40px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_112px] lg:grid-cols-[40px_160px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_112px]";
 
-function Thumb({ project }: { project: Project }) {
+function Thumb({ project, eager }: { project: Project; eager: boolean }) {
   // No capture, no picture: the cell stays empty rather than holding a box.
   if (!project.shot) return <span aria-hidden className="hidden lg:block" />;
   const stem = project.shot.replace(/\.(jpg|jpeg|png)$/i, "");
   return (
     <img
       src={`${stem}-700.webp`}
+      srcSet={`${stem}-700.webp 700w, ${stem}.webp 1400w`}
+      sizes="160px"
       alt=""
       // The source of the morph into this project's case study exhibit.
       data-exhibit={project.slug}
       width={160}
       height={100}
-      loading="lazy"
+      // The first rows sit on the first screen; the rest wait until scrolled to.
+      loading={eager ? "eager" : "lazy"}
       decoding="async"
       className="hidden aspect-[16/10] w-40 border-2 border-ink bg-paper-2 object-cover object-top lg:block"
     />
@@ -48,7 +51,7 @@ function Row({ project, n }: { project: Project; n: number }) {
         className={`press press-quiet grid grid-cols-[32px_minmax(0,1fr)] gap-x-4 gap-y-2 px-2 py-4 [--fill-hover:var(--section-tint)] md:items-start ${COLS}`}
       >
         <span className="t-label pt-1 text-ink">{String(n).padStart(2, "0")}</span>
-        <Thumb project={project} />
+        <Thumb project={project} eager={n <= 3} />
 
         <div>
           {isFlagship(project) && <Label className="mb-1 text-ink">Flagship</Label>}

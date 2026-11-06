@@ -13,6 +13,8 @@ import ActivitiesPage from "./pages/ActivitiesPage";
 import ContactPage from "./pages/ContactPage";
 import RepositoriesPage from "./pages/RepositoriesPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import ContactSentPage from "./pages/ContactSentPage";
 import { sectionFor } from "./lib/routes";
 
 /**
@@ -51,6 +53,9 @@ export function AppShell() {
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/repositories" element={<RepositoriesPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          {/* Where the contact form returns with JavaScript off. */}
+          <Route path="/contact/sent" element={<ContactSentPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Pager />

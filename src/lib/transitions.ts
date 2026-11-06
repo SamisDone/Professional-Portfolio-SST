@@ -111,6 +111,9 @@ export function transitionTo(from: string, to: string, replace: boolean, commit:
     }
   });
   running = transition;
+  // A transition skipped by the next navigation rejects `ready`. That is the
+  // expected outcome of a fast run of presses, not an error.
+  transition.ready.catch(() => {});
 
   transition.finished.finally(() => {
     if (slug) {

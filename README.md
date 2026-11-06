@@ -4,7 +4,7 @@ The personal site of Samonwita Sarker, a Computer Science and Engineering
 undergraduate at CUET (class of 2027) who builds software and researches
 explainable AI and NLP.
 
-**Live:** [samonwita.vercel.app](https://samonwita.vercel.app)
+**Live:** [samonwita.pages.dev](https://samonwita.pages.dev)
 
 ![The home page: the name at poster scale beside a stack of real project screenshots](docs/home.jpg)
 
@@ -351,9 +351,19 @@ the server.
 browser-based version worked locally and failed on deploy, because every build
 then depended on downloading a browser binary.
 
-**The origin** used for absolute URLs resolves in this order: `VITE_SITE_URL` if
-set, then the deployment URL on Vercel preview builds, then
-`https://samonwita.vercel.app`.
+**The origin** for every absolute URL (canonicals, Open Graph, the sitemap,
+robots.txt, structured data, the contact form's return address) is the one
+constant `SITE_URL` in `src/lib/site.ts`. A custom domain is that one line.
+
+**Routes are flat files:** `/about` is `dist/about.html`, `/work/dimsum` is
+`dist/work/dimsum.html`. Cloudflare Pages serves those at the slash-free
+address with a 200; the build adds a 301 from each trailing-slash form.
+
+**After the build,** `scripts/check-seo.mjs` reads the finished HTML and fails
+on a missing or duplicate title or description, a description outside 120 to
+160 characters, a page without exactly one `h1`, an `img` without `alt`, a
+wrong canonical, missing social tags or card, unparseable JSON-LD, or a page
+nothing links to.
 
 ## Things that are easy to break
 

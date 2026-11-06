@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { metaFor } from "../lib/meta";
+import { metaFor, ogKey, ROUTE_META } from "../lib/meta";
+import { SITE_URL, absolute } from "../lib/site";
 
 /**
  * Keeps the document's title, description and canonical link in step with
@@ -22,9 +23,25 @@ function useDocumentMeta(pathname: string) {
     set('meta[name="twitter:title"]', "content", meta.title);
     set('meta[name="twitter:description"]', "content", meta.description);
 
-    const url = window.location.origin + pathname;
-    set('link[rel="canonical"]', "href", url);
+    // Always the production address, from SITE_URL, never the host this
+    // copy happens to be served from: a preview must not canonicalise to
+    // itself. A 404 has no address, so it has no canonical.
+    const known = pathname in ROUTE_META;
+    const url = absolute(known ? pathname : "/");
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!known) canonical?.remove();
+    else {
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.append(canonical);
+      }
+      canonical.href = url;
+    }
     set('meta[property="og:url"]', "content", url);
+    const card = `${SITE_URL}/og/${ogKey(known ? pathname : "/")}.png`;
+    set('meta[property="og:image"]', "content", card);
+    set('meta[name="twitter:image"]', "content", card);
   }, [pathname]);
 }
 

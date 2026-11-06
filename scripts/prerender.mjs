@@ -36,34 +36,24 @@ const { render } = await import(pathToFileURL(ssrEntry).href);
 
 // The routes are whatever HTML files the build emitted. vite.config.ts decides
 // which exist; reading them off disk keeps this script from having to import
-// TypeScript. Walked to any depth, because each case study is a file at
-// work/<slug>/index.html, one level below /work.
-function findRoutes(dir, prefix = "") {
-  return readdirSync(dir, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name !== "assets" && e.name !== "shots")
-    .flatMap((e) => {
-      const path = `${prefix}/${e.name}`;
-      const here = existsSync(join(dir, e.name, "index.html")) ? [path] : [];
-      return [...here, ...findRoutes(join(dir, e.name), path)];
-    });
+// TypeScript. Routes are flat files at any depth: about.html is /about,
+// work/dimsum.html is /work/dimsum, and index.html is /.
+function findPages(dir, prefix = "") {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    if (e.isDirectory()) return e.name === "assets" || e.name === "shots" || e.name === "og" ? [] : findPages(join(dir, e.name), `${prefix}/${e.name}`);
+    if (!e.name.endsWith(".html")) return [];
+    const name = e.name.slice(0, -".html".length);
+    if (!prefix && name === "404") return [{ path: "/404", file: join(dir, e.name) }];
+    return [{ path: !prefix && name === "index" ? "/" : `${prefix}/${name}`, file: join(dir, e.name) }];
+  });
 }
-const routes = ["/", ...findRoutes(dist)];
-
-// 404.html is a file at the root rather than a directory, so it is named
-// rather than discovered. Rendering a path that matches no route is what makes
+// 404.html is rendered from a path that matches no route, which is what makes
 // React Router produce the not-found page.
-const NOT_FOUND = { path: "/404", file: join(dist, "404.html") };
+const targets = findPages(dist);
 
 const OPEN = '<div id="root">';
 let failures = 0;
 
-const targets = [
-  ...routes.map((path) => ({
-    path,
-    file: path === "/" ? join(dist, "index.html") : join(dist, path.slice(1), "index.html"),
-  })),
-  ...(existsSync(NOT_FOUND.file) ? [NOT_FOUND] : []),
-];
 
 for (const { path, file } of targets) {
 

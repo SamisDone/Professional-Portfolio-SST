@@ -11,7 +11,7 @@
       ]
     },
     {
-      "source": "/(shots/.*|og.png)",
+      "source": "/(shots/.*|og/.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -45,5 +45,6 @@
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true
 }

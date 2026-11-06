@@ -2,9 +2,12 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Project } from "../data/content";
 import { caseStudyPath, isFlagship, projectNeighbours } from "../lib/projects";
+import { routeIndex } from "../lib/routes";
+import { caseStudy } from "../lib/structured";
+import JsonLd from "./JsonLd";
 import Arrow from "./Arrow";
 import { ProjectVisual } from "./Exhibit";
-import { Button, Label, TextLink } from "./ui";
+import { Button, Label } from "./ui";
 
 /** Numbered steps joined by a 2px ink line, so the list reads as one path. */
 function Flow({ steps }: { steps: string[] }) {
@@ -58,11 +61,22 @@ export default function CaseStudy({ project }: { project: Project }) {
 
   return (
     <article>
-      <div className="shell tier-c">
-        <TextLink to="/work" arrow="left" className="t-small">
-          All projects
-        </TextLink>
-      </div>
+      {/* Where this sheet sits: inside Work, tab 02. The first part is the
+          way back; BreadcrumbList in the structured data says the same. */}
+      <nav aria-label="Breadcrumb" className="shell tier-c">
+        <ol className="t-label m-0 flex list-none flex-wrap items-center gap-2 p-0 text-ink">
+          <li>
+            <Link to="/work" className="link tap">
+              {String(routeIndex("/work") + 1).padStart(2, "0")} Work
+            </Link>
+          </li>
+          <li aria-hidden className="text-ink-2">
+            /
+          </li>
+          <li aria-current="page">{project.title}</li>
+        </ol>
+      </nav>
+      <JsonLd data={caseStudy(project)} />
 
       <header className="shell mt-6">
         <div className="border-2 border-ink p-6 sm:p-8">

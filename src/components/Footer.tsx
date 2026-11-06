@@ -27,6 +27,12 @@ export default function Footer() {
               {s.label}
             </a>
           ))}
+          <Link to="/repositories" className="tap text-paper no-underline underline-offset-4 hover:underline">
+            All projects
+          </Link>
+          <Link to="/privacy" className="tap text-paper no-underline underline-offset-4 hover:underline">
+            Privacy
+          </Link>
           <Link to="/contact" className="tap text-paper no-underline underline-offset-4 hover:underline">
             Get in touch
           </Link>

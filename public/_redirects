@@ -1,0 +1,17 @@
+# Cloudflare Pages redirects. Syntax: [source] [destination] [status].
+# https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# Hand-written rules. The build appends one 301 per route for the
+# trailing-slash form (/about/ to /about), generated from ROUTE_META, so the
+# address with no slash is the only one that answers 200.
+#
+# Old case study links (/work#slug, and the renamed slugs finpulse and
+# financetracker) carry the slug in the hash, which never reaches the server.
+# They are forwarded in the browser by src/components/RouteEffects.tsx.
+
+# A placeholder page from an early version of the site, removed in September 2026.
+/coming-soon / 301
+
+# The single social card, replaced by one card per page in /og/. Link
+# previews already shared still ask for the old address.
+/og.png /og/home.png 301
