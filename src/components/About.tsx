@@ -7,31 +7,34 @@ import { Button, Label } from "./ui";
  * Who I am beside where I study. Education is the first thing a recruiter
  * checks, so it takes the top of the right column, with the term-by-term
  * chart under the CGPA line so the figure and the climb read together.
+ *
+ * The markup is in phone order: the heading, the first paragraph, the two
+ * buttons, Education, then the rest of the paragraphs, so a phone reaches the
+ * CV and the degree before the longer story. From `lg` the grid puts the
+ * buttons straight under the heading and the paragraphs below them, with
+ * Education spanning the right column. The last row takes any spare height,
+ * so a tall right column never opens gaps between the paragraphs.
  */
 export default function About() {
+  const [first, ...rest] = about.paragraphs;
   return (
     <>
-      <div className="shell tier-a grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <section className="lg:col-span-7">
-          <h1 tabIndex={-1} className="t-h1 band max-w-[18ch]">
-            Build, then ask why.
-          </h1>
-          <div className="mt-8 flex flex-col gap-4">
-            {about.paragraphs.map((p, i) => (
-              <p key={p.slice(0, 24)} className={`${i === 0 ? "t-lead" : "t-body"} max-w-measure`}>
-                {p}
-              </p>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Button href={profile.resumeUrl} variant="primary">
-              Download the CV
-            </Button>
-            <Button href={profile.linkedin}>LinkedIn</Button>
-          </div>
-        </section>
+      <div className="shell tier-a grid lg:grid-cols-12 lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-8">
+        <h1 tabIndex={-1} className="t-h1 band max-w-[18ch] lg:col-span-7 lg:row-start-1">
+          Build, then ask why.
+        </h1>
+        <p className="t-lead mt-8 max-w-measure lg:col-span-7 lg:row-start-3">{first}</p>
+        <div className="mt-8 flex flex-wrap gap-4 lg:col-span-7 lg:row-start-2">
+          <Button href={profile.resumeUrl} variant="primary">
+            Download the CV
+          </Button>
+          <Button href={profile.linkedin}>LinkedIn</Button>
+        </div>
 
-        <section aria-labelledby="education" className="lg:col-span-5">
+        <section
+          aria-labelledby="education"
+          className="mt-12 lg:col-span-5 lg:col-start-8 lg:row-span-4 lg:row-start-1 lg:mt-0"
+        >
           <h2 id="education" className="t-h3">
             Education
           </h2>
@@ -44,6 +47,14 @@ export default function About() {
             <Trajectory />
           </div>
         </section>
+
+        <div className="mt-12 flex flex-col gap-4 lg:col-span-7 lg:row-start-4 lg:mt-4">
+          {rest.map((p) => (
+            <p key={p.slice(0, 24)} className="t-body max-w-measure">
+              {p}
+            </p>
+          ))}
+        </div>
       </div>
 
       <section aria-labelledby="stack" className="shell tier-b">

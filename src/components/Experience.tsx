@@ -1,5 +1,5 @@
-import { experience } from "../data/content";
-import { Label, ProofMark } from "./ui";
+import { experience, profile } from "../data/content";
+import { Button, Label, ProofMark } from "./ui";
 
 /**
  * Employment as a ledger: dates and place in the left margin, the work on the
@@ -14,6 +14,11 @@ export default function Experience() {
           Experience.
         </h1>
         <p className="t-lead mt-4 max-w-[46ch]">Industrial attachment, contract and freelance work.</p>
+        <div className="mt-6">
+          <Button href={profile.resumeUrl} variant="primary">
+            Download the CV
+          </Button>
+        </div>
       </section>
 
       <ol className="shell tier-b m-0 list-none">

@@ -13,7 +13,7 @@ import Arrow from "./Arrow";
  */
 export default function Proof() {
   return (
-    <section aria-label="Proof" className="shell mt-12">
+    <section aria-label="Proof" className="shell mt-8">
       <ul className="grid grid-cols-2 border-t-4 border-ink lg:grid-cols-4">
         {proof.map((item, i) => {
           const where = item.internal ? item.href : domainOf(item.href);

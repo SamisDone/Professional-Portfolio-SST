@@ -1,57 +1,54 @@
 import { profile } from "../data/content";
-import { FLAGSHIPS } from "../lib/projects";
-import { Exhibit } from "./Exhibit";
 import { Button, Label } from "./ui";
 
 /**
- * The first screen: who, what, where to go, and one exhibit.
+ * The first screen: who, what, and where to go.
  *
- * The name is set at poster scale on two lines. The exhibit is the first
- * flagship's screenshot, static: the shuffling deck it replaces moved on its
- * own while people read. It shows from `lg` up only, because on a phone the
- * first flagship spread repeats it a scroll below, and there the room is
- * worth more to the proof row.
+ * The name is set at poster scale on two lines. From `xl` up the lead and the
+ * two buttons sit in the space the surname leaves beside it, so the proof row
+ * and the top of the first flagship's screenshot both reach the first screen
+ * at 1280 by 720. The hero used to show that same screenshot here, which
+ * repeated the spread a scroll below.
+ *
+ * The beside-the-surname layout is a two-column grid: the first column is as
+ * wide as the surname, the second takes the rest. The heading spans both and
+ * passes its two lines down to the outer rows through subgrid, so the lead
+ * lines up with the surname's top edge and can only grow downwards, never up
+ * into the first name. Below `xl` the column beside the surname would be too
+ * narrow for the buttons, so it stacks.
  *
  * Top spacing is the C tier rather than A. A, at 112px, put the proof row
  * under the fold at 1280 by 720, and the proof on the first screen is the
  * first goal this page has.
  */
 export default function Hero() {
-  const lead = FLAGSHIPS[0];
-
   return (
     <section
       aria-labelledby="hero-name"
-      className="shell tier-c lg:grid lg:grid-cols-12 lg:grid-rows-[auto_auto_auto] lg:gap-x-8"
+      className="shell tier-c xl:grid xl:grid-cols-[max-content_1fr] xl:grid-rows-[auto_auto_auto]"
     >
-      <Label className="text-ink lg:col-span-12 lg:col-start-1 lg:row-start-1">
+      <Label className="text-ink xl:col-span-2 xl:col-start-1 xl:row-start-1">
         {profile.standfirst} / {profile.openTo}
       </Label>
-      <h1 id="hero-name" tabIndex={-1} className="t-display mt-4 lg:col-span-12 lg:col-start-1 lg:row-start-2">
-        {/* One band per line, each as wide as its word, so the surname's band
-            ends short of the exhibit beside it. */}
-        <span className="band">{profile.name.split(" ")[0]}</span>{" "}
-        <span className="band">{profile.name.split(" ").slice(1).join(" ")}</span>
+      <h1
+        id="hero-name"
+        tabIndex={-1}
+        className="t-display mt-4 xl:col-span-2 xl:col-start-1 xl:row-span-2 xl:row-start-2 xl:grid xl:grid-cols-subgrid xl:grid-rows-subgrid"
+      >
+        {/* One band per line, each as wide as its word. */}
+        <span className="band xl:col-span-2">{profile.name.split(" ")[0]}</span>{" "}
+        <span className="band xl:col-start-1 xl:self-start">{profile.name.split(" ").slice(1).join(" ")}</span>
       </h1>
 
-      <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-start-3 lg:mt-6">
+      <div className="mt-6 xl:col-start-2 xl:row-start-3 xl:mt-0 xl:self-start xl:pl-8 xl:pt-2">
         <p className="t-lead max-w-[36ch]">{profile.positioning}</p>
-        <div className="mt-6 flex flex-wrap gap-4">
+        <div className="mt-6 flex flex-wrap gap-4 xl:mt-3">
           <Button to="/work" variant="primary">
             See the work
           </Button>
           <Button href={profile.resumeUrl}>CV (PDF)</Button>
         </div>
       </div>
-
-      {/* Spans the name's second line and the row under it, set to the
-          bottom, so it takes the empty space beside the surname instead of
-          pushing the proof row below the fold. */}
-      {lead?.shot && (
-        <div className="hidden lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-2 lg:block lg:self-end">
-          <Exhibit project={lead} sizes="380px" priority />
-        </div>
-      )}
     </section>
   );
 }

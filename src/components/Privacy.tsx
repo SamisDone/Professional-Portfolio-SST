@@ -15,6 +15,17 @@ export default function Privacy() {
       </section>
 
       <dl className="shell tier-b m-0">
+        {/* First, so the way to ask about any of this is on the first screen. */}
+        <div className="grid gap-3 border-t-2 border-ink py-6 lg:grid-cols-12 lg:gap-8">
+          <dt className="t-label pt-1 text-ink-2 lg:col-span-3">Contact</dt>
+          <dd className="m-0 lg:col-span-9">
+            <p className="t-body m-0">
+              <a href={`mailto:${profile.email}`} className="link tap font-semibold">
+                {profile.email}
+              </a>
+            </p>
+          </dd>
+        </div>
         {privacy.sections.map((s) => (
           <div key={s.heading} className="tint-row grid gap-3 border-t-2 border-ink py-6 lg:grid-cols-12 lg:gap-8">
             <dt className="t-label pt-1 text-ink-2 lg:col-span-3">{s.heading}</dt>
@@ -27,16 +38,6 @@ export default function Privacy() {
             </dd>
           </div>
         ))}
-        <div className="grid gap-3 border-t-2 border-ink py-6 lg:grid-cols-12 lg:gap-8">
-          <dt className="t-label pt-1 text-ink-2 lg:col-span-3">Contact</dt>
-          <dd className="m-0 lg:col-span-9">
-            <p className="t-body m-0">
-              <a href={`mailto:${profile.email}`} className="link tap font-semibold">
-                {profile.email}
-              </a>
-            </p>
-          </dd>
-        </div>
       </dl>
 
       <p className="shell tier-c t-small max-w-measure">{privacy.note}</p>

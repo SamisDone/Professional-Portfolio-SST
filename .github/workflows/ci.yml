@@ -19,3 +19,7 @@ jobs:
       - run: npm run check:bans
       - run: npm run lint
       - run: npm run build
+      # The page-length rule, measured on the built site. It reports for now
+      # rather than failing; the table is in the step's log.
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/measure-pages.mjs

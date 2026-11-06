@@ -1,6 +1,6 @@
 import { certifications, competitions, leadership } from "../data/content";
 import Entry from "./Entry";
-import { ProofMark } from "./ui";
+import { Button } from "./ui";
 
 /**
  * Club roles, competitions and certificates, as two ledgers side by side
@@ -13,6 +13,11 @@ export default function Activities() {
         <h1 tabIndex={-1} className="t-h1 band max-w-[18ch]">
           Outside the terminal.
         </h1>
+        <div className="mt-6">
+          <Button href={certifications.href} variant="primary">
+            View all certificates
+          </Button>
+        </div>
       </section>
 
       <div className="shell tier-b grid gap-12 lg:grid-cols-12 lg:gap-8">
@@ -29,14 +34,9 @@ export default function Activities() {
           </section>
 
           <section aria-labelledby="certifications" className="mt-12">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-              <h2 id="certifications" className="t-h3">
-                Certifications
-              </h2>
-              <ProofMark href={certifications.href} className="t-small">
-                View all certificates
-              </ProofMark>
-            </div>
+            <h2 id="certifications" className="t-h3">
+              Certifications
+            </h2>
             <ul className="m-0 mt-4 grid list-none border-t-2 border-ink p-0 sm:grid-cols-2 sm:gap-x-6">
               {certifications.items.map((c) => (
                 <li key={c} className="tint-row t-small border-b border-ink py-3">

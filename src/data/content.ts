@@ -1088,7 +1088,7 @@ const deployed = [...featured, ...notable].filter((p) => p.live).length;
 export const proof: Proof[] = [
   {
     value: "2",
-    label: "extensions published on the Chrome Web Store",
+    label: "extensions on the Chrome Web Store",
     href: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
   },
   {
@@ -1105,7 +1105,7 @@ export const proof: Proof[] = [
     // That link also replaces the OpenReview one, which puts visitors through
     // a browser check before showing them anything.
     value: "7th",
-    label: "at a DravidianLangTech shared task, ACL 2026",
+    label: "place, DravidianLangTech, ACL 2026",
     href: "https://aclanthology.org/2026.dravidianlangtech-1.58/",
   },
   {

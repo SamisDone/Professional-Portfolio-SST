@@ -44,3 +44,6 @@ showcase/
 # LaTeX build output for the CV; the PDF that ships is public/Samonwita_Sarker_CV.pdf
 cv/*
 !cv/*.tex
+
+# Output of scripts/measure-pages.mjs
+.measure/
