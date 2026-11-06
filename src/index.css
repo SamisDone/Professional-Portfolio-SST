@@ -162,9 +162,10 @@
     text-wrap: pretty;
   }
 
+  /* Ink, not yellow: yellow is only for claims with a receipt. */
   ::selection {
-    background: var(--proof);
-    color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
   }
 
   :focus-visible {

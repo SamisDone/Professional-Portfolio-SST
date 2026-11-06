@@ -34,13 +34,14 @@ function validate(f: Fields): Errors {
 }
 
 /**
- * An error never relies on colour: it sits on a yellow block under the field,
- * and it starts with "Check this:".
+ * An error never relies on colour: it sits in a 2px ink frame on paper-2
+ * under the field, and it starts with "Check this:". Not yellow: yellow is
+ * kept for claims with a receipt.
  */
 function FieldError({ id, children }: { id: string; children?: string }) {
   if (!children) return null;
   return (
-    <p id={id} role="alert" className="t-small mt-2 border-2 border-ink bg-proof px-3 py-2">
+    <p id={id} role="alert" className="t-small mt-2 border-2 border-ink bg-paper-2 px-3 py-2">
       <strong className="font-semibold">Check this:</strong> {children}
     </p>
   );
@@ -134,9 +135,16 @@ export default function Contact() {
     </div>
   );
 
+  /*
+   * The markup is in phone order: the heading, the lead, the email address and
+   * the CV, then the form, then the details and the profiles, so a phone
+   * reaches both ways to write before anything else. From `lg` the form takes
+   * the right column from the top and the details sit under the email in the
+   * left one.
+   */
   return (
-    <div className="shell tier-a grid gap-12 lg:grid-cols-12 lg:gap-8">
-      <section className="lg:col-span-5">
+    <div className="shell tier-a grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8">
+      <section aria-label="Get in touch" className="lg:col-span-5 lg:row-start-1">
         <h1 tabIndex={-1} className="t-h1 band max-w-[14ch]">
           Get in touch.
         </h1>
@@ -145,39 +153,15 @@ export default function Contact() {
           project, a paper idea, or a question about anything here, write to me.
         </p>
 
-        <dl className="m-0 mt-8 flex flex-col gap-4 border-t-2 border-ink pt-6">
-          {[
-            ["Looking for", profile.status],
-            ["Work", profile.workMode],
-            ["Based", `${profile.location} (UTC+6)`],
-          ].map(([term, value]) => (
-            <div key={term}>
-              <Label as="dt">{term}</Label>
-              <dd className="t-body m-0 mt-1">{value}</dd>
-            </div>
-          ))}
-        </dl>
-
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
           <a href={`mailto:${profile.email}`} className="link tap t-body font-semibold">
             {profile.email}
           </a>
           <Button href={profile.resumeUrl}>Download the CV</Button>
         </div>
-
-        <ul className="m-0 mt-12 list-none p-0">
-          {SOCIALS.map((s) => (
-            <li key={s.label} className="tint-row flex items-baseline justify-between gap-4 border-t border-ink py-3 last:border-b">
-              <Label as="span">{s.label}</Label>
-              <TextLink href={s.href} className="t-small font-semibold">
-                {s.handle}
-              </TextLink>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      <section aria-label="Contact form" className="lg:col-span-7">
+      <section aria-label="Contact form" className="mt-12 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:mt-0">
         {contactForm.fallback && (
           <p className="t-body mb-6 border-2 border-ink bg-paper-2 px-4 py-3">
             {contactForm.fallbackNotice}{" "}
@@ -217,7 +201,7 @@ export default function Contact() {
             </p>
           )}
           {status === "error" && (
-            <p role="alert" className="t-body border-2 border-ink bg-proof px-4 py-3">
+            <p role="alert" className="t-body border-2 border-ink bg-paper-2 px-4 py-3">
               <strong className="font-semibold">Check this:</strong> that did not send. Email me directly:{" "}
               <a href={`mailto:${profile.email}`} className="link tap font-semibold">
                 {profile.email}
@@ -241,6 +225,32 @@ export default function Contact() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section aria-label="Details and profiles" className="mt-12 lg:col-span-5 lg:row-start-2 lg:mt-8">
+        <dl className="m-0 flex flex-col gap-4 border-t-2 border-ink pt-6">
+          {[
+            ["Looking for", profile.status],
+            ["Work", profile.workMode],
+            ["Based", `${profile.location} (UTC+6)`],
+          ].map(([term, value]) => (
+            <div key={term}>
+              <Label as="dt">{term}</Label>
+              <dd className="t-body m-0 mt-1">{value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <ul className="m-0 mt-12 list-none p-0">
+          {SOCIALS.map((s) => (
+            <li key={s.label} className="tint-row flex items-baseline justify-between gap-4 border-t border-ink py-3 last:border-b">
+              <Label as="span">{s.label}</Label>
+              <TextLink href={s.href} className="t-small font-semibold">
+                {s.handle}
+              </TextLink>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );

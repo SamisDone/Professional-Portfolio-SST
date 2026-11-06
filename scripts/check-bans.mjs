@@ -88,15 +88,44 @@ const files = [
 
 const failures = [];
 
+/*
+ * Proof yellow means "this claim links to its evidence" and nothing else
+ * (colour rule 1). So it may appear in exactly two places: its definition in
+ * the token file, and inside a CSS rule whose selector names `.proof-mark`,
+ * the one component that marks such a claim. Anywhere else, as a CSS
+ * variable, a Tailwind class or its hex, it fails.
+ */
+const PROOF_HEX = [...tokenSrc.matchAll(/--proof:\s*(#[0-9a-fA-F]{6})/g)][0]?.[1].toLowerCase();
+const PROOF_USE = /var\(--proof\)|(?<![\w-])(?:bg|border|fill|stroke|ring|outline|decoration|shadow|accent|from|via|to|divide)-proof(?![\w-])/;
+
 for (const file of files) {
   const rel = relative(root, file).replaceAll("\\", "/");
   const lines = readFileSync(file, "utf8").split(/\r?\n/);
   const isTokenFile = rel === TOKEN_FILE;
+  const isCss = extname(file).toLowerCase() === ".css";
   const inSrc = rel.startsWith("src/");
   const isCopy = rel === "src/data/content.ts" || rel === "src/lib/meta.ts";
+  // Open CSS selectors around the current line, outermost first.
+  const selectors = [];
 
   lines.forEach((line, i) => {
     const at = `${rel}:${i + 1}`;
+
+    if (isCss) {
+      const code = line.replace(/\/\*.*?\*\//g, "");
+      const inProofMark = selectors.some((s) => s.includes(".proof-mark")) || /\.proof-mark[^{]*\{/.test(code);
+      const isDefinition = isTokenFile && /^\s*--proof:/.test(code);
+      if (PROOF_USE.test(code) && !inProofMark && !isDefinition) failures.push(`${at}  proof yellow outside .proof-mark`);
+      for (const m of code.matchAll(/([^{}]*)\{|\}/g)) {
+        if (m[0] === "}") selectors.pop();
+        else selectors.push(m[1].trim());
+      }
+    } else if (PROOF_USE.test(line) && !/^\s*(\/\/|\*|\/\*)/.test(line)) {
+      failures.push(`${at}  proof yellow outside .proof-mark`);
+    }
+    if (PROOF_HEX && !isTokenFile && line.toLowerCase().includes(PROOF_HEX)) {
+      failures.push(`${at}  proof yellow's hex outside the token file`);
+    }
     for (const rule of RULES) {
       if (rule.re ? rule.re.test(line) : rule.test(line)) failures.push(`${at}  ${rule.why}`);
     }
