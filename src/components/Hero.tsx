@@ -11,7 +11,10 @@ import { Button, Label } from "./ui";
  * repeated the spread a scroll below.
  *
  * The beside-the-surname layout is a two-column grid: the first column is as
- * wide as the surname, the second takes the rest. The heading spans both and
+ * wide as the surname, the second takes the rest. That width is worked out
+ * from the display size (the surname is 5.82em wide in Archivo), not measured
+ * from the text: measured, it changed when the web font replaced the
+ * fallback, and the lead jumped sideways (a layout shift of 0.02). The heading spans both and
  * passes its two lines down to the outer rows through subgrid, so the lead
  * lines up with the surname's top edge and can only grow downwards, never up
  * into the first name. Below `xl` the column beside the surname would be too
@@ -25,7 +28,7 @@ export default function Hero() {
   return (
     <section
       aria-labelledby="hero-name"
-      className="shell tier-c xl:grid xl:grid-cols-[max-content_1fr] xl:grid-rows-[auto_auto_auto]"
+      className="shell tier-c xl:grid xl:grid-cols-[calc(min(10.8vw,9rem)*5.83)_1fr] xl:grid-rows-[auto_auto_auto]"
     >
       <Label className="text-ink xl:col-span-2 xl:col-start-1 xl:row-start-1">
         {profile.standfirst} / {profile.openTo}
