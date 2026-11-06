@@ -36,7 +36,9 @@ function pages(dir, prefix = "") {
   });
 }
 
-const all = pages(dist);
+// The motion lab is a review page, noindex and linked from nowhere.
+const SKIP = new Set(["/motion-lab"]);
+const all = pages(dist).filter((p) => !SKIP.has(p.path));
 const failures = [];
 const fail = (path, why) => failures.push(`${path.padEnd(28)} ${why}`);
 const attr = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];

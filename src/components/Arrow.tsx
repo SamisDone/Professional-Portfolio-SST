@@ -19,6 +19,7 @@ export default function Arrow({ dir = "right", className = "" }: { dir?: ArrowDi
     <svg
       aria-hidden="true"
       focusable="false"
+      data-dir={dir}
       viewBox="0 0 16 16"
       width="0.85em"
       height="0.85em"

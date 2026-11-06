@@ -28,6 +28,20 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 
 let running: ViewTransition | null = null;
 
+/**
+ * Resolves when no page transition is running: at once if none is, or when
+ * the running one finishes or is skipped. The motion layer waits on this so
+ * an entrance never plays under the sheet that is sliding in.
+ */
+export function whenSettled(): Promise<void> {
+  if (!running) return Promise.resolve();
+  const current = running;
+  return current.finished.then(
+    () => (running && running !== current ? whenSettled() : undefined),
+    () => undefined,
+  );
+}
+
 /** The slug a morph runs on, if this navigation can morph at all. Only
     projects in the /work index have a row, and only from `lg` up is the
     row's thumbnail drawn, so anywhere else there is nothing to grow from. */

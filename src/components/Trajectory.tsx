@@ -1,8 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { cgpaHistory, trajectoryCaption, trajectoryNote } from "../data/content";
-import { useReducedMotion } from "../hooks/useReducedMotion";
-
-const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /*
  * The viewBox is narrower than the 900 the old chart used. The chart sits in a
@@ -23,10 +20,7 @@ const x = (i: number) => PAD_L + ((W - PAD_L - PAD_R) * i) / (cgpaHistory.length
 const y = (v: number) => H - PAD_B - ((v - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0])) * (H - PAD_T - PAD_B);
 
 const line = cgpaHistory.map((p, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(p.value)}`).join(" ");
-const LENGTH = cgpaHistory.reduce(
-  (sum, p, i) => (i === 0 ? 0 : sum + Math.hypot(x(i) - x(i - 1), y(p.value) - y(cgpaHistory[i - 1].value))),
-  0,
-);
+const LAST = cgpaHistory.length - 1;
 
 /** The text alternative: every term and its figure, in order. */
 const DESCRIPTION =
@@ -39,33 +33,11 @@ const DESCRIPTION =
  * Level 2 and a climb out of it. Ink only: a 2px line, 8px square points, and
  * every point labelled, so the zoomed axis cannot overstate a change.
  *
- * The line draws once, over 600ms, when the chart is 30% in view. The server
- * renders it drawn, and so does reduced motion; the client only rewinds it
- * if it starts below the fold, so it never flashes empty on screen.
+ * Rendered complete. The motion layer (C1 in src/motion.css) draws the line
+ * once with a ruler, stamps each point as the line reaches it, then shows its
+ * label; `--p` is each point's place along the line, for that timing.
  */
 export default function Trajectory() {
-  const ref = useRef<SVGSVGElement | null>(null);
-  const reduced = useReducedMotion();
-  const [drawn, setDrawn] = useState(true);
-
-  useIsoLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || reduced || typeof IntersectionObserver === "undefined") return;
-    const box = el.getBoundingClientRect();
-    if (box.top < window.innerHeight * 0.7) return;
-    setDrawn(false);
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.intersectionRatio >= 0.3) {
-          setDrawn(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.3 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [reduced]);
 
   return (
     <figure className="m-0">
@@ -74,7 +46,7 @@ export default function Trajectory() {
         <p className="t-body mt-2">{trajectoryNote}</p>
       </figcaption>
       <svg
-        ref={ref}
+        data-chart
         viewBox={`0 0 ${W} ${H}`}
         className="mt-4 h-auto w-full overflow-visible"
         role="img"
@@ -105,16 +77,16 @@ export default function Trajectory() {
           </g>
         ))}
 
-        <path
-          d={line}
-          fill="none"
-          stroke="var(--ink)"
-          strokeWidth={2}
-          strokeLinejoin="miter"
-          vectorEffect="non-scaling-stroke"
-          className="chart-line"
-          style={{ strokeDasharray: LENGTH, strokeDashoffset: drawn ? 0 : LENGTH }}
-        />
+        <g className="m-line">
+          <path
+            d={line}
+            fill="none"
+            stroke="var(--ink)"
+            strokeWidth={2}
+            strokeLinejoin="miter"
+            vectorEffect="non-scaling-stroke"
+          />
+        </g>
 
         {cgpaHistory.map((p, i) => {
           const last = i === cgpaHistory.length - 1;
@@ -124,10 +96,13 @@ export default function Trajectory() {
           const prevV = cgpaHistory[i - 1]?.value ?? Infinity;
           const nextV = cgpaHistory[i + 1]?.value ?? Infinity;
           const below = p.value < prevV && p.value < nextV;
+          const place = { "--p": i, "--pn": LAST } as CSSProperties;
           return (
             <g key={p.label}>
               {/* The section colour as a fill, inside a 2px ink border. */}
               <rect
+                className="m-point"
+                style={place}
                 x={x(i) - 5}
                 y={y(p.value) - 5}
                 width={10}
@@ -141,9 +116,9 @@ export default function Trajectory() {
                 x={ax}
                 y={below ? y(p.value) + 28 : y(p.value) - 14}
                 textAnchor={anchor}
-                className="t-label"
+                className="m-plabel t-label"
                 fill="var(--ink)"
-                style={{ fontSize: FONT }}
+                style={{ ...place, fontSize: FONT }}
               >
                 {p.value.toFixed(2)}
               </text>

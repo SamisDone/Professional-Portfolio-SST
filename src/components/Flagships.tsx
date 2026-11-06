@@ -9,7 +9,7 @@ const n = (i: number) => String(i + 1).padStart(2, "0");
 function SpreadText({ project, index }: { project: Project; index: number }) {
   return (
     <>
-      <Label>
+      <Label stamp>
         Flagship {n(index)} / {project.kind}, {project.year}
       </Label>
       {teamLine(project) && <Label className="mt-1 text-ink">{teamLine(project)}</Label>}

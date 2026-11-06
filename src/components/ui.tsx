@@ -116,14 +116,17 @@ export function Label({
   as: Tag = "p",
   className = "",
   id,
+  stamp = false,
 }: {
   children: ReactNode;
   as?: "p" | "span" | "dt" | "h2" | "h3" | "div";
   className?: string;
   id?: string;
+  /** Stamps into place as it enters (motion A6). */
+  stamp?: boolean;
 }) {
   return (
-    <Tag id={id} className={`t-label text-ink-2 ${className}`}>
+    <Tag id={id} data-stamp={stamp || undefined} className={`t-label text-ink-2 ${className}`}>
       {children}
     </Tag>
   );

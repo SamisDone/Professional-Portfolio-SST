@@ -10,15 +10,15 @@ import { ProjectVisual } from "./Exhibit";
 import { Button, Label } from "./ui";
 
 /** Numbered steps joined by a 2px ink line, so the list reads as one path. */
-function Flow({ steps }: { steps: string[] }) {
+export function Flow({ steps }: { steps: string[] }) {
   return (
     <ol className="m-0 flex flex-col p-0">
       {steps.map((step, i) => (
-        <li key={step} className="relative flex gap-4 pb-6 last:pb-0">
+        <li key={step} className="m-step relative flex gap-4 pb-6 last:pb-0">
           {i < steps.length - 1 && (
-            <span aria-hidden className="absolute bottom-0 left-[13px] top-8 w-0.5 bg-ink" />
+            <span aria-hidden className="m-connector absolute bottom-0 left-[13px] top-8 w-0.5 bg-ink" />
           )}
-          <span className="t-label grid h-8 w-8 shrink-0 place-items-center border-2 border-ink text-ink">
+          <span className="m-num t-label grid h-8 w-8 shrink-0 place-items-center border-2 border-ink text-ink">
             {i + 1}
           </span>
           <span className="t-body pt-1">{step}</span>

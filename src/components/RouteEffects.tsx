@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { findProject } from "../lib/projects";
 import { metaFor } from "../lib/meta";
+import { afterNavigation, startMotion } from "../lib/motion";
 
 /**
  * What happens after a page change: focus moves to the new page's heading,
@@ -38,8 +39,12 @@ export default function RouteEffects() {
     // pull them out of wherever the browser put them.
     if (first.current) {
       first.current = false;
+      // The motion layer starts after React's first render, never before:
+      // until then the prerendered page shows everything in its end state.
+      startMotion();
       return;
     }
+    afterNavigation();
     document.querySelector<HTMLElement>("main h1")?.focus({ preventScroll: true });
     const announcer = document.getElementById("route-announcer");
     if (announcer) announcer.textContent = metaFor(pathname).title;

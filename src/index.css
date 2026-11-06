@@ -101,7 +101,6 @@
   --t-menu: 250ms;
   --t-sheet: 240ms;
   --t-morph: 300ms;
-  --t-draw: 600ms;
 }
 
 /*
@@ -621,10 +620,6 @@
   animation: menu-in var(--t-menu) var(--ease);
 }
 
-/* The chart line draws once, at 30% in view. */
-.chart-line {
-  transition: stroke-dashoffset var(--t-draw) var(--ease);
-}
 
 /*
  * ---- Page transitions: View Transitions API. ----

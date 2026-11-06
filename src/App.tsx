@@ -15,6 +15,7 @@ import RepositoriesPage from "./pages/RepositoriesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ContactSentPage from "./pages/ContactSentPage";
+import MotionLabPage from "./pages/MotionLabPage";
 import { sectionFor } from "./lib/routes";
 
 /**
@@ -56,6 +57,8 @@ export function AppShell() {
           <Route path="/privacy" element={<PrivacyPage />} />
           {/* Where the contact form returns with JavaScript off. */}
           <Route path="/contact/sent" element={<ContactSentPage />} />
+          {/* The motion layer's specimens, for review. noindex, no links in. */}
+          <Route path="/motion-lab" element={<MotionLabPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Pager />

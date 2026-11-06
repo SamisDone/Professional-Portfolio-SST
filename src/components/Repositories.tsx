@@ -16,7 +16,7 @@ function Row({ project, n }: { project: Project; n: number }) {
   return (
     <tr className="tint-row border-t border-ink align-top">
       <td className="py-4 pr-4">
-        <Label as="span" className="text-ink">
+        <Label as="span" stamp className="inline-block text-ink">
           {String(n).padStart(2, "0")}
         </Label>
       </td>

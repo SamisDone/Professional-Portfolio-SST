@@ -32,7 +32,7 @@ function Thumb({ project, eager }: { project: Project; eager: boolean }) {
   );
 }
 
-function Row({ project, n }: { project: Project; n: number }) {
+export function Row({ project, n }: { project: Project; n: number }) {
   const extra = project.stack.length - STACK;
   const stack = (
     <>
@@ -48,13 +48,22 @@ function Row({ project, n }: { project: Project; n: number }) {
       onFocus={() => preloadShot(project)}
     >
       <div
+        data-row
         className={`press press-quiet grid grid-cols-[32px_minmax(0,1fr)] gap-x-4 gap-y-2 px-2 py-4 [--fill-hover:var(--section-tint)] md:items-start ${COLS}`}
       >
-        <span className="t-label pt-1 text-ink">{String(n).padStart(2, "0")}</span>
+        <span className="t-label pt-1 text-ink">
+          <span data-rownum data-stamp className="inline-block">
+            {String(n).padStart(2, "0")}
+          </span>
+        </span>
         <Thumb project={project} eager={n <= 3} />
 
         <div>
-          {isFlagship(project) && <Label className="mb-1 text-ink">Flagship</Label>}
+          {isFlagship(project) && (
+            <Label stamp className="mb-1 text-ink">
+              Flagship
+            </Label>
+          )}
           <h2 className="t-h3">
             {/* The whole row opens the case study. The link is stretched over
                 it; Live and Code sit above the stretch with their own targets. */}

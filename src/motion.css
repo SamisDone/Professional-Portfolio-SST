@@ -1,0 +1,318 @@
+/*
+ * The motion layer. Every motion token lives here, and nothing else is used.
+ *
+ * Character: mechanical. Things are stamped, slid, snapped into place, drawn
+ * with a ruler, highlighted with a marker. Crisp starts, hard stops, no
+ * springs, no bounce. Only transform, opacity, clip-path and background-size
+ * move.
+ *
+ * Three rules hold everywhere:
+ *
+ * 1. Nothing is hidden in the HTML. Every starting state sits behind
+ *    `html.m-js`, a class src/lib/motion.ts adds only when JavaScript runs
+ *    and the visitor has not asked for reduced motion. The prerendered page,
+ *    a page with JavaScript off, and reduced motion all show the end state.
+ * 2. Each entrance runs once per page view, when its element first enters
+ *    the viewport, and then everything stays still. Nothing loops, and
+ *    nothing a visitor is already reading moves.
+ * 3. Each motion is switched on by its own scope class (m-a1 to m-c2) on an
+ *    ancestor, so a motion is rolled out, or left out, one at a time.
+ *
+ * The page transitions (sheet slide, tab handoff, morph) keep their own
+ * timings in src/index.css; entrances start after a transition finishes.
+ */
+:root {
+  --m-snap: 120ms; /* stamps, presses */
+  --m-state: 200ms; /* hovers and state changes */
+  --m-enter: 320ms; /* things arriving */
+  --m-draw: 480ms; /* rules and highlights drawn */
+  --m-chart: 600ms; /* the trajectory line, specified on its own */
+  --m-stagger: 40ms; /* between siblings, six at most */
+  --m-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* The stamp: one keyframe, from a touch large to its place. No overshoot. */
+@keyframes m-stamp {
+  from {
+    transform: scale(1.06);
+    opacity: 0;
+  }
+}
+/* The same stamp on something already visible (a hover). */
+@keyframes m-stamp-press {
+  from {
+    transform: scale(1.06);
+  }
+}
+@keyframes m-drop {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+}
+
+/* The stagger: --m-i is the element's place among siblings entering
+   together, capped at 5 by motion.ts, so the seventh arrives with the sixth.
+   Written out in each rule, because a custom property's var() is resolved
+   where it is declared, not where it is used. */
+
+/* ---------------------------------------------------------------- A1
+   Section rules draw left to right. The real 4px border stays, so nothing
+   moves; it is made transparent and a ruler line is drawn over it. */
+html.m-js .m-a1 .border-t-4 {
+  position: relative;
+  border-top-color: transparent;
+}
+html.m-js .m-a1 .border-t-4::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  height: 4px;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--m-draw) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+  pointer-events: none;
+}
+html.m-js .m-a1 .border-t-4[data-in]::before {
+  transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------- A2
+   The band behind an H1 wipes in from the left. The text and the band's ink
+   border are in place from the first frame; only the fill moves. */
+html.m-js .m-a2 .band {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+html.m-js .m-a2 .band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--section);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-enter) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+}
+html.m-js .m-a2 .band[data-in]::before {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---------------------------------------------------------------- A3
+   Proof marks, the signature: the yellow sweeps in like a highlighter, in
+   reading order. The ink border and the arrow are there from the start, so
+   the meaning never waits on the animation. The flat "gradient" is one
+   colour twice, the only way to give a fill a size to animate. */
+html.m-js .m-a3 .proof-mark {
+  background-color: transparent;
+  background-image: linear-gradient(var(--proof), var(--proof));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  transition: background-size var(--m-draw) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+}
+html.m-js .m-a3 .proof-mark[data-in] {
+  background-size: 100% 100%;
+}
+
+/* ---------------------------------------------------------------- A4
+   Nav tabs drop 8px into place, one after another, on the first page of a
+   session only. An animation rather than a transition, filled backwards
+   only, so it never holds a transform that would fight the hover. */
+html.m-js .m-a4 [data-tabs]:not([data-in]) > .tab {
+  opacity: 0;
+}
+html.m-js .m-a4 [data-tabs][data-in] > .tab {
+  animation: m-drop var(--m-enter) var(--m-ease) backwards;
+}
+html.m-js .m-a4 [data-tabs] > .tab:nth-child(2) { animation-delay: calc(1 * var(--m-stagger)); }
+html.m-js .m-a4 [data-tabs] > .tab:nth-child(3) { animation-delay: calc(2 * var(--m-stagger)); }
+html.m-js .m-a4 [data-tabs] > .tab:nth-child(4) { animation-delay: calc(3 * var(--m-stagger)); }
+html.m-js .m-a4 [data-tabs] > .tab:nth-child(5) { animation-delay: calc(4 * var(--m-stagger)); }
+html.m-js .m-a4 [data-tabs] > .tab:nth-child(n + 6) { animation-delay: calc(5 * var(--m-stagger)); }
+
+/* ---------------------------------------------------------------- A5
+   Exhibits: once the image has decoded, a paper-2 cover slides off to the
+   right. No scale and no zoom. The image's own fade is turned off here. */
+html.m-js .m-a5 div[data-exhibit]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--paper-2);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--m-enter) var(--m-ease);
+  pointer-events: none;
+}
+html.m-js .m-a5 div[data-exhibit][data-in]::after {
+  clip-path: inset(0 0 0 100%);
+}
+html.m-js .m-a5 div[data-exhibit] .exhibit-img {
+  opacity: 1;
+  transition: none;
+}
+
+/* ---------------------------------------------------------------- A6
+   Labels such as FLAGSHIP, and index numbers, stamp as they enter. */
+html.m-js .m-a6 [data-stamp]:not([data-in]) {
+  opacity: 0;
+}
+html.m-js .m-a6 [data-stamp][data-in] {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--m-i, 0) * var(--m-stagger));
+}
+
+/* ---------------------------------------------------------------- B1
+   Buttons and pressables, retimed: hover on --m-state, press on --m-snap. */
+.m-b1 .press,
+.m-b1 .press::before {
+  transition-duration: var(--m-state);
+  transition-timing-function: var(--m-ease);
+}
+.m-b1 .press:active,
+.m-b1 .press:active::before {
+  transition-duration: var(--m-snap);
+}
+
+/* ---------------------------------------------------------------- B2
+   Text links: the underline thickens, and the arrow nudges 4px the way it
+   points. Thickness is a state, not a movement, so it snaps. */
+.m-b2 .link svg {
+  transition: transform var(--m-state) var(--m-ease);
+}
+@media (hover: hover) {
+  .m-b2 .link:hover {
+    text-decoration-thickness: 4px;
+  }
+  .m-b2 .link:hover svg[data-dir="right"] {
+    transform: translateX(4px);
+  }
+  .m-b2 .link:hover svg[data-dir="left"] {
+    transform: translateX(-4px);
+  }
+  .m-b2 .link:hover svg[data-dir="out"] {
+    transform: translate(4px, -4px);
+  }
+}
+
+/* ---------------------------------------------------------------- B3
+   Index rows: the number takes the section colour with a stamp, and the
+   thumbnail shifts 4px right. The row's own shadow is unchanged. The
+   number's border and padding are reserved at rest, so nothing shifts. */
+.m-b3 [data-rownum] {
+  display: inline-block;
+  border: 2px solid transparent;
+  padding: 0 4px;
+  margin: -2px 0 0 -6px;
+}
+.m-b3 [data-row] img {
+  transition: transform var(--m-state) var(--m-ease);
+}
+@media (hover: hover) {
+  .m-b3 [data-row]:hover [data-rownum] {
+    background: var(--section);
+    border-color: var(--ink);
+    animation: m-stamp-press var(--m-snap) var(--m-ease);
+  }
+  .m-b3 [data-row]:hover img {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------------------------------------------------------------- B4
+   Nav tabs lift 3px on hover, a tab pulled out of a file, in place of the
+   button lift and shadow. */
+@media (hover: hover) {
+  .m-b4 .tab.press:hover {
+    transform: translateY(-3px);
+  }
+  .m-b4 .tab.press:hover::before {
+    transform: translate(0, 0);
+  }
+}
+
+/* ---------------------------------------------------------------- B5
+   The phone menu: items drop in like index cards, 40ms apart. Closing is
+   instant, because the panel is simply removed. */
+.m-b5 .menu-panel {
+  animation: none;
+}
+html.m-js .m-b5 .menu-panel li {
+  animation: m-drop var(--m-state) var(--m-ease) backwards;
+}
+html.m-js .m-b5 .menu-panel li:nth-child(2) { animation-delay: calc(1 * var(--m-stagger)); }
+html.m-js .m-b5 .menu-panel li:nth-child(3) { animation-delay: calc(2 * var(--m-stagger)); }
+html.m-js .m-b5 .menu-panel li:nth-child(4) { animation-delay: calc(3 * var(--m-stagger)); }
+html.m-js .m-b5 .menu-panel li:nth-child(5) { animation-delay: calc(4 * var(--m-stagger)); }
+html.m-js .m-b5 .menu-panel li:nth-child(n + 6) { animation-delay: calc(5 * var(--m-stagger)); }
+
+/* ---------------------------------------------------------------- B6
+   Form fields: on focus the 3px border draws in, its inner edge growing from
+   the left and top over --m-state. An error message drops 8px with the snap. */
+html.m-js .m-b6 .field {
+  background-image:
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink)),
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink));
+  background-repeat: no-repeat;
+  background-position: left top, left bottom, left top, right top;
+  background-size: 0% 1px, 0% 1px, 1px 0%, 1px 0%;
+  transition: background-size var(--m-state) var(--m-ease);
+}
+html.m-js .m-b6 .field:focus,
+html.m-js .m-b6 .field:focus-visible {
+  outline: none;
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+}
+html.m-js .m-b6 [role="alert"] {
+  animation: m-drop var(--m-snap) var(--m-ease) backwards;
+}
+
+/* ---------------------------------------------------------------- C1
+   The trajectory: the line is drawn with a ruler over 600ms, each point
+   stamps as the line reaches it, and its label follows. Once. */
+html.m-js .m-c1 [data-chart] .m-line {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-chart) linear;
+}
+html.m-js .m-c1 [data-chart][data-in] .m-line {
+  clip-path: inset(0 0 0 0);
+}
+html.m-js .m-c1 [data-chart] .m-point,
+html.m-js .m-c1 [data-chart] .m-plabel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+html.m-js .m-c1 [data-chart]:not([data-in]) .m-point,
+html.m-js .m-c1 [data-chart]:not([data-in]) .m-plabel {
+  opacity: 0;
+}
+html.m-js .m-c1 [data-chart][data-in] .m-point {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--p) * var(--m-chart) / var(--pn));
+}
+html.m-js .m-c1 [data-chart][data-in] .m-plabel {
+  transition: opacity var(--m-snap) linear;
+  transition-delay: calc(var(--p) * var(--m-chart) / var(--pn) + var(--m-snap));
+}
+
+/* ---------------------------------------------------------------- C2
+   How it works: as each step enters, its number stamps, then the connector
+   to the next step draws downward; the next number stamps when it lands. */
+html.m-js .m-c2 .m-step:not([data-in]) .m-num {
+  opacity: 0;
+}
+html.m-js .m-c2 .m-step .m-connector {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform var(--m-enter) var(--m-ease) calc(var(--m-d, 0ms) + var(--m-snap));
+}
+html.m-js .m-c2 .m-step[data-in] .m-connector {
+  transform: scaleY(1);
+}
+html.m-js .m-c2 .m-step[data-in] .m-num {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: var(--m-d, 0ms);
+}

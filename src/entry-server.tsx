@@ -9,12 +9,6 @@
  *
  * Nothing in the app reads `window` or `document` while rendering. Every such
  * call sits in an effect or an event handler, and neither runs here.
- *
- * `useReducedMotion` is the one that reads `window` during render, and with no
- * window it answers true. That is deliberate and this is why: under reduced
- * motion every component renders its plain final state, where with motion on
- * the markup is saved frozen at the start of an entry animation holding
- * `opacity: 0`. Text that is present but invisible is worse than no markup.
  */
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";

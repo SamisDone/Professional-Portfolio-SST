@@ -59,7 +59,16 @@ const HYPE = /\b(crafting|seamless(?:ly)?|cutting-edge|leverag(?:e|es|ed|ing)|un
 /** Each rule: a test on one line, and why it is banned. */
 const RULES = [
   { re: /backdrop-filter|\bbackdrop-(?:blur|brightness|saturate)/, why: "no glass" },
-  { re: /(?:linear|radial|conic)-gradient|\bbg-gradient-|\bfrom-\w+-\d/, why: "no gradients" },
+  {
+    // A gradient whose two stops are the same token is a flat fill, the only
+    // way to give a colour a size to animate (the highlighter in motion.css).
+    // Anything else is a gradient.
+    test: (line) =>
+      /(?:linear|radial|conic)-gradient|\bbg-gradient-|\bfrom-\w+-\d/.test(
+        line.replace(/linear-gradient\(\s*(var\(--[\w-]+\))\s*,\s*\1\s*\)/g, ""),
+      ),
+    why: "no gradients",
+  },
   { re: /border-radius:\s*[1-9]|\brounded-(?:sm|md|lg|xl|2xl|3xl|full)\b/, why: "square corners only" },
   { re: /\bblur\(|\bblur-(?:sm|md|lg|xl|2xl|3xl)\b/, why: "no blur" },
   {
