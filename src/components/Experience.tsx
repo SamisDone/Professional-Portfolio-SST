@@ -1,5 +1,5 @@
 import { experience } from "../data/content";
-import { Label } from "./ui";
+import { Label, ProofMark } from "./ui";
 
 /**
  * Employment as a ledger: dates and place in the left margin, the work on the
@@ -26,6 +26,11 @@ export default function Experience() {
             <div className="lg:col-span-9">
               <h2 className="t-h2">{role.org}</h2>
               <p className="t-small mt-2 font-semibold">{role.role}</p>
+              {role.href && (
+                <p className="t-small mt-3">
+                  <ProofMark href={role.href}>{role.hrefLabel ?? "Source"}</ProofMark>
+                </p>
+              )}
               {role.points.length > 0 && (
                 <ul className="mt-6 flex list-none flex-col gap-3 p-0">
                   {role.points.map((point) => (

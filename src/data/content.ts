@@ -875,7 +875,9 @@ export type Role = {
   period: string;
   location?: string;
   points: string[];
+  /** The receipt for the role, shown as a proof mark beside it. */
   href?: string;
+  hrefLabel?: string;
 };
 
 export const experience: Role[] = [
@@ -888,6 +890,10 @@ export const experience: Role[] = [
     org: "BdREN Innovation - Cortex",
     role: "Team Lead, crawler team (industrial attachment)",
     period: "3 September 2026 to 21 September 2026",
+    // Her own 47 commits on the public repository, filtered by author, rather
+    // than the repository root, where the teammates' work is mixed in.
+    href: "https://github.com/BdREN-Innovation/Cortex/commits/main/?author=SamisDone",
+    hrefLabel: "Cortex on GitHub",
     points: [
       "Lead Team A, the five-person crawler team: split the CUET capture into portions with named owners, and take the team's work through review in its pull requests.",
       "Cortex crawls a website, embeds it into a vector database and answers questions about it with citations. I built its CUET scraper: cuet.ac.bd is a Next.js app whose pages ship no content, so it reads the public JSON API first and renders only what the API misses, capturing 735 documents, all 382 faculty profiles and 1,106 linked files.",
