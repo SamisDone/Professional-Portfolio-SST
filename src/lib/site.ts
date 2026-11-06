@@ -9,7 +9,7 @@
  */
 // samonwita.vercel.app while Cloudflare Pages is being set up, so every
 // canonical points at an address that answers today. It becomes
-// "https://samonwita.pages.dev" when production on Cloudflare is live.
+// "https://samonwitasarker.pages.dev" when production on Cloudflare is live.
 export const SITE_URL = "https://samonwita.vercel.app";
 
 export const SITE_NAME = "Samonwita Sarker";

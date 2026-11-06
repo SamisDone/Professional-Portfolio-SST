@@ -108,7 +108,11 @@ function routeMetaPlugin(): Plugin {
 
     generateBundle(_options, bundle) {
       const index = bundle["index.html"];
-      if (!index || index.type !== "asset") return;
+      // Loud, not a silent return: without index.html in the bundle nothing
+      // below runs and every route would ship the raw template.
+      if (!index || index.type !== "asset") {
+        this.error("route-meta: index.html is not in the client bundle, so no route HTML can be written");
+      }
       const template = String(index.source);
 
       const fill = (path: string, meta: PageMeta, canonicalPath: string) => {

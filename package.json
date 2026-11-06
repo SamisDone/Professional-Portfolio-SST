@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-bans.mjs && tsc -b && vite build && vite build --ssr src/entry-server.tsx && node scripts/prerender.mjs && node scripts/check-seo.mjs",
+    "build": "node scripts/check-bans.mjs && tsc -b && vite build && vite build --ssr src/entry-server.tsx && node scripts/prerender.mjs && node scripts/check-seo.mjs && node scripts/check-dist.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "start": "node server.mjs",
