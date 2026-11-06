@@ -46,5 +46,18 @@
       ]
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/coming-soon",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/og.png",
+      "destination": "/og/home.png",
+      "statusCode": 301
+    }
+  ]
 }

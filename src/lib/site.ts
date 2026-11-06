@@ -7,7 +7,10 @@
  * Cloudflare Pages serves at /about with no redirect, so that is the form
  * every canonical and sitemap entry uses.
  */
-export const SITE_URL = "https://samonwita.pages.dev";
+// samonwita.vercel.app while Cloudflare Pages is being set up, so every
+// canonical points at an address that answers today. It becomes
+// "https://samonwita.pages.dev" when production on Cloudflare is live.
+export const SITE_URL = "https://samonwita.vercel.app";
 
 export const SITE_NAME = "Samonwita Sarker";
 

@@ -321,7 +321,7 @@ const BEATS = [
       await c.page.evaluate(() => window.__sc.say(""));
       await c.wait(500);
       await c.page.evaluate(() =>
-        window.__sc.card("Open to job opportunities", "Samonwita Sarker", "samonwita.pages.dev"),
+        window.__sc.card("Open to job opportunities", "Samonwita Sarker", "samonwita.vercel.app"),
       );
     },
   },

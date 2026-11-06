@@ -4,7 +4,7 @@ The personal site of Samonwita Sarker, a Computer Science and Engineering
 undergraduate at CUET (class of 2027) who builds software and researches
 explainable AI and NLP.
 
-**Live:** [samonwita.pages.dev](https://samonwita.pages.dev)
+**Live:** [samonwita.vercel.app](https://samonwita.vercel.app)
 
 ![The home page: the name at poster scale beside a stack of real project screenshots](docs/home.jpg)
 
