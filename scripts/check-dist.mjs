@@ -13,7 +13,12 @@
  *     /src/main.tsx, so the route-meta plugin or the client build did not run
  *   - has an empty <div id="root">, so prerender did not run
  * and when a page in the sitemap, or 404.html, has no file at all.
+ *
+ * It also fails when an inline script in a page has no matching sha256 in
+ * the Content-Security-Policy in dist/_headers, because Cloudflare would
+ * then block it: the motion switch in index.html is one.
  */
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative, resolve } from "node:path";
@@ -35,6 +40,9 @@ function* html(dir) {
   }
 }
 
+const headers = existsSync(join(dist, "_headers")) ? readFileSync(join(dist, "_headers"), "utf8") : "";
+const allowed = new Set([...headers.matchAll(/'(sha256-[A-Za-z0-9+/=]+)'/g)].map((m) => m[1]));
+
 let pages = 0;
 for (const file of html(dist)) {
   pages++;
@@ -43,6 +51,10 @@ for (const file of html(dist)) {
   const tokens = [...new Set(src.match(/__[A-Z][A-Z0-9_]*__/g) ?? [])];
   if (tokens.length) problems.push(`${rel}: template token(s) left in: ${tokens.join(", ")}`);
   if (src.includes("/src/main.tsx")) problems.push(`${rel}: links the dev entry /src/main.tsx, not a built bundle`);
+  for (const [, body] of src.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+    const hash = `sha256-${createHash("sha256").update(body).digest("base64")}`;
+    if (!allowed.has(hash)) problems.push(`${rel}: inline script ${hash} is not in the CSP in _headers`);
+  }
   const mount = src.indexOf('<div id="root">');
   if (mount === -1) problems.push(`${rel}: no <div id="root">`);
   else if (/^\s*<\/div>/.test(src.slice(mount + '<div id="root">'.length))) problems.push(`${rel}: empty root, prerender did not run`);

@@ -108,13 +108,16 @@ export const ROUTE_META: Record<string, PageMeta> = {
   ),
 };
 
-/* The motion layer's review page. noindex, out of the sitemap, and skipped by
-   scripts/check-seo.mjs, which is why it is not held to the rules above. */
-ROUTE_META["/motion-lab"] = page(
-  "Motion lab",
-  "Every motion of the site's motion layer as a labelled specimen with a replay button, for review before it is rolled out. Not part of the site's navigation.",
-  { noindex: true },
-);
+/* The motion layer's review page, in local development only: a production
+   build has no such route, so it gets no HTML file, sitemap entry or card.
+   Read through a cast, because vite.config.ts loads this file in Node. */
+if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV) {
+  ROUTE_META["/motion-lab"] = page(
+    "Motion lab",
+    "Every motion of the site's motion layer as a labelled specimen with a replay button, for review before it is rolled out. Not part of the site's navigation.",
+    { noindex: true },
+  );
+}
 
 /* One page per project at /work/slug, outside `ROUTES` like /repositories. */
 for (const p of [...featured, ...notable, ...otherWork]) {

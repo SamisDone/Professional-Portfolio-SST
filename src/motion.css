@@ -9,9 +9,11 @@
  * Three rules hold everywhere:
  *
  * 1. Nothing is hidden in the HTML. Every starting state sits behind
- *    `html.m-js`, a class src/lib/motion.ts adds only when JavaScript runs
- *    and the visitor has not asked for reduced motion. The prerendered page,
- *    a page with JavaScript off, and reduced motion all show the end state.
+ *    `html.m-js`, a class the inline script in index.html adds before the
+ *    first paint, only when JavaScript runs and the visitor has not asked
+ *    for reduced motion, and takes off again if the site's script is not
+ *    running within 1.5s. The prerendered page, a page with JavaScript off,
+ *    and reduced motion all show the end state.
  * 2. Each entrance runs once per page view, when its element first enters
  *    the viewport, and then everything stays still. Nothing loops, and
  *    nothing a visitor is already reading moves.
@@ -55,6 +57,27 @@
    together, capped at 5 by motion.ts, so the seventh arrives with the sixth.
    Written out in each rule, because a custom property's var() is resolved
    where it is declared, not where it is used. */
+
+/* Finished: data-in="now" is an element whose entrance has played, or one
+   that was already on screen when the script arrived late (see motion.ts).
+   It shows its end state, and its entrance can never start again, whatever
+   else changes on it later. Transitions are stopped only where an entrance
+   is a transition, and animations only where it is an animation, so hover
+   feedback on the same elements keeps working. */
+html.m-js [data-in="now"]::before,
+html.m-js [data-in="now"]::after,
+html.m-js .proof-mark[data-in="now"],
+html.m-js [data-in="now"] .m-line,
+html.m-js [data-in="now"] .m-plabel,
+html.m-js [data-in="now"] .m-connector {
+  transition: none !important;
+}
+html.m-js [data-stamp][data-in="now"],
+html.m-js [data-in="now"] > .tab,
+html.m-js [data-in="now"] .m-point,
+html.m-js [data-in="now"] .m-num {
+  animation: none !important;
+}
 
 /* ---------------------------------------------------------------- A1
    Section rules draw left to right. The real 4px border stays, so nothing
@@ -215,7 +238,12 @@ html.m-js .m-a6 [data-stamp][data-in] {
   .m-b3 [data-row]:hover [data-rownum] {
     background: var(--section);
     border-color: var(--ink);
-    animation: m-stamp-press var(--m-snap) var(--m-ease);
+  }
+  /* The stamp itself only with the layer on, so never under reduced motion.
+     Important, because the number also carries A6's entrance, whose rule
+     is as specific; the finished state above then lets this through. */
+  html.m-js .m-b3 [data-row]:hover [data-rownum] {
+    animation: m-stamp-press var(--m-snap) var(--m-ease) !important;
   }
   .m-b3 [data-row]:hover img {
     transform: translateX(4px);

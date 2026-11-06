@@ -110,7 +110,7 @@ function FieldSpecimen() {
       </label>
       <input id="lab-field" type="email" placeholder="you@company.com" className="field t-body block h-12 w-full" />
       {error && (
-        <p role="alert" className="t-small mt-2 border-2 border-ink bg-proof px-3 py-2">
+        <p role="alert" className="t-small mt-2 border-2 border-ink bg-paper-2 px-3 py-2">
           <strong className="font-semibold">Check this:</strong> that does not look like a valid email.
         </p>
       )}
@@ -237,7 +237,7 @@ export default function MotionLabPage() {
           <Flow steps={greenlight.flow ?? []} />
         </Specimen>
 
-        <Specimen code="C3" scope="" replayable={false} title="After the page transition" note="Entrances wait for the sheet slide, tab handoff or morph to finish, then start. They never play under a sheet that is still moving. This one can only be tried on the site itself, once motions are rolled out.">
+        <Specimen code="C3" scope="" replayable={false} title="After the page transition" note="Entrances wait for the sheet slide, tab handoff or morph to finish, then start. They never play under a sheet that is still moving. Try it on the site itself: page with the arrow keys, or open a case study from /work.">
           <p className="t-small">
             The page transitions themselves are unchanged: sheet slide 240ms, tab handoff 240ms, row to exhibit morph 300ms.
           </p>

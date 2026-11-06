@@ -102,7 +102,7 @@ export default function Header() {
           <span className="hidden xl:inline">{profile.name}</span>
         </Link>
 
-        <nav aria-label="Pages" className="hidden items-end gap-1 lg:flex">
+        <nav aria-label="Pages" data-tabs className="hidden items-end gap-1 lg:flex">
           {ROUTES.map((r, i) => (
             // Only Home matches exactly. A case study at /work/slug is a
             // sheet inside Work, so the Work tab stays filled there.

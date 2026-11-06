@@ -1,3 +1,5 @@
+<p><img src="docs/banner.svg" width="100%" alt="Samonwita Sarker, on an orange band, over the line: I build software that ships, and I research how to make a model's predictions explainable."></p>
+
 # Samonwita Sarker, portfolio
 
 The personal site of Samonwita Sarker, a Computer Science and Engineering
@@ -6,7 +8,7 @@ explainable AI and NLP.
 
 **Live:** [samonwita.vercel.app](https://samonwita.vercel.app)
 
-![The home page: the name at poster scale beside a stack of real project screenshots](docs/home.jpg)
+![The home page: the name at poster scale with the lead and buttons beside the surname, the four proof figures under it, and the first flagship's screenshot starting below](docs/home.jpg)
 
 <table>
   <tr>
@@ -164,9 +166,10 @@ src/
   lib/transitions.ts, lib/TransitionRouter.tsx
                     Page changes through the View Transitions API
   lib/meta.ts       Title and description for every route
-  hooks/            useReducedMotion
+  lib/motion.ts     The motion layer's one script; its CSS is motion.css
   fonts/            woff2 files and their OFL licences
   index.css         The token file: colours, type scale, components
+  motion.css        Every motion token and rule (see Motion)
   entry-server.tsx  The server entry used for prerendering
 public/
   shots/            Project screenshots, each as original, 1400px WebP and 700px WebP
@@ -174,9 +177,10 @@ public/
   favicon.svg, apple-touch-icon.png
   Samonwita_Sarker_CV.pdf  The CV, built from cv/
 cv/                 LaTeX source for the CV
-scripts/            prerender, check-bans, capture-shots, optimise-shots,
-                    make-og, subset-fonts, showcase
-docs/               Screenshots for this README
+scripts/            prerender, check-bans, check-seo, check-dist,
+                    measure-pages, capture-shots, optimise-shots, make-og,
+                    make-banner, subset-fonts, showcase
+docs/               Banner, screenshots and recordings for this README
 ```
 
 ## Editing content
@@ -301,11 +305,68 @@ no blur, no glass, no opacity overlays.
 
 ### Motion
 
-State changes only: presses (80ms), hovers and an image arriving (150ms), the
-phone menu (250ms), the CGPA line drawing once (600ms), and page changes. One
-curve, `cubic-bezier(0.2, 0, 0, 1)`, and only `transform` and `opacity` move,
-which is why the press shadow is drawn as a layer behind the button. Nothing a
-visitor is reading moves on its own.
+One layer, mechanical in character: things are stamped, slid, snapped into
+place, drawn with a ruler or swept with a highlighter. Crisp starts, hard
+stops, no springs, no bounce, and nothing loops. Each motion runs once, when
+its element first enters the viewport, and then the page is still.
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/home-first-load.webp" alt="Home loading for the first time: the tabs drop in, the orange band wipes in behind the name, the proof row's rule draws and Flagship 01's screenshot is uncovered"></td>
+    <td width="33%"><img src="docs/arrow-paging.webp" alt="Paging with the arrow keys: each page slides in over the last as a sheet, the tab fill moves along the row, and the new page's band and rules draw once it lands"></td>
+    <td width="33%"><img src="docs/work-to-case-study.webp" alt="A row on the work page: its number stamps in the section colour on hover, then its thumbnail grows into the case study's screenshot"></td>
+  </tr>
+  <tr>
+    <td>Home, first load</td>
+    <td>Arrow paging</td>
+    <td>Work row to case study</td>
+  </tr>
+</table>
+
+**Tokens,** all in `src/motion.css` and nothing else used: 120ms for a snap
+(stamps, presses), 200ms for a hover or state change, 320ms for something
+arriving, 480ms for a rule or highlight being drawn, 600ms for the chart's
+line. One curve, `cubic-bezier(0.2, 0, 0, 1)`. A stamp is a single keyframe
+from scale 1.06 to 1. Siblings stagger 40ms apart, six at most. Only
+`transform`, `opacity`, `clip-path` and `background-size` move, and layout
+never shifts (CLS 0).
+
+| | Motion | Where |
+| --- | --- | --- |
+| A1 | Section rules draw left to right | every 4px rule |
+| A2 | The band behind a heading wipes in; the text is there from the start | every `h1` band |
+| A3 | Proof marks sweep in like a highlighter, in reading order | every claim with a receipt |
+| A4 | The nav tabs drop into place, once per session | header |
+| A5 | A paper cover slides off a screenshot once it has decoded | every exhibit |
+| A6 | Labels and index numbers stamp | flagship labels, work rows |
+| B1 | Buttons: hover on 200ms, press on 120ms | every pressable |
+| B2 | Links thicken their underline, and the arrow nudges 4px its way | every text link |
+| B3 | A work row's number takes the section colour with a stamp; its thumbnail shifts 4px | `/work` |
+| B4 | A tab lifts 3px on hover, pulled out of a file | header |
+| B5 | Phone menu items drop in 40ms apart; closing is instant | phone menu |
+| B6 | A field's border draws in on focus; an error drops in | contact form |
+| C1 | The CGPA line draws in 600ms, each point stamps as it is reached, then its label | `/about` |
+| C2 | How it works: each step's number stamps, then the connector draws down to the next | case studies |
+| C3 | Entrances on a new page wait until the page transition has finished | everywhere |
+
+**How it switches on.** Nothing is hidden in the HTML. Every starting state
+hangs off `html.m-js`, which a one-line inline script in `index.html` adds
+before the first paint, and only when the visitor has not asked for reduced
+motion. So the prerendered page, a page with JavaScript off and reduced motion
+all show the finished state. `src/lib/motion.ts` (about 0.9kB gzipped
+together with the inline switch, and no animation library) then watches each
+element with one `IntersectionObserver` and marks it `data-in` when it first
+enters the viewport. If that script has
+not run within 1.5s, the inline script takes `m-js` off again so nothing waits
+on it, and when the script does arrive, whatever is already on screen is
+marked finished rather than replayed. The inline script is allowed by its
+sha256 in the CSP in `public/_headers`. Scroll-driven animations are not used:
+they would undraw when the visitor scrolls back up.
+
+Each motion has its own scope class (`m-a1` to `m-c2`) on the app's root in
+`src/App.tsx`, so one can be switched off by deleting its name. In
+development, `/motion-lab` shows every motion as a labelled specimen with a
+replay button; production builds leave that page out.
 
 **Page changes** go through the View Transitions API (`src/lib/transitions.ts`,
 `src/lib/TransitionRouter.tsx`, rules at the end of `src/index.css`):
@@ -369,10 +430,14 @@ nothing links to.
 
 Each of these was a real bug.
 
-- **`useReducedMotion` must return `true` when there is no `window`.** The
-  prerender relies on it: with motion on, markup is captured mid-animation at
-  `opacity: 0` and ships invisible text. The built HTML should contain no
-  `opacity:0` in the body.
+- **Nothing may start hidden without `html.m-js`.** Every starting state in
+  `src/motion.css` is behind that class, which only the inline script adds.
+  A rule that hides something without it ships invisible text to everyone
+  without JavaScript and to every crawler.
+- **The inline motion switch in `index.html` is allowed by its hash.** Change
+  one byte of it and Cloudflare blocks it, unless the sha256 in
+  `public/_headers` changes too. `check-dist.mjs` fails the build when they
+  differ.
 - **Anything that starts in a "not ready" state must render ready on the
   server.** `Exhibit` does, and the chart renders drawn; otherwise visitors
   without JavaScript see empty boxes forever.
@@ -381,9 +446,10 @@ Each of these was a real bug.
 - **A lazy image must never be clipped while it loads.** A lazy image clipped to
   nothing never intersects the viewport, so it never loads. `Exhibit` fades the
   image's opacity instead.
-- **The hero's grid items need explicit start columns.** The exhibit is placed
-  in columns 9 to 12 across rows 2 and 3; an item with only a span is
-  auto-placed around it and the grid grows extra columns.
+- **The hero's grid items need explicit start columns.** The heading spans
+  both columns and passes its two lines down through subgrid; the lead sits in
+  column 2 of the surname's row. An item with only a span is auto-placed
+  around the overlap and the grid grows an extra column.
 - **Groups in a view transition paint in document order.** Each tab's label has
   its own transition name so it paints above the moving tab fill; without
   that the fill passes over the text. A `mix-blend-mode` cannot fix it, because

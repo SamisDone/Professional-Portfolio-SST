@@ -1,13 +1,29 @@
 /**
- * The motion layer's one script: it switches the layer on, and marks each
- * animated element `data-in` the first time it enters the viewport. Every
- * movement itself is CSS, in src/motion.css.
+ * The motion layer's one script: it takes over from the switch in
+ * index.html, and marks each animated element `data-in` the first time it
+ * enters the viewport. Every movement itself is CSS, in src/motion.css.
  *
- * Nothing here runs on the server, and nothing starts hidden unless this has
- * run: the starting states hang off `html.m-js`, added below only when the
- * visitor has not asked for reduced motion.
+ * `data-in` has two values. Empty: the entrance is playing. "now": shown and
+ * finished, with nothing on it able to play again. Every element moves to
+ * "now" once its entrance is over, so a later style change (a hover that
+ * swaps an animation, say) can never replay it.
+ *
+ * Nothing is hidden in the HTML. The starting states hang off `html.m-js`,
+ * which the inline script in index.html adds before the first paint, unless
+ * the visitor asked for reduced motion. It takes the class off again after
+ * 1.5s if this file has not run by then, so a slow script never leaves the
+ * page blank. When this file runs after that, or the inline script never ran,
+ * whatever is already on screen is marked "now" before the layer comes back
+ * on: no "complete, then redraws". Only what is still below the fold enters.
  */
 import { whenSettled } from "./transitions";
+
+declare global {
+  interface Window {
+    /** The inline script's 1.5s fallback timer. */
+    __mOff?: number;
+  }
+}
 
 /** What animates on entry, by selector. Each is gated in CSS by its scope. */
 const TARGETS = [
@@ -23,14 +39,24 @@ const TARGETS = [
 
 const STAGGER_MAX = 5;
 const STEP_MS = 120 + 320; // a stamp, then the connector below it
+/** Longer than any entrance: the chart's line, last point and label. */
+const DONE_MS = 1200;
 const TABS_KEY = "m-tabs";
 
 let io: IntersectionObserver | undefined;
+const timers = new WeakMap<Element, number>();
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** Shows an element in its end state, now. */
-const show = (el: Element) => el.setAttribute("data-in", "");
+/** Shown and finished: nothing on it plays again. */
+const finish = (el: Element) => el.setAttribute("data-in", "now");
+
+/** Plays the element's entrance, then marks it finished. */
+function show(el: HTMLElement) {
+  el.setAttribute("data-in", "");
+  const delay = parseFloat(el.style.getPropertyValue("--m-d")) || 0;
+  timers.set(el, window.setTimeout(() => finish(el), DONE_MS + delay));
+}
 
 function enter(entries: IntersectionObserverEntry[]) {
   const arriving = entries
@@ -65,25 +91,26 @@ function enter(entries: IntersectionObserverEntry[]) {
   }
 }
 
+/** The tabs play on the first page of a session only. */
+function tabsSeen() {
+  try {
+    const seen = sessionStorage.getItem(TABS_KEY) === "1";
+    sessionStorage.setItem(TABS_KEY, "1");
+    return seen;
+  } catch {
+    return true;
+  }
+}
+
 /** Observes everything not yet shown under `root`. */
 export function scan(root: ParentNode = document) {
   if (!document.documentElement.classList.contains("m-js")) return;
   io ??= new IntersectionObserver(enter, { threshold: 0 });
   for (const el of root.querySelectorAll(TARGETS)) {
     if (el.hasAttribute("data-in")) continue;
-    if (el.matches("[data-tabs]")) {
-      // Once a session: on every later page the tabs are simply there.
-      let seen = false;
-      try {
-        seen = sessionStorage.getItem(TABS_KEY) === "1";
-        sessionStorage.setItem(TABS_KEY, "1");
-      } catch {
-        seen = true;
-      }
-      if (seen) {
-        show(el);
-        continue;
-      }
+    if (el.matches("[data-tabs]") && tabsSeen()) {
+      finish(el);
+      continue;
     }
     io.observe(el);
   }
@@ -92,6 +119,7 @@ export function scan(root: ParentNode = document) {
 /** Plays a group again from its start, for the motion lab's replay buttons. */
 export function replay(root: Element) {
   for (const el of root.querySelectorAll(TARGETS)) {
+    window.clearTimeout(timers.get(el));
     el.removeAttribute("data-in");
     io?.unobserve(el);
   }
@@ -106,10 +134,27 @@ export function replay(root: Element) {
   scan(root);
 }
 
-/** Switches the layer on, unless motion is reduced, and scans the page. */
+/** Takes over from the inline switch, and scans the page. */
 export function startMotion() {
-  if (typeof window === "undefined" || reduced() || !("IntersectionObserver" in window)) return;
-  document.documentElement.classList.add("m-js");
+  if (typeof window === "undefined") return;
+  const html = document.documentElement;
+  window.clearTimeout(window.__mOff);
+  if (reduced() || !("IntersectionObserver" in window)) {
+    html.classList.remove("m-js");
+    return;
+  }
+  if (!html.classList.contains("m-js")) {
+    // Late, or the inline switch never ran: the page is already showing in
+    // full. Keep what is on screen exactly as it is.
+    for (const el of document.querySelectorAll(TARGETS)) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        if (el.matches("[data-tabs]")) tabsSeen();
+        finish(el);
+      }
+    }
+    html.classList.add("m-js");
+  }
   scan();
 }
 

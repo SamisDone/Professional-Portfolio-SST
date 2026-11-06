@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Pager from "./components/Pager";
@@ -15,8 +16,15 @@ import RepositoriesPage from "./pages/RepositoriesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ContactSentPage from "./pages/ContactSentPage";
-import MotionLabPage from "./pages/MotionLabPage";
 import { sectionFor } from "./lib/routes";
+
+// The motion layer's specimens, for review in local development only. In a
+// production build DEV is false, so the route and its chunk are dropped.
+const MotionLabPage = import.meta.env.DEV ? lazy(() => import("./pages/MotionLabPage")) : null;
+
+/** Every motion of the layer is switched on here, for the whole site; see
+    src/motion.css. Taking one name out turns that motion off. */
+const MOTION = "m-a1 m-a2 m-a3 m-a4 m-a5 m-a6 m-b1 m-b2 m-b3 m-b4 m-b5 m-b6 m-c1 m-c2";
 
 /**
  * Everything inside the router, with no router of its own.
@@ -33,7 +41,7 @@ export function AppShell() {
   const { pathname } = useLocation();
 
   return (
-    <div data-section={sectionFor(pathname)}>
+    <div data-section={sectionFor(pathname)} className={MOTION}>
       <a href="#main" className="skip-link btn btn-primary press">
         Skip to main content
       </a>
@@ -57,8 +65,16 @@ export function AppShell() {
           <Route path="/privacy" element={<PrivacyPage />} />
           {/* Where the contact form returns with JavaScript off. */}
           <Route path="/contact/sent" element={<ContactSentPage />} />
-          {/* The motion layer's specimens, for review. noindex, no links in. */}
-          <Route path="/motion-lab" element={<MotionLabPage />} />
+          {MotionLabPage && (
+            <Route
+              path="/motion-lab"
+              element={
+                <Suspense fallback={null}>
+                  <MotionLabPage />
+                </Suspense>
+              }
+            />
+          )}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Pager />
