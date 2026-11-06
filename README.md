@@ -10,7 +10,7 @@ explainable AI and NLP.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/work.jpg" alt="The work page: project cards with real screenshots"></td>
+    <td width="50%"><img src="docs/work.jpg" alt="The work page: one index table of every project, each row opening its case study"></td>
     <td width="50%"><img src="docs/research.jpg" alt="The research page: two publications with author lists and a thesis in progress"></td>
   </tr>
   <tr>
@@ -55,8 +55,9 @@ product.
 
 | Route | What is on it |
 |---|---|
-| `/` | The name, one line on what she does, a shuffling stack of real screenshots, four proof figures, and three flagship projects |
-| `/work` | Six projects in a grid and six more in a list, each opening a full case study |
+| `/` | The name at poster scale, one line on what she does, one screenshot exhibit, four proof figures, and three flagship spreads |
+| `/work` | One index table of every project, flagships first, each row opening its case study |
+| `/work/<slug>` | A case study per project: problem, what was built, her part on team work, how it works, the result |
 | `/experience` | Team lead at BdREN Innovation (Cortex), Fleet AI, Inc., and a freelance client site |
 | `/research` | An IEEE ICECTE 2026 paper, a first-author ACL 2026 system paper, and the thesis in progress |
 | `/about` | Introduction, education with the CGPA and a term-by-term trend chart, and the stack |
@@ -64,30 +65,34 @@ product.
 | `/contact` | Email, profiles and a contact form |
 | `/repositories` | Every project in one table with source and live links, including work on other people's repositories |
 
-The first seven are a reading sequence: the header nav, the left and right
-arrow keys and the on-screen pager all walk them in that order.
-`/repositories` is reached by link and sits outside the sequence.
+The seven in `ROUTES` are a reading sequence, numbered 01 to 07: the file tabs
+in the header, the left and right arrow keys and the pager at the foot of each
+page all walk them in that order. Case studies and `/repositories` are reached
+by link and sit outside the sequence.
 
 ## What it does well
 
-- **Every page fits a laptop screen.** Each page in the reading sequence fits
-  one screen from 1280x720 up. On short screens the spacing closes up, but text
-  is never shrunk to fit. Phones scroll normally.
-- **Arrow-key navigation** between sections, with a curtain transition that
-  shows the name of the page you are moving to.
-- **It works without JavaScript.** Every route is prerendered to real HTML, so
-  search engines, link previews, applicant tracking systems and scrapers all
-  read the full text, and a visitor with scripts off can still use every page.
+- **Proof on the first screen.** The name, the role line, the proof figures and
+  the primary action are all visible without scrolling at 1280x720 and on a
+  390x844 phone. Pages scroll; nothing is squeezed to fit.
+- **Arrow-key navigation** between pages, with an instant swap and no
+  transition to wait for.
+- **It works without JavaScript.** Every route, every case study included, is
+  prerendered to real HTML, so search engines, link previews, applicant
+  tracking systems and scrapers all read the full text.
 - **Real metadata per page.** Each route ships its own title, description,
   canonical link and Open Graph tags, plus a generated sitemap and a social
-  card rendered from the site's own fonts.
+  card rendered from the site's own fonts and tokens.
 - **Genuine 404s,** with a designed page and a real 404 status.
 - **Accessible by default.** One `h1` per page, labelled controls, a skip link,
-  visible focus, 44px touch targets on touch screens, WCAG AA colour contrast,
-  and every animation turned off under `prefers-reduced-motion`.
-- **Light on the network.** Self-hosted fonts (88kB), responsive WebP
-  screenshots at two sizes, long-lived caching for hashed assets, and skeleton
-  placeholders shaped like the content they stand in for.
+  a 3px focus ring, 44px touch targets on touch screens, text contrast of 7:1
+  or better, the new page announced on every change, and nothing animating
+  under `prefers-reduced-motion`.
+- **Light on the network.** Two font files, 62kB together; responsive WebP
+  screenshots at two sizes; no animation library and no icon library.
+- **A skin that stays put.** A ban script fails the build on any gradient,
+  blur, glass, rounded corner, banned typeface, em dash, stray hex colour, or
+  section colour used as a text colour.
 - **Honest about authorship.** Projects on repositories she does not own say so,
   with the owner's name and her role.
 
@@ -97,11 +102,9 @@ arrow keys and the on-screen pager all walk them in that order.
 |---|---|
 | Framework | React 19, TypeScript 6, React Router 7 |
 | Build | Vite 8, with a server-side render pass for prerendering |
-| Styling | Tailwind CSS 3 plus hand-written CSS for the design tokens and short-screen rules |
-| Motion | framer-motion |
-| Icons | Phosphor |
-| Fonts | Instrument Serif, Instrument Sans, DM Mono, self-hosted |
-| Tooling | oxlint, Playwright (screenshot and image scripts only) |
+| Styling | Tailwind CSS 3, its theme cut down to the design tokens, plus `src/index.css` |
+| Fonts | Archivo (variable, weight and width) and Martian Mono, self-hosted and subset |
+| Tooling | oxlint, the ban script, Playwright (screenshot and image scripts only) |
 | Hosting | Vercel |
 
 The only other runtime dependency is Vercel Web Analytics. The contact form posts to
@@ -117,6 +120,7 @@ npm run dev        # development server at http://localhost:5173
 npm run build      # typecheck, build, server-render, and prerender every route into dist/
 npm run preview    # serve the production build
 npm run lint       # oxlint
+npm run check:bans # fail on any banned style; also the first step of build
 ```
 
 Maintenance scripts, run by hand when their inputs change:
@@ -128,7 +132,8 @@ node scripts/optimise-shots.mjs    # rebuild the 1400px and 700px WebP variants
 # Both take ids, for when only one site has changed:
 node scripts/capture-shots.mjs sixpence
 node scripts/optimise-shots.mjs sixpence
-node scripts/make-og.mjs           # re-render public/og.png, the social card
+node scripts/make-og.mjs           # re-render og.png and apple-touch-icon.png
+python scripts/subset-fonts.py ... # rebuild the two font files from the upstream TTFs
 node scripts/showcase.mjs          # record the 2 minute showcase video (needs a running preview)
 ```
 
@@ -144,18 +149,24 @@ its own screen time, so the beats sum to the finished runtime.
 
 ```
 src/
-  pages/            One component per route
+  pages/            One component per route, including CaseStudyPage
   components/       Page sections and shared pieces:
-                      Hero, ShotDeck, Proof, Work, ProjectDialog, Experience,
-                      Research, About, Activities, Contact, Repositories,
-                      Trajectory, Entry, Figure, Flagships, MaskText,
-                      Reveal, Page, Header, Footer, Pager,
-                      PageTransition, Backdrop
+                      Header, Footer, Pager, Page, RouteEffects,
+                      Hero, Proof, Flagships, Work, CaseStudy,
+                      Experience, Research, About, Trajectory, Activities,
+                      Entry, Contact, Repositories,
+                      Exhibit (screenshot frames), ui (buttons, links,
+                      proof marks, labels), Arrow
   data/content.ts   Every string a visitor reads
-  lib/routes.ts     The reading order, used by the nav, the arrow keys and the pager
+  data/shots.json   When and where each screenshot was captured
+  lib/routes.ts     The reading order and each page's section colour
+  lib/projects.ts   Project lists, flagships, case study paths, captions
+  lib/transitions.ts, lib/TransitionRouter.tsx
+                    Page changes through the View Transitions API
   lib/meta.ts       Title and description for every route
   hooks/            useReducedMotion
   fonts/            woff2 files and their OFL licences
+  index.css         The token file: colours, type scale, components
   entry-server.tsx  The server entry used for prerendering
 public/
   shots/            Project screenshots, each as original, 1400px WebP and 700px WebP
@@ -163,7 +174,8 @@ public/
   favicon.svg, apple-touch-icon.png
   Samonwita_Sarker_CV.pdf  The CV, built from cv/
 cv/                 LaTeX source for the CV
-scripts/            prerender, capture-shots, optimise-shots, make-og
+scripts/            prerender, check-bans, capture-shots, optimise-shots,
+                    make-og, subset-fonts, showcase
 docs/               Screenshots for this README
 ```
 
@@ -173,23 +185,21 @@ docs/               Screenshots for this README
 publications, experience, education, leadership, competitions and
 certifications. Change it there and every page that shows it updates.
 
-**Adding a project.** Add an entry to `featured` (the grid on `/work`, and the
-first three in the rows on the home page), `notable` (the list under it) or `otherWork`
-(named only on `/repositories`). Write it from the project's own README, not
+**Adding a project.** Add an entry to `featured` (the top of the `/work` index;
+the first three are the home page's flagship spreads), `notable` (the rest of
+the index) or `otherWork` (named only on `/repositories`). Every project gets
+a case study page at `/work/<slug>` automatically. Write it from the project's own README, not
 from memory: every number on the site came from a real source. Set `role`. On
 work done with other people set `team: true`, which makes the case study say
 "What we built", and set `myPart` from her own commits on the repository, never
 from a guess. `flow` draws a short "How it works" path in the case study. Then:
 
 1. Add the live URL to `TARGETS` in `scripts/capture-shots.mjs`, then run it
-   with that id: `node scripts/capture-shots.mjs <name>`.
+   with that id: `node scripts/capture-shots.mjs <name>`. It records the date
+   in `src/data/shots.json`, which the caption under the image reads.
 2. Run `node scripts/optimise-shots.mjs <name>`. Pass the id here too, so the
    shots that were already optimised are not put through a second re-encode.
 3. Point `shot` at `/shots/<name>.jpg`. Every shot is 16:10.
-4. Adding it to `featured` only puts it on `/work`. The home page hero stack is
-   its own list, `SLUGS` in `src/components/ShotDeck.tsx`, and it needs one
-   entry in `SLOTS` per slug or the new card never arrives.
-
 A project with no deployment gets no image rather than an invented one. It can
 be run locally and captured, or carry real `figures` instead.
 
@@ -212,72 +222,110 @@ an entry never starts on one page and ends on the next. Keep the CV and
 **Adding a page.** Create the component in `src/pages`, add the route in
 `src/App.tsx`, add a title and description to `ROUTE_META` in `src/lib/meta.ts`
 (which also puts it in the sitemap and the prerender), and add it to `ROUTES` in
-`src/lib/routes.ts` if it belongs in the nav and the arrow-key sequence. Then
-check it fits one screen at 1280x720.
+`src/lib/routes.ts` if it belongs in the tabs and the arrow-key sequence.
 
-**Copy rules.** No em-dashes anywhere. Headings are short phrases, with the
-sentence underneath when one is needed. Keep descriptions in `meta.ts` to 160
-characters or fewer.
+**Copy rules.** No em dashes or en dashes anywhere: write "2023 to 2027".
+British spelling. Headings are short phrases ending in a full stop, with the
+sentence underneath when one is needed. No hype words (the ban script lists
+them), no "not X, it's Y", no exclamation marks. A heading or summary names
+what was built, for whom, and one checkable fact. Keep descriptions in
+`meta.ts` to 160 characters or fewer.
 
 ## Design system
 
+The site is an evidence file: a flat paper ground, black ink, thick rules, one
+orange action colour and a yellow proof mark. Everything below is enforced by
+the token set in `src/index.css` and `tailwind.config.js`, which replaces
+Tailwind's defaults rather than extending them, and by `scripts/check-bans.mjs`.
+
 ### Colour
 
-Five colours, always used together in one dark scheme. There is no light mode.
+A paper ground, ink, one proof yellow, and a colour per section of the site,
+like the coloured dividers in a ring binder. Text is only ever `ink` or
+`ink-2`; every other colour is only ever a fill, and every fill carries a 2px
+ink border.
 
-| Hex | Name | Job |
+| Token | Hex | Job |
 |---|---|---|
-| `#3F194D` | plum | cards and panels; a darker cut is the page ground |
-| `#68097E` | violet | the second surface, and the rules between things |
-| `#C91C7A` | magenta | primary buttons and the page-transition panels |
-| `#E8675C` | coral | links, hovers, the pager |
-| `#FFCA06` | yellow | figures, labels and the italic accent |
+| `paper` | `#F3F1EC` | page ground, `theme-color` |
+| `paper-2` | `#E6E3DB` | neutral placeholder, table header fill |
+| `ink` | `#111111` | all text, borders and shadows, the footer ground |
+| `ink-2` | `#4D4B45` | dates, captions, metadata |
+| `proof` | `#FFE14D` | only behind a claim that links to its evidence, and text selection |
+| `orange` / tint | `#FF5A1F` / `#F6D0BF` | Home, Work, case studies, Repositories, Contact, 404 |
+| `blue` / tint | `#4C8DFF` / `#CEDBF0` | Experience |
+| `green` / tint | `#22C06A` / `#C5E6CF` | Research |
+| `pink` / tint | `#FF7EB6` / `#F6D8E0` | About, Activities |
 
-Magenta reads at only 3.5:1 against the ground, so it is a fill and never text;
-white on magenta is 5.3:1. Yellow as text is 12.0:1 and coral is 5.7:1.
+The mapping lives beside `ROUTES` in `src/lib/routes.ts`. The page root
+carries `data-section`, set during render so the prerendered HTML has it, and
+CSS turns that into `--section` and `--section-tint`. Components read only
+those two: the H1 band, the primary button, the chart points, the active tab
+and the read-progress bar take `--section`; hovered rows take `--section-tint`.
+Every nav tab shows a 6px strip of its own section's colour.
+
+The rules, also at the top of `src/index.css`: a section colour means where
+you are and nothing else; one section colour per screen apart from the tab
+strips; no opacity on a token, no gradients, no purple or violet, no new
+shades. Ink on every fill is 5.90:1 or better and on every tint 13.21:1 or
+better. `ink-2` is under 7:1 on `paper-2` and on the tints, so it is never set
+there: a hovered row turns its `ink-2` text to ink.
 
 ### Type
 
-| Face | Job |
-|---|---|
-| **Instrument Serif** 400 and italic | the name, page headings, project and company names, proof figures |
-| **Instrument Sans** 400 and 500 | body copy, navigation, buttons, subsection headings |
-| **DM Mono** 400 | dates, kinds, stacks, captions, chart figures and every small uppercase label |
+Archivo for everything you read, Martian Mono for labels. Eight steps, as the
+`t-*` classes; Tailwind's `fontSize` is empty, so there is nothing else to use.
 
-The scale is deliberately short. A new element takes the nearest size rather
-than a new one:
-
-| Face | Size | Used for |
+| Step | Settings | Use |
 |---|---|---|
-| Serif | hero name, `h-section`, 28px (2.1rem in panels on wider screens) | the name, page headings, project and company names, proof figures |
-| Sans | 19px / 17px | the hero line / page introductions |
-| Sans 500 | 18px | subsection headings: Education, Leadership, Everything else |
-| Sans | 15px | body copy; item titles at 500 |
-| Sans | 14px | secondary copy: summaries, notes, proof labels; every button at 500 |
-| Sans | 13px / 12px | navigation, links and metadata / compact controls such as Live and Code |
-| Mono | 12px | dates, years, kinds, stacks, captions; the page eyebrow in uppercase |
-| Mono | 11px uppercase, `0.16em` tracking | every small label: Problem, Publication, Languages, the pager hint |
-| Mono | 11px | stack chips |
+| `t-display` | Archivo 850, width 125, uppercase | the name, the 404 |
+| `t-h1` | 800, width 112 | page headings |
+| `t-h2` | 700, 28px | project, company and paper titles |
+| `t-h3` | 700, 20px | subsection headings |
+| `t-lead` | 400, 20px | hero line, page introductions |
+| `t-body` | 400, 17px | running text, 68ch at most |
+| `t-small` | 400 or 600, 15px | secondary copy, buttons |
+| `t-label` | Martian Mono 500, 12px, uppercase | every small label, date, stack and caption |
 
-Rules that keep it consistent:
+Proof figures use the display settings at 2.5rem (`t-figure`). No italic.
+Neither family has the north-east arrow, so all three arrows are one SVG
+(`Arrow.tsx`): right stays on the site, north-east leaves it, left goes back.
 
-- **Uppercase is always mono at `0.16em` tracking.** The one exception is the
-  wordmark in the header.
-- **Instrument Serif never goes below 28px.** It is a condensed display face and
-  falls apart small, so short-screen rules take height off the frame around a
-  heading, never off the heading.
-- **One italic accent per page,** set with `MaskText`'s `italicFrom`: "Samonwita
-  *Sarker*" on the home page, "Build, then *ask why*." on About.
-- Only Regular and Italic of the serif are shipped, and `font-synthesis: none`
-  stops a stray `font-bold` from producing a fake bold.
+### Surface
+
+Square corners everywhere. Borders are 1px inside tables, 2px on every
+component edge, 4px to open a section. The one shadow, a hard 4px ink offset,
+goes only on things you can press, and anything without it cannot be pressed.
+On hover it lifts 2px; on press it sinks into its own shadow. No gradients,
+no blur, no glass, no opacity overlays.
 
 ### Motion
 
-Motion is there to show hierarchy or a change of state, never as decoration.
-Headings rise out of a mask word by word, sections reveal as they enter, the
-page transition is a curtain carrying the next section's name, and the home
-page's screenshots shuffle. Nothing a visitor is reading moves on its own.
-Everything checks `useReducedMotion` and renders its final state when motion is reduced.
+State changes only: presses (80ms), hovers and an image arriving (150ms), the
+phone menu (250ms), the CGPA line drawing once (600ms), and page changes. One
+curve, `cubic-bezier(0.2, 0, 0, 1)`, and only `transform` and `opacity` move,
+which is why the press shadow is drawn as a layer behind the button. Nothing a
+visitor is reading moves on its own.
+
+**Page changes** go through the View Transitions API (`src/lib/transitions.ts`,
+`src/lib/TransitionRouter.tsx`, rules at the end of `src/index.css`):
+
+- Between pages in `ROUTES`, the new page slides over the old one as a sheet in
+  240ms: from the right when it is later in the reading order, from the left
+  when it is earlier, for links, arrow keys and browser back and forward
+  alike. The old page does not move. The sheet's leading edge is a 4px strip
+  of the destination's section colour, a 2px ink border and a hard 4px ink
+  shadow. The header and footer stay put.
+- The active tab's fill travels along the tab row to the new tab in the same
+  240ms, as one shared element.
+- From `/work` to a case study, the row's thumbnail grows into the exhibit in
+  300ms, and shrinks back on the way out.
+- Everything else is an instant swap. So is every page change where the API is
+  missing or the visitor has asked for reduced motion.
+
+A new navigation mid-transition skips the running one, so input is never
+blocked and nothing queues. Scroll resets before the new page is drawn; focus
+moves to its `h1` and its title is announced through one `aria-live` region.
 
 ## How the build works
 
@@ -316,21 +364,26 @@ Each of these was a real bug.
   `opacity: 0` and ships invisible text. The built HTML should contain no
   `opacity:0` in the body.
 - **Anything that starts in a "not ready" state must render ready on the
-  server.** `Figure` and `ShotDeck` do; otherwise visitors without JavaScript
-  see empty skeleton boxes forever.
+  server.** `Exhibit` does, and the chart renders drawn; otherwise visitors
+  without JavaScript see empty boxes forever.
 - **Frames match the image's ratio.** Card height follows card width. A height
   cap on an image silently crops it.
-- **`Figure` must never clip its image while it loads.** A lazy image clipped to
-  nothing never intersects the viewport, so it never loads and the reveal never
-  runs. The wipe is a cover over the image instead.
-- **The pager must not cover the footer.** `Footer` publishes its height as
-  `--footer-h` and, from `sm` up, the pager offsets itself by it. On a page that
-  scrolls, the pager only appears once the reader reaches the end, and hidden
-  buttons leave the tab order. On a phone it sits in the page flow above the
-  footer, and it hides while a dialog or the menu is open.
-- **A bare four-number `ease` array next to a keyframe track** is read by
-  framer-motion as one easing per segment, and the animation silently does not
-  run. Use a named easing on keyframed tracks.
+- **A lazy image must never be clipped while it loads.** A lazy image clipped to
+  nothing never intersects the viewport, so it never loads. `Exhibit` fades the
+  image's opacity instead.
+- **The hero's grid items need explicit start columns.** The exhibit is placed
+  in columns 9 to 12 across rows 2 and 3; an item with only a span is
+  auto-placed around it and the grid grows extra columns.
+- **Groups in a view transition paint in document order.** Each tab's label has
+  its own transition name so it paints above the moving tab fill; without
+  that the fill passes over the text. A `mix-blend-mode` cannot fix it, because
+  each group is isolated.
+- **`vite preview` serves the home page's HTML for every route,** so a check
+  with JavaScript off proves nothing there. Run those against `npm start`
+  (server.mjs), which serves each route's own file and real 404s.
+- **Render's free tier answers 200 with its own "waking up" page.**
+  `capture-shots.mjs` waits that page out; a capture taken during it is a
+  picture of Render.
 - **Tailwind emits `.relative` after `.absolute`,** so an element with both is
   `relative`.
 - **`vercel.json` accepts only keys in Vercel's schema.** An unknown key fails
@@ -338,8 +391,8 @@ Each of these was a real bug.
 - **There is no catch-all rewrite,** deliberately. Every route is a real file, so
   Vercel serves `404.html` with a real 404 for anything else. A rewrite would
   answer 200 for junk URLs.
-- **Check layouts after any change** at 1920x1080, 1440x900, 1280x720 and a
-  390px phone. Test against the built site: `vite preview`
+- **Check layouts after any change** at 1920x1080, 1440x900, 1280x720, 1024,
+  a 390px phone and a 320px one, where the display name is closest to the edge. Test against the built site: `vite preview`
   is fine for layout, but it falls back to the home page's metadata on every
   route, so check metadata against the files in `dist/` instead.
 
@@ -373,7 +426,7 @@ Inspector: LinkedIn caches the card on its first scrape.
 
 Designed and built by Samonwita Sarker.
 
-Instrument Serif, Instrument Sans and DM Mono are used under the SIL Open Font
-License; the licence files are in `src/fonts`. Project screenshots are of
+Archivo and Martian Mono are used under the SIL Open Font License; the licence
+files are in `src/fonts`. Project screenshots are of
 Samonwita's own work and of team projects she contributed to, each credited on
 the site.

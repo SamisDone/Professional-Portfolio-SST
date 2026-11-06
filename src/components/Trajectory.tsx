@@ -1,192 +1,168 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cgpaHistory, trajectoryCaption, trajectoryNote } from "../data/content";
-import Reveal from "./Reveal";
-import MaskText from "./MaskText";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
-const W = 900;
+const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/*
+ * The viewBox is narrower than the 900 the old chart used. The chart sits in a
+ * 5-column cell about 470px wide, and at 900 units its 16-unit labels came out
+ * near 8px on screen. At 640 the Label-size text lands near 12px there.
+ */
+const W = 640;
 const H = 300;
-const PAD_L = 54;
-const PAD_R = 16;
-const PAD_T = 50;
-const PAD_B = 48;
+const PAD_L = 48;
+const PAD_R = 20;
+const PAD_T = 44;
+const PAD_B = 44;
 const DOMAIN: [number, number] = [3.2, 4.0];
 const GRID = [3.2, 3.4, 3.6, 3.8, 4.0];
+const FONT = 16;
 
 const x = (i: number) => PAD_L + ((W - PAD_L - PAD_R) * i) / (cgpaHistory.length - 1);
-const y = (v: number) =>
-  H - PAD_B - ((v - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0])) * (H - PAD_T - PAD_B);
+const y = (v: number) => H - PAD_B - ((v - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0])) * (H - PAD_T - PAD_B);
 
-const line = cgpaHistory
-  .map((p, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(p.value)}`)
-  .join(" ");
-const area = `${line} L ${x(cgpaHistory.length - 1)} ${H - PAD_B} L ${x(0)} ${H - PAD_B} Z`;
+const line = cgpaHistory.map((p, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(p.value)}`).join(" ");
+const LENGTH = cgpaHistory.reduce(
+  (sum, p, i) => (i === 0 ? 0 : sum + Math.hypot(x(i) - x(i - 1), y(p.value) - y(cgpaHistory[i - 1].value))),
+  0,
+);
+
+/** The text alternative: every term and its figure, in order. */
+const DESCRIPTION =
+  "Term GPA at CUET, each term on its own rather than cumulative. " +
+  cgpaHistory.map((p) => `${p.full}: ${p.value.toFixed(2)}`).join(". ") +
+  ".";
 
 /**
- * The grade record, drawn rather than stated, because the shape is the point:
- * a dip through Level 2 and a climb out of it.
+ * The grade record, drawn because the shape is the point: a dip through
+ * Level 2 and a climb out of it. Ink only: a 2px line, 8px square points, and
+ * every point labelled, so the zoomed axis cannot overstate a change.
  *
- * `bare` drops the section chrome so the chart can sit inside another page's
- * grid instead of owning a full-width band.
+ * The line draws once, over 600ms, when the chart is 30% in view. The server
+ * renders it drawn, and so does reduced motion; the client only rewinds it
+ * if it starts below the fold, so it never flashes empty on screen.
  */
-export default function Trajectory({ bare = false }: { bare?: boolean }) {
+export default function Trajectory() {
   const ref = useRef<SVGSVGElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
   const reduced = useReducedMotion();
-  const show = inView || reduced;
+  const [drawn, setDrawn] = useState(true);
 
-  const chart = (
-    <svg
-      ref={ref}
-      viewBox={`0 0 ${W} ${H}`}
-      className="h-auto w-full overflow-visible"
-      role="img"
-      aria-label="Term GPA at CUET, level 1 term 1 through level 3 term 2: 3.45, 3.44, 3.43, 3.33, then 3.58 and 3.85. Each figure is that term on its own, not a cumulative average."
-    >
-      <defs>
-        <linearGradient id="cgpa-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
-      {/* The axis is zoomed to 3.2 through 4.0 so term-to-term movement is
-          legible. Every point is direct-labelled, so the zoom cannot overstate
-          the change. */}
-      {GRID.map((v) => (
-        <g key={v}>
-          <line
-            x1={PAD_L}
-            x2={W - PAD_R}
-            y1={y(v)}
-            y2={y(v)}
-            stroke="hsl(var(--rule))"
-            strokeWidth="1"
-          />
-          <text
-            x={PAD_L - 12}
-            y={y(v)}
-            textAnchor="end"
-            dominantBaseline="middle"
-            className="num font-mono fill-[hsl(var(--muted))]"
-            fontSize="16"
-          >
-            {v.toFixed(1)}
-          </text>
-        </g>
-      ))}
-
-      <motion.path
-        d={area}
-        fill="url(#cgpa-fill)"
-        initial={reduced ? false : { opacity: 0 }}
-        animate={show ? { opacity: 1 } : {}}
-        transition={{ duration: reduced ? 0 : 0.8, delay: reduced ? 0 : 0.7 }}
-      />
-
-      <motion.path
-        d={line}
-        fill="none"
-        stroke="hsl(var(--accent))"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={reduced ? false : { pathLength: 0 }}
-        animate={show ? { pathLength: 1 } : {}}
-        transition={{ duration: reduced ? 0 : 1.4, ease: [0.16, 1, 0.3, 1] }}
-      />
-
-      {cgpaHistory.map((p, i) => {
-        const last = i === cgpaHistory.length - 1;
-        return (
-          <g key={p.label}>
-            <motion.circle
-              cx={x(i)}
-              cy={y(p.value)}
-              r={last ? 5.5 : 3.5}
-              fill={last ? "hsl(var(--accent))" : "hsl(var(--paper))"}
-              stroke="hsl(var(--accent))"
-              strokeWidth="2"
-              initial={reduced ? false : { opacity: 0, scale: 0 }}
-              animate={show ? { opacity: 1, scale: 1 } : {}}
-              transition={{
-                type: "spring",
-                stiffness: 420,
-                damping: 22,
-                delay: reduced ? 0 : 0.35 + i * 0.14,
-              }}
-              style={{ transformOrigin: `${x(i)}px ${y(p.value)}px` }}
-            />
-            {/* The end labels anchor inward. Centred, the first one ran into
-                the axis ticks once the figures were set in mono, which is
-                wider than the sans they used to be in. */}
-            <motion.text
-              x={i === 0 ? x(i) - 6 : last ? x(i) + 6 : x(i)}
-              y={y(p.value) - 17}
-              textAnchor={i === 0 ? "start" : last ? "end" : "middle"}
-              className="num font-mono fill-[hsl(var(--ink))]"
-              fontSize="18"
-              initial={reduced ? false : { opacity: 0 }}
-              animate={show ? { opacity: 1 } : {}}
-              transition={{ duration: 0.3, delay: reduced ? 0 : 0.45 + i * 0.14 }}
-            >
-              {p.value.toFixed(2)}
-            </motion.text>
-            <text
-              x={x(i)}
-              y={H - PAD_B + 26}
-              textAnchor="middle"
-              className="num font-mono fill-[hsl(var(--muted))]"
-              fontSize="16"
-            >
-              <title>{p.full}</title>
-              {p.label}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
-
-  if (bare) {
-    return (
-      <figure className="m-0">
-        <figcaption className="mb-3">
-          <h3 className="text-lg font-medium leading-tight text-ink">
-            The grades, including the dip
-          </h3>
-          <p className="mt-1.5 text-[14px] leading-snug text-muted">
-            {trajectoryNote}
-          </p>
-        </figcaption>
-        {chart}
-        <p className="mt-2 font-mono text-[12px] text-muted">{trajectoryCaption}</p>
-      </figure>
+  useIsoLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || reduced || typeof IntersectionObserver === "undefined") return;
+    const box = el.getBoundingClientRect();
+    if (box.top < window.innerHeight * 0.7) return;
+    setDrawn(false);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= 0.3) {
+          setDrawn(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
     );
-  }
+    io.observe(el);
+    return () => io.disconnect();
+  }, [reduced]);
 
   return (
-    <section className="border-b border-rule">
-      <div className="mx-auto max-w-shell section-pad short-trim px-5 sm:px-8">
-        <div className="grid gap-8 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <h2 className="max-w-[16ch] h-section font-display text-ink">
-              <MaskText text="The grades." />
-            </h2>
-            <p className="mt-2 max-w-[42ch] text-[14px] leading-snug text-muted">
-              Including the dip.
-            </p>
-            <p className="mt-5 max-w-measure text-[17px] leading-relaxed text-muted">
-              {trajectoryNote}
-            </p>
-            <p className="mt-5 font-mono text-[12px] text-muted">{trajectoryCaption}</p>
-          </Reveal>
-          <Reveal index={1} className="md:col-span-7">
-            {chart}
-          </Reveal>
-        </div>
-      </div>
-    </section>
+    <figure className="m-0">
+      <figcaption>
+        <h2 className="t-h3">The grades, including the dip</h2>
+        <p className="t-body mt-2">{trajectoryNote}</p>
+      </figcaption>
+      <svg
+        ref={ref}
+        viewBox={`0 0 ${W} ${H}`}
+        className="mt-4 h-auto w-full overflow-visible"
+        role="img"
+        aria-label={DESCRIPTION}
+      >
+        {GRID.map((v) => (
+          <g key={v}>
+            <line
+              x1={PAD_L}
+              x2={W - PAD_R}
+              y1={y(v)}
+              y2={y(v)}
+              stroke="var(--ink)"
+              strokeWidth={v === DOMAIN[0] ? 2 : 1}
+              vectorEffect="non-scaling-stroke"
+            />
+            <text
+              x={PAD_L - 10}
+              y={y(v)}
+              textAnchor="end"
+              dominantBaseline="middle"
+              className="t-label"
+              fill="var(--ink-2)"
+              style={{ fontSize: FONT }}
+            >
+              {v.toFixed(1)}
+            </text>
+          </g>
+        ))}
+
+        <path
+          d={line}
+          fill="none"
+          stroke="var(--ink)"
+          strokeWidth={2}
+          strokeLinejoin="miter"
+          vectorEffect="non-scaling-stroke"
+          className="chart-line"
+          style={{ strokeDasharray: LENGTH, strokeDashoffset: drawn ? 0 : LENGTH }}
+        />
+
+        {cgpaHistory.map((p, i) => {
+          const last = i === cgpaHistory.length - 1;
+          const anchor = i === 0 ? "start" : last ? "end" : "middle";
+          const ax = i === 0 ? x(i) - 4 : last ? x(i) + 4 : x(i);
+          // A low point's label goes under it, or the line runs through it.
+          const prevV = cgpaHistory[i - 1]?.value ?? Infinity;
+          const nextV = cgpaHistory[i + 1]?.value ?? Infinity;
+          const below = p.value < prevV && p.value < nextV;
+          return (
+            <g key={p.label}>
+              {/* The section colour as a fill, inside a 2px ink border. */}
+              <rect
+                x={x(i) - 5}
+                y={y(p.value) - 5}
+                width={10}
+                height={10}
+                fill="var(--section)"
+                stroke="var(--ink)"
+                strokeWidth={2}
+                vectorEffect="non-scaling-stroke"
+              />
+              <text
+                x={ax}
+                y={below ? y(p.value) + 28 : y(p.value) - 14}
+                textAnchor={anchor}
+                className="t-label"
+                fill="var(--ink)"
+                style={{ fontSize: FONT }}
+              >
+                {p.value.toFixed(2)}
+              </text>
+              <text
+                x={ax}
+                y={H - PAD_B + 26}
+                textAnchor={anchor}
+                className="t-label"
+                fill="var(--ink-2)"
+                style={{ fontSize: FONT }}
+              >
+                <title>{p.full}</title>
+                {p.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <p className="t-label mt-3 text-ink-2">{trajectoryCaption}</p>
+    </figure>
   );
 }

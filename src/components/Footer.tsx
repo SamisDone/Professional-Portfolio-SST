@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { profile } from "../data/content";
 
@@ -8,51 +7,27 @@ const SOCIALS = [
   { label: "Codeforces", href: profile.codeforces },
 ];
 
+/** The one inverse block on the site: paper on ink, 16.73:1. */
 export default function Footer() {
-  const ref = useRef<HTMLElement | null>(null);
-
-  /*
-   * Publishes the footer's height as `--footer-h`.
-   *
-   * The pager is fixed to the bottom of the viewport and was landing on top of
-   * these links: at 1280x720 it covered 68px of "Get in touch", which is both
-   * unreadable and unclickable. It now sits above the footer instead, and this
-   * is how it knows where that is. Measured rather than hard-coded, because
-   * the footer stacks to two rows below `sm` and its height changes with it.
-   */
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const publish = () =>
-      document.documentElement.style.setProperty(
-        "--footer-h",
-        `${Math.round(el.getBoundingClientRect().height)}px`,
-      );
-    publish();
-    const observer = new ResizeObserver(publish);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <footer ref={ref} className="relative z-10 border-t border-rule">
-      <div className="mx-auto flex max-w-shell flex-col gap-6 px-5 py-5 font-mono text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
+    <footer className="site-footer on-ink mt-18 bg-ink text-paper">
+      <div className="shell t-label flex flex-col gap-6 py-8 sm:flex-row sm:items-center sm:justify-between">
         <p>
           {profile.name}, {profile.location}
         </p>
-        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <nav aria-label="Profiles" className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {SOCIALS.map((s) => (
             <a
               key={s.label}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="tap transition-colors hover:text-ink"
+              className="tap text-paper no-underline underline-offset-4 hover:underline"
             >
               {s.label}
             </a>
           ))}
-          <Link to="/contact" className="tap transition-colors hover:text-ink">
+          <Link to="/contact" className="tap text-paper no-underline underline-offset-4 hover:underline">
             Get in touch
           </Link>
         </nav>

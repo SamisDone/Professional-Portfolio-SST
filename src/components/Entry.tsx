@@ -1,7 +1,9 @@
+import { Label } from "./ui";
+
 /**
  * One row of a record: what, where, when, and a line on it. Shared by the
  * education list on About and the lists on Activities, so the two pages read
- * as one ledger split in two rather than as two designs.
+ * as one ledger split in two.
  */
 export default function Entry({
   title,
@@ -15,12 +17,14 @@ export default function Entry({
   note: string;
 }) {
   return (
-    <li className="border-t border-rule py-3.5 first:border-ink/30">
+    <li className="tint-row border-t border-ink py-4 first:border-t-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="text-[15px] font-medium leading-snug text-ink">{title}</h3>
-        <span className="shrink-0 font-mono text-[12px] text-muted">{period}</span>
+        <h3 className="t-h3">{title}</h3>
+        <Label as="span" className="shrink-0">
+          {period}
+        </Label>
       </div>
-      <p className="mt-1 max-w-measure text-[14px] leading-relaxed text-muted">
+      <p className="t-body mt-2 max-w-measure">
         {meta}. {note}
       </p>
     </li>

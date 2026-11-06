@@ -14,6 +14,8 @@
  * No em-dashes here either. They were in the old title, where the check for
  * them never looked, so they showed in the browser tab and in search results.
  */
+import { featured, notable, otherWork } from "../data/content.ts";
+
 export type PageMeta = {
   /** The <title>. Ends with the name, because search results truncate the end. */
   title: string;
@@ -46,7 +48,9 @@ export const ROUTE_META: Record<string, PageMeta> = {
   "/work": {
     title: `Projects | ${NAME}`,
     description:
-      "Twelve case studies, led by an AI hospital platform, a privacy-first Chrome extension, a paid bilingual client site and a browser-driven robot arm.",
+      // Counted, so it cannot go stale the way "Twelve" did once a thirteenth
+      // project landed. Led by the three flagships, in their order.
+      `${[...featured, ...notable].length} projects, each with its own case study, led by a privacy-first Chrome extension, a paid bilingual client site and a browser-driven robot arm.`,
   },
   "/experience": {
     title: `Experience | ${NAME}`,
@@ -84,6 +88,20 @@ export const ROUTE_META: Record<string, PageMeta> = {
       "Open to software engineering and ML job opportunities, remote now or on site after graduating in 2027. Reach me by email, on LinkedIn, or through the form.",
   },
 };
+
+/*
+ * One page per project at /work/slug. They sit outside `ROUTES`, like
+ * /repositories, so the arrow keys skip them, but they are here so the build
+ * emits each one as a prerendered file with its own title and description,
+ * and lists it in the sitemap. The summary is the description: every one is
+ * a single plain sentence, and all of them are under 160 characters.
+ */
+for (const p of [...featured, ...notable, ...otherWork]) {
+  ROUTE_META[`/work/${p.slug}`] = {
+    title: `${p.title}, ${p.kind} | ${NAME}`,
+    description: p.summary,
+  };
+}
 
 export const NOT_FOUND_META: PageMeta = {
   title: `Page not found | ${NAME}`,

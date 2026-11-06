@@ -1,0 +1,40 @@
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { findProject } from "../lib/projects";
+import { metaFor } from "../lib/meta";
+
+/**
+ * What happens after a page change: focus moves to the new page's heading,
+ * and its title is announced through the one live region in AppShell, so a
+ * screen reader and a keyboard land on the new page. Scroll is reset before
+ * the swap, by lib/transitions.ts, so the new page is drawn from its top.
+ *
+ * Also forwards the old case study links. Case studies used to open in a
+ * dialog at /work#slug; they are pages at /work/slug now, and any link still
+ * pointing at the hash lands on the right one.
+ */
+export default function RouteEffects() {
+  const { pathname, hash } = useLocation();
+  const navigate = useNavigate();
+  const first = useRef(true);
+
+  useEffect(() => {
+    if (pathname !== "/work" || !hash) return;
+    const project = findProject(decodeURIComponent(hash.slice(1)));
+    if (project) navigate(`/work/${project.slug}`, { replace: true });
+  }, [pathname, hash, navigate]);
+
+  useEffect(() => {
+    // On first load the visitor has not navigated, so moving focus would only
+    // pull them out of wherever the browser put them.
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    document.querySelector<HTMLElement>("main h1")?.focus({ preventScroll: true });
+    const announcer = document.getElementById("route-announcer");
+    if (announcer) announcer.textContent = metaFor(pathname).title;
+  }, [pathname]);
+
+  return null;
+}

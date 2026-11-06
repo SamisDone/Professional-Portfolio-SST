@@ -1,12 +1,11 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
-import Backdrop from "./components/Backdrop";
 import Pager from "./components/Pager";
 import Footer from "./components/Footer";
-import PageTransition, { RouteEffects } from "./components/PageTransition";
+import RouteEffects from "./components/RouteEffects";
 import HomePage from "./pages/HomePage";
 import WorkPage from "./pages/WorkPage";
+import CaseStudyPage from "./pages/CaseStudyPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import ResearchPage from "./pages/ResearchPage";
 import AboutPage from "./pages/AboutPage";
@@ -14,65 +13,49 @@ import ActivitiesPage from "./pages/ActivitiesPage";
 import ContactPage from "./pages/ContactPage";
 import RepositoriesPage from "./pages/RepositoriesPage";
 import NotFoundPage from "./pages/NotFoundPage";
-
-function Routed() {
-  const location = useLocation();
-
-  return (
-    // mode="wait" so the old page unmounts before the new one arrives, which is
-    // what keeps the swap hidden behind the curtain.
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/work" element={<WorkPage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
-        <Route path="/research" element={<ResearchPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/activities" element={<ActivitiesPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        {/* Reachable by link, and absent from ROUTES on purpose: it takes no
-            place in the arrow-key sequence and no slot in the nav. */}
-        <Route path="/repositories" element={<RepositoriesPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </AnimatePresence>
-  );
-}
+import { sectionFor } from "./lib/routes";
 
 /**
  * Everything inside the router, with no router of its own.
  *
- * Split out so it can be rendered twice: under `BrowserRouter` in the browser,
- * and under `StaticRouter` by `entry-server.tsx`, which prerenders each route
- * to HTML at build time. Keeping the router here would mean the prerender
- * needed a real browser to resolve a location.
+ * Split out so it can be rendered twice: under `TransitionRouter` in the
+ * browser (see main.tsx), and under `StaticRouter` by `entry-server.tsx`,
+ * which prerenders each route to HTML at build time.
+ *
+ * The root carries `data-section`, which part of the site this page is in,
+ * so the prerendered HTML is already in the right colour with JavaScript off.
+ * Page changes are handled by lib/transitions.ts.
  */
 export function AppShell() {
+  const { pathname } = useLocation();
+
   return (
-    <>
-      <a href="#main" className="skip-link">
+    <div data-section={sectionFor(pathname)}>
+      <a href="#main" className="skip-link btn btn-primary press">
         Skip to main content
       </a>
-      <Backdrop />
       <RouteEffects />
-      <PageTransition />
-      {/* Everything above the backdrop needs a stacking context of its own. */}
-      <div className="relative z-10 flex min-h-[100dvh] flex-col">
+      {/* The one place a page change is announced. RouteEffects writes the
+          new page's title here after each swap. */}
+      <p id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />
+      <div className="flex min-h-[100dvh] flex-col">
         <Header />
-        <Routed />
-        {/* Before the footer, because on a phone it sits in the page flow
-            there. From `sm` up it is fixed, and its place here is moot. */}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/work" element={<WorkPage />} />
+          {/* Outside ROUTES, like /repositories: no tab, no arrow-key stop. */}
+          <Route path="/work/:slug" element={<CaseStudyPage />} />
+          <Route path="/experience" element={<ExperiencePage />} />
+          <Route path="/research" element={<ResearchPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/activities" element={<ActivitiesPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/repositories" element={<RepositoriesPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
         <Pager />
         <Footer />
       </div>
-    </>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AppShell />
-    </BrowserRouter>
+    </div>
   );
 }

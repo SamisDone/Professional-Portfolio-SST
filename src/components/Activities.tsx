@@ -1,87 +1,63 @@
-import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import { certifications, competitions, leadership } from "../data/content";
-import Reveal from "./Reveal";
-import MaskText from "./MaskText";
 import Entry from "./Entry";
+import { ProofMark } from "./ui";
 
 /**
- * What happens outside coursework and paid work: the club roles, the
- * competitions, and the certificates.
- *
- * This used to be the second half of About, and it was what pushed that page
- * about 700px past the screen at 1280x720, the one route that broke the
- * one-screen rule. Education stayed on About, because where someone studies is
- * the first thing a recruiter checks and should not be a click further away.
+ * Club roles, competitions and certificates, as two ledgers side by side
+ * built from the same entry row as About.
  */
 export default function Activities() {
   return (
-    <section id="activities" className="scroll-mt-16 border-b border-rule">
-      <div className="mx-auto max-w-shell section-pad px-5 sm:px-8">
-        <Reveal>
-          <h1 className="max-w-[18ch] h-section font-display text-ink">
-            <MaskText text="Outside the terminal." />
-          </h1>
-        </Reveal>
+    <>
+      <section className="shell tier-a">
+        <h1 tabIndex={-1} className="t-h1 band max-w-[18ch]">
+          Outside the terminal.
+        </h1>
+      </section>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-16">
-          <Reveal className="lg:col-span-6">
-            <h2 className="text-lg font-medium leading-tight text-ink">Leadership</h2>
-            <ol className="mt-4 flex flex-col">
+      <div className="shell tier-b grid gap-12 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-6">
+          <section aria-labelledby="leadership">
+            <h2 id="leadership" className="t-h3">
+              Leadership
+            </h2>
+            <ol className="m-0 mt-4 list-none p-0">
               {leadership.map((l) => (
-                <Entry
-                  key={l.org}
-                  title={l.role}
-                  meta={l.org}
-                  period={l.period}
-                  note={l.note}
-                />
+                <Entry key={l.org} title={l.role} meta={l.org} period={l.period} note={l.note} />
               ))}
             </ol>
+          </section>
 
-            <div className="mt-9 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h2 className="text-lg font-medium leading-tight text-ink">Certifications</h2>
-              <a
-                href={certifications.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tap group inline-flex items-center gap-1 text-[14px] text-accent-2 transition-colors hover:text-accent"
-              >
+          <section aria-labelledby="certifications" className="mt-12">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <h2 id="certifications" className="t-h3">
+                Certifications
+              </h2>
+              <ProofMark href={certifications.href} className="t-small">
                 View all certificates
-                <ArrowUpRightIcon
-                  size={12}
-                  weight="bold"
-                  className="transition-transform group-hover:-translate-y-0.5"
-                />
-              </a>
+              </ProofMark>
             </div>
-            <ul className="mt-4 grid border-t border-ink/30 sm:grid-cols-2 sm:gap-x-6">
+            <ul className="m-0 mt-4 grid list-none border-t-2 border-ink p-0 sm:grid-cols-2 sm:gap-x-6">
               {certifications.items.map((c) => (
-                <li
-                  key={c}
-                  className="border-b border-rule py-2.5 text-[14px] leading-snug text-muted"
-                >
+                <li key={c} className="tint-row t-small border-b border-ink py-3">
                   {c}
                 </li>
               ))}
             </ul>
-          </Reveal>
-
-          <Reveal index={1} className="lg:col-span-6">
-            <h2 className="text-lg font-medium leading-tight text-ink">Competitions</h2>
-            <ol className="mt-4 flex flex-col">
-              {competitions.map((c) => (
-                <Entry
-                  key={c.event}
-                  title={c.result}
-                  meta={c.event}
-                  period={c.period}
-                  note={c.note}
-                />
-              ))}
-            </ol>
-          </Reveal>
+          </section>
         </div>
+
+        <section aria-labelledby="competitions" className="lg:col-span-6">
+          <h2 id="competitions" className="t-h3">
+            Competitions
+          </h2>
+          <ol className="m-0 mt-4 list-none p-0">
+            {competitions.map((c) => (
+              <Entry key={c.event} title={c.result} meta={c.event} period={c.period} note={c.note} />
+            ))}
+          </ol>
+        </section>
       </div>
-    </section>
+    </>
   );
 }

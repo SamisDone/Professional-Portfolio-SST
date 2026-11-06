@@ -1,94 +1,57 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRightIcon } from "@phosphor-icons/react";
 import { profile } from "../data/content";
-import { useReducedMotion } from "../hooks/useReducedMotion";
-import MaskText from "./MaskText";
-import ShotDeck from "./ShotDeck";
+import { FLAGSHIPS } from "../lib/projects";
+import { Exhibit } from "./Exhibit";
+import { Button, Label } from "./ui";
 
 /**
- * The first screen. Four things and one picture: who, what, where to go, and
- * the work itself.
+ * The first screen: who, what, where to go, and one exhibit.
  *
- * The name is the display, set across two lines at poster scale with the
- * surname in the italic accent, because a portfolio's first job is to be
- * remembered by name. Beside it, the shot deck puts real running products in
- * front of a visitor before they have read a word.
+ * The name is set at poster scale on two lines. The exhibit is the first
+ * flagship's screenshot, static: the shuffling deck it replaces moved on its
+ * own while people read. It shows from `lg` up only, because on a phone the
+ * first flagship spread repeats it a scroll below, and there the room is
+ * worth more to the proof row.
  *
- * The secondary action goes to the research rather than to the résumé: the CV
- * is already a button in the header, and two routes to the same PDF on one
- * screen spent a slot the research deserved.
+ * Top spacing is the C tier rather than A. A, at 112px, put the proof row
+ * under the fold at 1280 by 720, and the proof on the first screen is the
+ * first goal this page has.
  */
 export default function Hero() {
-  const reduced = useReducedMotion();
-  const rise = (i: number, base = 0) => ({
-    initial: reduced ? false : { opacity: 0, y: 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: {
-      duration: reduced ? 0 : 0.7,
-      delay: reduced ? 0 : base + i * 0.08,
-      ease: [0.16, 1, 0.3, 1] as const,
-    },
-  });
+  const lead = FLAGSHIPS[0];
 
   return (
-    <section id="top" className="flex flex-1 flex-col justify-center overflow-x-clip border-b border-rule">
-      <div className="hero-grid mx-auto grid w-full max-w-shell items-center gap-12 px-5 sm:px-8 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-7">
-          <motion.p
-            {...rise(0)}
-            className="mb-5 font-mono text-[12px] uppercase tracking-[0.16em] text-accent"
-          >
-            {profile.standfirst}
-            <span className="text-muted"> / Open to job opportunities</span>
-          </motion.p>
+    <section
+      aria-labelledby="hero-name"
+      className="shell tier-c lg:grid lg:grid-cols-12 lg:grid-rows-[auto_auto_auto] lg:gap-x-8"
+    >
+      <Label className="text-ink lg:col-span-12 lg:col-start-1 lg:row-start-1">
+        {profile.standfirst} / {profile.openTo}
+      </Label>
+      <h1 id="hero-name" tabIndex={-1} className="t-display mt-4 lg:col-span-12 lg:col-start-1 lg:row-start-2">
+        {/* One band per line, each as wide as its word, so the surname's band
+            ends short of the exhibit beside it. */}
+        <span className="band">{profile.name.split(" ")[0]}</span>{" "}
+        <span className="band">{profile.name.split(" ").slice(1).join(" ")}</span>
+      </h1>
 
-          <h1 tabIndex={-1} className="hero-name font-display text-ink outline-none">
-            <MaskText text={profile.name} immediate delay={0.08} italicFrom={1} />
-          </h1>
-
-          <motion.p
-            {...rise(0, 0.5)}
-            className="hero-sub mt-6 max-w-[40ch] text-[17px] leading-relaxed text-muted sm:text-[19px]"
-          >
-            {profile.positioning}
-          </motion.p>
-
-          <motion.div {...rise(1, 0.5)} className="hero-cta mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/work"
-              className="group inline-flex items-center gap-2.5 bg-accent-solid px-6 py-3.5 text-sm font-medium text-on-accent transition-transform hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98]"
-            >
-              See the work
-              <ArrowRightIcon
-                size={15}
-                weight="bold"
-                className="transition-transform group-hover:translate-x-1"
-              />
-            </Link>
-            <Link
-              to="/research"
-              className="group inline-flex items-center gap-2.5 border border-rule px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:border-ink active:scale-[0.98]"
-            >
-              Read the research
-              <ArrowRightIcon
-                size={15}
-                weight="bold"
-                className="transition-transform group-hover:translate-x-1"
-              />
-            </Link>
-          </motion.div>
+      <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-start-3 lg:mt-6">
+        <p className="t-lead max-w-[36ch]">{profile.positioning}</p>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Button to="/work" variant="primary">
+            See the work
+          </Button>
+          <Button href={profile.resumeUrl}>CV (PDF)</Button>
         </div>
-
-        <motion.div
-          initial={reduced ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: reduced ? 0 : 0.4, delay: reduced ? 0 : 0.3 }}
-          className="hero-deck-wrap mx-auto w-full max-w-[560px] pt-[9%] lg:col-span-5 lg:mx-0 lg:max-w-none lg:pr-[6%]"
-        >
-          <ShotDeck />
-        </motion.div>
       </div>
+
+      {/* Spans the name's second line and the row under it, set to the
+          bottom, so it takes the empty space beside the surname instead of
+          pushing the proof row below the fold. */}
+      {lead?.shot && (
+        <div className="hidden lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-2 lg:block lg:self-end">
+          <Exhibit project={lead} sizes="380px" priority />
+        </div>
+      )}
     </section>
   );
 }

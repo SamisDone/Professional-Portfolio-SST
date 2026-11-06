@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-section="__PAGE_SECTION__">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,7 +19,7 @@
     <title>__PAGE_TITLE__</title>
     <meta name="description" content="__PAGE_DESCRIPTION__" />
     <meta name="author" content="Samonwita Sarker" />
-    <meta name="theme-color" content="#200c27" />
+    <meta name="theme-color" content="#f3f1ec" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- iOS ignores an SVG here, so the home-screen icon is a 180px PNG. -->
@@ -37,7 +37,7 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Samonwita Sarker, full-stack developer and AI researcher."
+      content="Samonwita Sarker. CSE '27 at CUET, open to software engineering and ML roles."
     />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -80,57 +80,37 @@
     </script>
 
     <!--
-      Boot shell. Inlined so it paints before the CSS and JS bundles arrive,
-      and shaped like the real header and hero so the first frame is the page
-      arriving rather than a blank sheet. React clears #root when it mounts.
+      Boot shell. Inlined so it paints before the CSS arrives, and shaped like
+      the home page: header, name block, hero row, proof row. Flat paper-2
+      blocks on paper, no shimmer. Prerendering replaces it with the real page
+      on every route, so in practice it shows only in development.
+      The hex values are the tokens in src/index.css; scripts/check-bans.mjs
+      fails the build if they drift.
     -->
     <style>
-      :root { --boot-paper:#200c27; --boot-rule:#5a2668; --boot-bar:#31153b; }
-      html { background: var(--boot-paper); }
-      #boot { animation: boot-in .35s ease-out both; }
-      #boot .bar { display:block; background:var(--boot-bar); border-radius:2px; }
-      #boot .shimmer { position:relative; overflow:hidden; }
-      #boot .shimmer::after {
-        content:""; position:absolute; inset:0; transform:translateX(-100%);
-        background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
-        animation:boot-sweep 1.5s ease-in-out infinite;
-      }
-      @keyframes boot-sweep { to { transform:translateX(100%); } }
-      @keyframes boot-in { from { opacity:0 } }
-      @media (prefers-reduced-motion: reduce) {
-        #boot, #boot .shimmer::after { animation:none; }
-        #boot .shimmer::after { display:none; }
-      }
+      html { background: #f3f1ec; }
+      #boot .b { display: block; background: #e6e3db; }
+      #boot .s { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+      @media (min-width: 640px) { #boot .s { padding: 0 32px; } }
+      @media (min-width: 1024px) { #boot .s { padding: 0 48px; } }
     </style>
   </head>
-  <body class="bg-bg text-text-primary font-body">
+  <body class="bg-paper font-sans text-ink">
     <div id="root">
       <div id="boot" aria-hidden="true">
-        <div style="border-bottom:1px solid var(--boot-rule);height:64px">
-          <div style="max-width:1240px;margin:0 auto;padding:0 32px;height:100%;display:flex;align-items:center;justify-content:space-between">
-            <span class="bar shimmer" style="width:74px;height:12px"></span>
-            <span class="bar shimmer" style="width:112px;height:34px"></span>
+        <div style="border-bottom: 2px solid #111111; height: 64px">
+          <div class="s" style="height: 100%; display: flex; align-items: center; justify-content: space-between">
+            <span class="b" style="width: 32px; height: 16px"></span>
+            <span class="b" style="width: 120px; height: 48px"></span>
           </div>
         </div>
-        <div style="max-width:1240px;margin:0 auto;padding:80px 32px 0;display:flex;gap:32px">
-          <div style="flex:1 1 66%;min-width:0">
-            <span class="bar shimmer" style="width:148px;height:12px"></span>
-            <span class="bar shimmer" style="width:min(690px,96%);height:78px;margin-top:30px"></span>
-            <span class="bar shimmer" style="width:min(560px,88%);height:18px;margin-top:34px"></span>
-            <span class="bar shimmer" style="width:min(310px,52%);height:18px;margin-top:12px"></span>
-            <div style="display:flex;gap:12px;margin-top:44px">
-              <span class="bar shimmer" style="width:174px;height:52px"></span>
-              <span class="bar shimmer" style="width:124px;height:52px"></span>
-            </div>
-          </div>
-          <div style="flex:0 1 30%;min-width:0;padding-left:32px;border-left:1px solid var(--boot-rule);align-self:flex-end;padding-bottom:6px">
-            <span class="bar shimmer" style="width:62px;height:11px"></span>
-            <span class="bar shimmer" style="width:172px;height:13px;margin-top:9px"></span>
-            <span class="bar shimmer" style="width:44px;height:11px;margin-top:26px"></span>
-            <span class="bar shimmer" style="width:196px;height:13px;margin-top:9px"></span>
-            <span class="bar shimmer" style="width:52px;height:11px;margin-top:26px"></span>
-            <span class="bar shimmer" style="width:238px;height:13px;margin-top:9px"></span>
-          </div>
+        <div class="s" style="padding-top: 32px">
+          <span class="b" style="width: min(320px, 80%); height: 12px"></span>
+          <span class="b" style="width: min(1080px, 96%); height: clamp(43px, 9.9vw, 130px); margin-top: 16px; background: #ff5a1f; border: 2px solid #111111"></span>
+          <span class="b" style="width: min(720px, 66%); height: clamp(43px, 9.9vw, 130px); margin-top: -2px; background: #ff5a1f; border: 2px solid #111111"></span>
+          <span class="b" style="width: min(560px, 90%); height: 58px; margin-top: 32px"></span>
+          <span class="b" style="width: 168px; height: 48px; margin-top: 24px"></span>
+          <span class="b" style="width: 100%; height: 132px; margin-top: 48px; border-top: 4px solid #111111"></span>
         </div>
       </div>
     </div>

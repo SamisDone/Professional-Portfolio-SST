@@ -1,91 +1,57 @@
-import { ArrowUpRightIcon, ArrowRightIcon } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { proof } from "../data/content";
-import Reveal from "./Reveal";
+import { domainOf } from "../lib/projects";
+import Arrow from "./Arrow";
 
 /**
- * Four claims with the receipt attached to each, directly under the hero.
+ * Four claims, each with its receipt, directly under the hero and opened by a
+ * 4px rule. The whole cell is the link, and it says where it goes before you
+ * press it: the destination domain sits at the foot of every cell.
  *
- * Previously this was a full-bleed row whose cell borders ran past the page
- * gutters, so the first and last claims sat in dead space and a hover tint on
- * one cell made the row look like a half-selected table. It is now a plain
- * four-column grid inside the shell: hairlines only between the columns, and
- * hover moves the arrow and the value rather than filling the cell.
- *
- * One of the four points at the work page rather than off site. It routes
- * instead of opening a tab, and carries the arrow that means "further in"
- * rather than the one that means "leaving".
+ * Two by two on a phone, so all four figures are on the first screen there
+ * too, and four across from `lg`.
  */
 export default function Proof() {
   return (
-    <section className="border-t border-rule">
-      <div className="mx-auto max-w-shell px-5 sm:px-8">
-        <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {proof.map((item, i) => {
-            const Arrow = item.internal ? ArrowRightIcon : ArrowUpRightIcon;
-            const cls = `group flex h-full flex-col gap-2 py-6 sm:py-7 ${
-              i === 0 ? "lg:pr-6" : "lg:px-6"
-            } ${i === proof.length - 1 ? "lg:pr-0" : ""}`;
+    <section aria-label="Proof" className="shell mt-12">
+      <ul className="grid grid-cols-2 border-t-4 border-ink lg:grid-cols-4">
+        {proof.map((item, i) => {
+          const where = item.internal ? item.href : domainOf(item.href);
+          const body = (
+            <>
+              <span className="t-figure">{item.value}</span>
+              <span className="t-small mt-3 block">{item.label}</span>
+              <span className="t-label mt-auto block pt-4 text-ink-2 [overflow-wrap:anywhere]">
+                {where} <Arrow dir={item.internal ? "right" : "out"} />
+              </span>
+            </>
+          );
+          const cls =
+            "press press-quiet flex h-full flex-col p-4 text-ink no-underline [--fill-hover:var(--section-tint)]";
 
-            const body = (
-              <>
-                <dt className="flex items-start justify-between gap-3">
-                  <span className="font-display text-[1.75rem] leading-none text-accent transition-transform duration-300 group-hover:-translate-y-0.5">
-                    {item.value}
-                  </span>
-                  {item.href && (
-                    <Arrow
-                      size={14}
-                      weight="bold"
-                      className={`mt-1 shrink-0 text-muted transition-all duration-300 group-hover:text-accent ${
-                        item.internal
-                          ? "group-hover:translate-x-0.5"
-                          : "group-hover:-translate-y-0.5"
-                      }`}
-                    />
-                  )}
-                </dt>
-                <dd className="max-w-[28ch] text-[14px] leading-snug text-muted">
-                  {item.label}
-                </dd>
-              </>
-            );
-
-            return (
-              <Reveal
-                key={item.label}
-                index={i}
-                className={[
-                  // Hairlines sit between columns, never on the outer edges.
-                  "border-rule",
-                  i > 0 ? "border-t sm:border-t-0" : "",
-                  i % 2 === 1 ? "sm:border-l" : "",
-                  i > 1 ? "sm:border-t" : "",
-                  "lg:border-t-0",
-                  i > 0 ? "lg:border-l" : "",
-                ].join(" ")}
-              >
-                {item.internal && item.href ? (
-                  <Link to={item.href} className={cls}>
-                    {body}
-                  </Link>
-                ) : item.href ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cls}
-                  >
-                    {body}
-                  </a>
-                ) : (
-                  <div className={cls}>{body}</div>
-                )}
-              </Reveal>
-            );
-          })}
-        </dl>
-      </div>
+          return (
+            <li
+              key={item.label}
+              className={[
+                "border-ink",
+                i % 2 === 1 ? "border-l-2" : "",
+                i > 1 ? "border-t-2 lg:border-t-0" : "",
+                i === 2 ? "lg:border-l-2" : "",
+              ].join(" ")}
+            >
+              {item.internal && item.href ? (
+                <Link to={item.href} className={cls}>
+                  {body}
+                </Link>
+              ) : (
+                <a href={item.href} target="_blank" rel="noopener noreferrer" className={cls}>
+                  {body}
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

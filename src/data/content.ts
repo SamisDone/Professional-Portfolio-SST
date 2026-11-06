@@ -1,3 +1,7 @@
+/** Defined by vite.config.ts. Declared here as well as in vite-env.d.ts
+    because the config imports this file, where that declaration is not in scope. */
+declare const __CV_VERSION__: string;
+
 // Every string a visitor reads lives here. Links were taken from the link
 // annotations inside the CV PDF, not from the visible link text, so each one
 // resolves to the real destination.
@@ -25,8 +29,12 @@ export const profile = {
    * The path is stable so pasted links keep working; the token is what stops a
    * browser serving a CV it cached before the last rebuild.
    */
-  resumeUrl: `/Samonwita_Sarker_CV.pdf?v=${__CV_VERSION__}`,
+  // Guarded because vite.config.ts imports this file, through lib/meta.ts, to
+  // name the case study routes, and the define does not exist in the config.
+  resumeUrl: `/Samonwita_Sarker_CV.pdf?v=${typeof __CV_VERSION__ === "undefined" ? "dev" : __CV_VERSION__}`,
   standfirst: "CSE '27, CUET",
+  /** The second half of the label line over the name on the home page. */
+  openTo: "Open to SWE and ML roles",
   /**
    * Jobs, not internships. What kind of role, and whether the
    * candidate can work where the team is, is the part that decides whether the
@@ -114,19 +122,16 @@ export type Project = {
 /**
  * The work that carries the most weight, every one live and with a real
  * screenshot, and every one either solo work or team work where her own
- * commits name what she did. These are the grid on /work and, in the first
- * three, the rows on the home page.
+ * commits name what she did. The first three are the flagship spreads on the
+ * home page, and the first flagship's screenshot is the exhibit in the hero
+ * (`lib/projects.ts`, FLAGSHIPS). All of them lead the /work index.
  *
  * Team work where her part is smaller, or is not shown by the commits at
  * all, sits in `notable` instead, so the first thing a recruiter opens is
  * her own.
  *
- * The order is deliberate and is not chronological. MediHub is last by
- * choice. It led this grid and the home page rows for a long time, and the
- * front of the list is worth rotating. Reordering here moves the home page
- * too: `Flagships` takes the first three of this list, and `ShotDeck` reads
- * the hero cards from it by slug, so a project dropped from `featured`
- * disappears from both.
+ * The order is deliberate and is not chronological. Reordering here moves
+ * the home page too.
  */
 export const featured: Project[] = [
   {
@@ -141,7 +146,7 @@ export const featured: Project[] = [
     repo: "https://github.com/SamisDone/RIPHours",
     live: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
     liveLabel: "Chrome Web Store",
-    shot: "/shots/riphours.png",
+    shot: "/shots/riphours.jpg",
     shotAlt:
       "Three RIPHours panels: time breakdown by site, daily limits, and settings.",
     problem:
@@ -206,6 +211,42 @@ export const featured: Project[] = [
       "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
     outcome:
       "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
+  },
+  {
+    /**
+     * From the repository's own README and history: 24 of 24 commits are
+     * hers. Every figure below is the README's: the 99.4% conjunct coverage
+     * over 28.0 million words of Bangla Wikipedia, the one-hour deletion, and
+     * the OFL licence on the fonts it makes.
+     */
+    slug: "kakertheng",
+    title: "Kaker Theng",
+    kind: "Handwriting to font",
+    year: "2026",
+    summary:
+      "Turns your handwriting into a Bangla and English font, with vowel signs, reph and conjuncts placed correctly.",
+    stack: ["Python", "FastAPI", "Next.js", "HarfBuzz", "fontTools", "OpenCV"],
+    role: "Solo developer",
+    flow: [
+      "Draw each letter in the browser, or photograph a printed template",
+      "Strokes are widened and merged; a photo is straightened by its ArUco corners and traced",
+      "One transform puts every letter on the same baseline and headline",
+      "Shaping decides which glyph each letter fills in Noto Sans Bengali's layout tables",
+      "Conjunct parts and spacing are derived from the letters you drew",
+      "A TTF and WOFF2 to download, with a font sheet and a share card",
+    ],
+    repo: "https://github.com/SamisDone/Kaker-Theng",
+    live: "https://kaker-theng-api.onrender.com/",
+    liveLabel: "Make a font",
+    shot: "/shots/kakertheng.jpg",
+    shotAlt:
+      "The Kaker Theng start page in Bangla, on ruled khata paper, with a button to start drawing.",
+    problem:
+      "Bangla is not written in the order it is typed. A vowel sign typed after its letter can be written before it or split around it, a ra before a hasanta climbs on top of the next letter, and conjuncts fuse two or three letters into one shape. A font that only maps each key to a picture of a letter gets all of this wrong.",
+    approach:
+      "The font keeps the layout tables of Noto Sans Bengali and replaces only the outlines and advance widths with yours, so HarfBuzz, and every browser and word processor, does the reordering, reph, phala and conjuncts exactly as it does for Noto. Which glyph each drawn letter fills is decided by shaping, not by hardcoded glyph names. Conjunct parts are cut from your own letters, and each kind of cut is first replayed on Noto's letters and kept only if it reproduces them. Spacing comes from your ink: the 200 most common clusters are shaped with the new font and widened where they collide. There are no accounts and no database, and a session's drawings are deleted after an hour.",
+    outcome:
+      "Deployed and free to use on a phone or a computer. With every cell filled, a font it makes renders 99.4% of the consonant clusters in 28.0 million words of Bangla Wikipedia, and the fonts it makes are released under the SIL Open Font License.",
   },
   {
     slug: "tabsaver",
@@ -352,8 +393,8 @@ export const featured: Project[] = [
 ];
 
 /**
- * The next tier. Listed under the grid on /work as a compact index that still
- * opens each case study. Everything here is either team work where her share
+ * The next tier, after `featured` in the /work index, each with its own case
+ * study. Everything here is either team work where her share
  * is small or not visible in the commits, or solo work with no deployment to
  * link to.
  */
@@ -468,6 +509,15 @@ export const notable: Project[] = [
     stack: ["PyTorch", "MobileNetV2", "LSTM"],
     role: "Solo developer",
     repo: "https://github.com/SamisDone/Violence-Detection",
+    // A trained model has no interface to photograph. These are its own
+    // published results, the same figures the outcome states, shown in the
+    // box a screenshot would take rather than leaving that box empty.
+    figures: [
+      { value: "79%", label: "Accuracy" },
+      { value: "0.97", label: "ROC AUC" },
+      { value: "0.75", label: "Macro F1" },
+      { value: "~11M", label: "Parameters" },
+    ],
     problem:
       "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
     approach:
@@ -1065,3 +1115,4 @@ export const proof: Proof[] = [
     internal: true,
   },
 ];
+

@@ -16,8 +16,7 @@
  * container, and a build that cannot finish is worse than a thin page. This
  * needs nothing but Node.
  *
- * Case studies live in a dialog that mounts only when opened, so their text is
- * not included. Every heading, card title, summary and stack is.
+ * Every case study is its own route now, so its full text is in the HTML too.
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -37,13 +36,18 @@ const { render } = await import(pathToFileURL(ssrEntry).href);
 
 // The routes are whatever HTML files the build emitted. vite.config.ts decides
 // which exist; reading them off disk keeps this script from having to import
-// TypeScript.
-const routes = [
-  "/",
-  ...readdirSync(dist, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && existsSync(join(dist, e.name, "index.html")))
-    .map((e) => `/${e.name}`),
-];
+// TypeScript. Walked to any depth, because each case study is a file at
+// work/<slug>/index.html, one level below /work.
+function findRoutes(dir, prefix = "") {
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && e.name !== "assets" && e.name !== "shots")
+    .flatMap((e) => {
+      const path = `${prefix}/${e.name}`;
+      const here = existsSync(join(dir, e.name, "index.html")) ? [path] : [];
+      return [...here, ...findRoutes(join(dir, e.name), path)];
+    });
+}
+const routes = ["/", ...findRoutes(dist)];
 
 // 404.html is a file at the root rather than a directory, so it is named
 // rather than discovered. Rendering a path that matches no route is what makes
@@ -96,7 +100,7 @@ for (const { path, file } of targets) {
 
   writeFileSync(file, html.slice(0, start + OPEN.length) + markup + html.slice(end));
   console.log(
-    `  ${path.padEnd(12)} ${(markup.length / 1024).toFixed(0).padStart(4)}kB markup, ` +
+    `  ${path.padEnd(28)} ${(markup.length / 1024).toFixed(0).padStart(4)}kB markup, ` +
       `${text.split(" ").length} words`,
   );
 }

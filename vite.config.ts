@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import { ROUTE_META, DEFAULT_META, NOT_FOUND_META } from "./src/lib/meta.js";
+import { sectionFor } from "./src/lib/routes.js";
 
 /**
  * The site's own absolute URL, needed anywhere a relative path will not do:
@@ -93,6 +94,9 @@ function routeMetaPlugin(): Plugin {
         return html
           .replaceAll("__PAGE_TITLE__", escape(meta.title))
           .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
+          // The section colour on <html> as well as on the page root, so the
+          // transition's edge strip can read it from the very first page.
+          .replaceAll("__PAGE_SECTION__", sectionFor(path))
           // The canonical for the home page is "/", not the empty string.
           .replaceAll("__PAGE_PATH__", path === "/" ? "/" : path);
       };
@@ -121,6 +125,7 @@ function routeMetaPlugin(): Plugin {
         source: template
           .replaceAll("__PAGE_TITLE__", escape(NOT_FOUND_META.title))
           .replaceAll("__PAGE_DESCRIPTION__", escape(NOT_FOUND_META.description))
+          .replaceAll("__PAGE_SECTION__", sectionFor("/404"))
           .replaceAll("__PAGE_PATH__", "/404"),
       });
 
