@@ -1120,6 +1120,17 @@ export const proof: Proof[] = [
 ];
 
 /**
+ * The contact form's fallback. While `fallback` is true, /contact shows the
+ * notice above the form with a mailto link, server-rendered so it shows with
+ * JavaScript off too. FormSubmit has been answering 522 since 6 November
+ * 2026; set this to false once it is back. The form stays visible either way.
+ */
+export const contactForm = {
+  fallback: true,
+  fallbackNotice: "The form is down at the moment. Email me directly:",
+};
+
+/**
  * The privacy page, written from what the site actually does.
  *
  * Points marked CHECK are ones that could not be verified from here:

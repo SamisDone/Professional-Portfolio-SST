@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { profile } from "../data/content";
+import { contactForm, profile } from "../data/content";
 import { absolute } from "../lib/site";
 import { Button, Label, TextLink } from "./ui";
 
@@ -178,6 +178,14 @@ export default function Contact() {
       </section>
 
       <section aria-label="Contact form" className="lg:col-span-7">
+        {contactForm.fallback && (
+          <p className="t-body mb-6 border-2 border-ink bg-paper-2 px-4 py-3">
+            {contactForm.fallbackNotice}{" "}
+            <a href={`mailto:${profile.email}`} className="link tap font-semibold">
+              {profile.email}
+            </a>
+          </p>
+        )}
         <form
           action={NATIVE_ENDPOINT}
           method="POST"
@@ -210,8 +218,10 @@ export default function Contact() {
           )}
           {status === "error" && (
             <p role="alert" className="t-body border-2 border-ink bg-proof px-4 py-3">
-              <strong className="font-semibold">Check this:</strong> that did not send. Please email me directly
-              instead.
+              <strong className="font-semibold">Check this:</strong> that did not send. Email me directly:{" "}
+              <a href={`mailto:${profile.email}`} className="link tap font-semibold">
+                {profile.email}
+              </a>
             </p>
           )}
 
