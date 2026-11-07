@@ -318,6 +318,21 @@
   }
 
   /*
+   * "+N" after a skill's first receipt on About: a native disclosure, styled
+   * as the link it behaves like. Open, it takes the receipts column's full width.
+   */
+  .skill-more > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .skill-more > summary::-webkit-details-marker {
+    display: none;
+  }
+  .skill-more[open] {
+    flex-basis: 100%;
+  }
+
+  /*
    * A destination domain under a proof figure. It breaks only after a dot
    * (Proof.tsx puts a <wbr> after each one) and never inside a word, so a
    * narrow cell reads ACLANTHOLOGY. / ORG, not ACLANTHOLOGY.OR / G. Below

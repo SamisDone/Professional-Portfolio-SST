@@ -1,4 +1,4 @@
-import { featured, notable, otherWork, type Project } from "../data/content";
+import { featured, notable, otherWork, research, type Project } from "../data/content";
 import shots from "../data/shots.json";
 import { SITE_URL } from "./site";
 
@@ -37,6 +37,25 @@ export function projectNeighbours(slug: string) {
     prev: i > 0 ? ALL_PROJECTS[i - 1] : undefined,
     next: i >= 0 && i < ALL_PROJECTS.length - 1 ? ALL_PROJECTS[i + 1] : undefined,
   };
+}
+
+/** Stack names that count as a skill on About, beyond the skill's own name. */
+const SKILL_ALSO: Record<string, string[]> = {
+  SQL: ["SQL Server", "PostgreSQL"],
+  REST: ["REST API"],
+};
+
+/**
+ * The receipts for a skill on About: every project whose stack lists it,
+ * live ones first in site order, and every published paper whose title
+ * names it. A skill with none of either has no business on the list.
+ */
+export function skillReceipts(skill: string) {
+  const names = [skill, ...(SKILL_ALSO[skill] ?? [])].map((s) => s.toLowerCase());
+  const using = ALL_PROJECTS.filter((p) => p.stack.some((s) => names.includes(s.toLowerCase())));
+  const projects = [...using.filter((p) => p.live), ...using.filter((p) => !p.live)];
+  const papers = research.filter((m) => m.href && m.title.toLowerCase().includes(skill.toLowerCase()));
+  return { projects, papers };
 }
 
 /** "chromewebstore.google.com", for a caption or a proof cell. */

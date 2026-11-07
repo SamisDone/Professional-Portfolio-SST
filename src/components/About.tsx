@@ -1,7 +1,53 @@
 import { about, education, profile } from "../data/content";
 import Entry from "./Entry";
 import Trajectory from "./Trajectory";
-import { Button, Label } from "./ui";
+import { caseStudyPath, skillReceipts } from "../lib/projects";
+import { Button, Label, ProofMark, TextLink } from "./ui";
+
+/** "IEEE paper", "ACL paper": the publisher named last in a venue. */
+const paperName = (venue: string) => `${venue.split(", ").at(-1)?.split(" ")[0]} paper`;
+
+/**
+ * One skill and its receipt: the first live project that uses it, or a
+ * published paper when no project does, with the rest behind a native
+ * disclosure, so all of it is in the HTML and works without JavaScript.
+ */
+function Skill({ name }: { name: string }) {
+  const { projects, papers } = skillReceipts(name);
+  const links = [
+    ...projects.map((p) => (
+      <TextLink key={p.slug} to={caseStudyPath(p)} label={`${name}, used in ${p.title}`} className="t-small">
+        {p.title}
+      </TextLink>
+    )),
+    ...papers.map((m) => (
+      <ProofMark key={m.href} href={m.href!} label={`${name}, in the paper ${m.title}`} className="t-small">
+        {paperName(m.venue)}
+      </ProofMark>
+    )),
+  ];
+  const [first, ...rest] = links;
+  return (
+    <li className="grid grid-cols-[auto_1fr] items-baseline gap-x-3">
+      <span className="t-body font-semibold">{name}</span>
+      {/* The receipts have a column of their own, so a "+N" that wraps, and
+          the list it opens, hang under the first receipt. */}
+      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        {first}
+        {rest.length > 0 && (
+          <details className="skill-more">
+            <summary className="link tap t-small">+{rest.length}</summary>
+            <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
+              {rest.map((link, i) => (
+                <li key={i}>{link}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </span>
+    </li>
+  );
+}
 
 /**
  * Who I am beside where I study. Education is the first thing a recruiter
@@ -71,7 +117,13 @@ export default function About() {
                 }`}
               >
                 <Label as="dt">{group.group}</Label>
-                <dd className="t-body m-0 mt-2">{group.items.join(", ")}</dd>
+                <dd className="m-0 mt-2">
+                  <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                    {group.items.map((item) => (
+                      <Skill key={item} name={item} />
+                    ))}
+                  </ul>
+                </dd>
               </div>
             ))}
           </dl>

@@ -956,9 +956,12 @@ export const about = {
   ],
   stack: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "C++", "SQL"] },
-    { group: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "Motion"] },
+    { group: "Frontend", items: ["React", "Next.js", "Tailwind CSS"] },
     { group: "Backend and data", items: ["Node.js", "PostgreSQL", "Firebase", "REST"] },
-    { group: "ML and research", items: ["PyTorch", "scikit-learn", "SHAP", "Transformers"] },
+    // Each item links to the work that uses it (skillReceipts in
+    // src/lib/projects.ts). Motion and scikit-learn were listed here with
+    // nothing on the site that uses them, so they are gone.
+    { group: "ML and research", items: ["PyTorch", "SHAP", "Transformers"] },
   ],
 };
 
