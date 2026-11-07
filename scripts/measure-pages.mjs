@@ -22,9 +22,9 @@
  *   rule 3    case studies: H1, role and the Live and Code links on screen
  *   rule 4    on a page that scrolls, the top of the next section (its heading
  *             or its opening rule) inside the first screen, 48px or more above
- *             its bottom edge. On Home the same holds for the top of Flagship
- *             01's screenshot, so the page never opens without a picture of
- *             the work.
+ *             its bottom edge. On Home the same holds for Flagship 01: from
+ *             1024px wide, the top of its screenshot; on a phone, its 4px
+ *             opening rule and its kind and year label (by their top edges).
  *
  * Full-page screenshots at 1280x800 and 390x844 go to the output directory.
  */
@@ -65,6 +65,7 @@ const FIRST_SCREEN = {
     next: 'section[aria-label="Proof"]',
     extra: { name: "#hero-name", "role line": "main section > div p.t-lead" },
     cue: { "Flagship 01 screenshot": "main article figure" },
+    phoneCue: { "Flagship 01 rule": "main article > div", "Flagship 01 label": "main article .t-label" },
   },
   "/work": { proof: "main ol > li:first-child", action: "main ol > li:first-child h2 a", next: 'section[aria-label="Project index"]' },
   "/experience": { proof: "main ol > li:first-child h2", action: "main a.btn-primary", next: "main ol > li:first-child" },
@@ -136,8 +137,11 @@ try {
             const items = { H1: visible("main h1"), proof: visible(spec.proof), action: visible(spec.action) };
             for (const [k, sel] of Object.entries(spec.extra ?? {})) items[k] = visible(sel);
             // A cue only needs its top edge in view, with the rule 4 margin.
-            for (const [k, sel] of Object.entries(spec.cue ?? {})) {
-              const top = document.querySelector(sel)?.getBoundingClientRect().top;
+            const cues = innerWidth < 1024 && spec.phoneCue ? spec.phoneCue : spec.cue;
+            for (const [k, sel] of Object.entries(cues ?? {})) {
+              // The first matching element that is displayed.
+              const el = [...document.querySelectorAll(sel)].find((e) => e.getBoundingClientRect().height > 0);
+              const top = el?.getBoundingClientRect().top;
               const ok = top !== undefined && top <= vh - margin;
               items[k] = { ok, why: top === undefined ? "not found" : `top at ${Math.round(top)}px of ${vh}`, top: Math.round(top ?? -1) };
             }
