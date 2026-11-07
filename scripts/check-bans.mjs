@@ -160,7 +160,8 @@ for (const file of files) {
     // as `i - 1` in these files is left alone.
     if (isCopy && !/^\s*(\/\/|\*|\/\*)/.test(line)) {
       for (const [lit] of line.matchAll(/"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`|'(?:[^'\\]|\\.)*'/g)) {
-        if (/\s-\s/.test(lit)) failures.push(`${at}  a spaced hyphen used as a dash: ${lit.slice(0, 60)}`);
+        // ${...} inside a template literal is code, not copy.
+        if (/\s-\s/.test(lit.replace(/\$\{[^}]*\}/g, ""))) failures.push(`${at}  a spaced hyphen used as a dash: ${lit.slice(0, 60)}`);
       }
     }
   });

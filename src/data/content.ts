@@ -68,6 +68,11 @@ export type Project = {
   year: string;
   /** One line. What it is, in plain language. */
   summary: string;
+  /**
+   * A label shown under the summary and the result, dating a figure in them
+   * that changes over time, such as a store's user count.
+   */
+  figureNote?: string;
   stack: string[];
   /**
    * Who I was on it. Set on every project, in the CV's words where the CV
@@ -136,14 +141,33 @@ export type Project = {
  * The order is deliberate and is not chronological. Reordering here moves
  * the home page too.
  */
+/**
+ * The Chrome Web Store figures, in one place. `installs` is from the
+ * developer dashboard; `users` is the number the public listing shows, so a
+ * visitor who opens the listing finds that number on it. Chrome's docs say
+ * the Users stat "only captures installations; it doesn't monitor whether
+ * users are active or not", so it is called users, not weekly users. How to
+ * refresh them is in the README, under Editing content.
+ */
+export const chromeStore = {
+  asOf: "2026-11-07",
+  riphours: { installs: "500+", users: 18 },
+  tabsaver: { installs: "700+", users: 25 },
+};
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const [storeY, storeM, storeD] = chromeStore.asOf.split("-").map(Number);
+const storeNote = `Users as of ${storeD} ${MONTHS[storeM - 1]} ${storeY}`;
+const storeFigure = (id: "riphours" | "tabsaver") =>
+  `${chromeStore[id].installs} installs, ${chromeStore[id].users} users on the Chrome Web Store`;
+
 export const featured: Project[] = [
   {
     slug: "riphours",
     title: "RIPHours",
     kind: "Chrome extension",
     year: "2025",
-    summary:
-      "A time tracker with 500+ installs that makes no network requests, so your browsing history stays on your machine.",
+    summary: `A time tracker that makes no network requests, so your browsing history stays on your machine. ${storeFigure("riphours")}.`,
+    figureNote: storeNote,
     stack: ["JavaScript", "Chrome APIs", "Storage Sync"],
     role: "Solo developer",
     repo: "https://github.com/SamisDone/RIPHours",
@@ -156,8 +180,7 @@ export const featured: Project[] = [
       "Browser time trackers ask you to hand over your full browsing history, usually to a server you cannot inspect. That is a steep price for a bar chart.",
     approach:
       "The extension makes no network requests at all. State lives in chrome.storage.sync so it follows you between devices without a backend, the idle API stops the clock when you step away so the totals stay honest, and per-site budgets are enforced as a hard block rather than a dismissible nudge.",
-    outcome:
-      "Published on the Chrome Web Store, with 500+ installs. The zero-request claim is the kind you can check yourself in the network panel.",
+    outcome: `${storeFigure("riphours")}. The zero-request claim is the kind you can check yourself in the network panel.`,
   },
   {
     slug: "pierra",
@@ -256,8 +279,8 @@ export const featured: Project[] = [
     title: "TabSaver",
     kind: "Chrome extension",
     year: "2025",
-    summary:
-      "Restores a whole working session, tab groups intact, in one click. 700+ installs.",
+    summary: `Restores a whole working session, tab groups intact, in one click. ${storeFigure("tabsaver")}.`,
+    figureNote: storeNote,
     stack: ["JavaScript", "Chrome APIs"],
     role: "Solo developer",
     repo: "https://github.com/SamisDone/TabSaver-New",
@@ -269,7 +292,7 @@ export const featured: Project[] = [
       "Closing a window full of research tabs loses the shape of the work, not just the URLs. Bookmarking flattens the grouping that made them useful in the first place.",
     approach:
       "A session is captured as a structured snapshot that preserves tab groups rather than a flat list of URLs, so restoring puts the workspace back the way it was. Sessions are named, searchable and exportable, which is what makes it usable past the first week.",
-    outcome: "Published on the Chrome Web Store alongside RIPHours, with 700+ installs.",
+    outcome: `Published alongside RIPHours: ${storeFigure("tabsaver")}.`,
   },
   {
     slug: "resumeforge",

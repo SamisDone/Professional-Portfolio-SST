@@ -64,7 +64,15 @@ export default function CaseStudy({ project }: { project: Project }) {
   ];
   if (project.team && project.myPart) rows.push({ term: "My part", body: prose(project.myPart, true) });
   if (project.flow?.length) rows.push({ term: "How it works", body: <Flow steps={project.flow} /> });
-  rows.push({ term: "Result", body: prose(project.outcome) });
+  rows.push({
+    term: "Result",
+    body: (
+      <>
+        {prose(project.outcome)}
+        {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
+      </>
+    ),
+  });
   rows.push({ term: "Stack", body: prose(project.stack.join(", ")) });
 
   return (
@@ -96,6 +104,7 @@ export default function CaseStudy({ project }: { project: Project }) {
             {project.title}
           </h1>
           <p className="t-lead mt-4 max-w-measure">{project.summary}</p>
+          {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
 
           <dl className="mt-6 grid gap-4 border-t-2 border-ink pt-4 sm:grid-cols-3">
             {facts.map(([term, value]) => (

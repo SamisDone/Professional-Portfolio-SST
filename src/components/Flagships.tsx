@@ -24,6 +24,7 @@ function SpreadText({ project, index, labelAbove = false }: { project: Project; 
       {teamLine(project) && <Label className="mt-1 text-ink">{teamLine(project)}</Label>}
       <h2 className="t-h2 mt-3">{project.title}</h2>
       <p className="t-body mt-3 max-w-measure">{project.summary}</p>
+      {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
       <Actions project={project} />
     </>
   );

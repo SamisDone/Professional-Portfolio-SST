@@ -209,6 +209,15 @@ from a guess. `flow` draws a short "How it works" path in the case study. Then:
 A project with no deployment gets no image rather than an invented one. It can
 be run locally and captured, or carry real `figures` instead.
 
+**Refreshing the Chrome Web Store figures.** RIPHours and TabSaver show two
+numbers each, from `chromeStore` near the top of `src/data/content.ts`:
+`installs` from the developer dashboard (Chrome Web Store, the item, Analytics,
+Installs), and `users`, the number printed on the public listing, so a visitor
+who follows the link finds it there. Update both and set `asOf` to the day you
+read them; every sentence and the "Users as of" label read from that one place.
+The CV states the same figures in `cv/Samonwita_Sarker_CV.tex` (the Chrome
+Extensions entry), so change them there too and rebuild the PDF.
+
 **Changing the name, standfirst, positioning line or proof figures?** Run
 `scripts/make-og.mjs` afterwards, so the social card says the same thing.
 

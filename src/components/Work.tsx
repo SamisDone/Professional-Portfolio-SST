@@ -76,12 +76,16 @@ export function Row({ project, n }: { project: Project; n: number }) {
           </h2>
           {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
           <p className="t-small mt-2 md:hidden">{project.summary}</p>
+          {project.figureNote && <Label className="mt-2 md:hidden">{project.figureNote}</Label>}
           <Label className="mt-2 md:hidden">
             {stack} / {project.year}
           </Label>
         </div>
 
-        <p className="t-small col-start-2 hidden md:col-start-auto md:block">{project.summary}</p>
+        <div className="col-start-2 hidden md:col-start-auto md:block">
+          <p className="t-small">{project.summary}</p>
+          {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
+        </div>
         <Label className="hidden pt-1 md:block">{stack}</Label>
         <Label className="hidden pt-1 md:block">{project.year}</Label>
 

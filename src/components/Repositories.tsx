@@ -25,6 +25,7 @@ function Row({ project, n }: { project: Project; n: number }) {
           {project.title}
         </Link>
         <span className="t-small mt-1 block max-w-[52ch]">{project.summary}</span>
+        {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
         {/* The kind column carries this from lg up. Below that the column is
             hidden, and the line saying the repository is someone else's is
             the one thing that must not hide with it. */}
