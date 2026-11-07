@@ -1,0 +1,14 @@
+# Cloudflare Pages configuration for samonwitasarker.pages.dev.
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+#
+# Here so the output folder comes from the repository, not the dashboard: if
+# a deploy ever runs without `npm run build`, there is no dist/ and the
+# deploy fails, instead of publishing the repository root (the raw
+# index.html template, as the first Pages deployment did).
+#
+# This file is the source of truth for the fields it sets; the dashboard
+# shows them read-only. The build command stays in the dashboard
+# ("npm run build").
+name = "samonwitasarker"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-01"
