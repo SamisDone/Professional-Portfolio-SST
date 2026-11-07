@@ -17,7 +17,7 @@ export const SITE_NAME = "Samonwita Sarker";
  * Google Search Console's HTML tag verification. Paste the `content` value of
  * the tag Search Console gives you here; while it is empty, no tag is emitted.
  */
-export const GOOGLE_SITE_VERIFICATION = "";
+export const GOOGLE_SITE_VERIFICATION = "3KR8dtDAZms55nLP8Rxl3sNnsmrqoQ0PloySKblJDJo";
 
 /** The absolute address of a route. "/" stays "/", nothing else ends in one. */
 export const absolute = (path: string) => `${SITE_URL}${path === "/" ? "/" : path}`;
