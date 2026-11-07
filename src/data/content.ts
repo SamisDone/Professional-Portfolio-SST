@@ -1149,8 +1149,12 @@ export const contactForm = {
  * The privacy page, written from what the site actually does.
  *
  * Points marked CHECK are ones that could not be verified from here.
- * Confirm or edit each before launch. The analytics section is filled in
- * once the analytics choice is made.
+ * Confirm or edit each before launch.
+ *
+ * The analytics section says what Cloudflare's own documents say, and what
+ * the beacon was seen to send on 7 November 2026 (one POST per page view to
+ * cloudflareinsights.com/cdn-cgi/rum; no cookies, no localStorage). Cloudflare's
+ * current docs do not mention cookies, so that sentence cites the launch post.
  *
  * The contact form section says only what Static Forms' own documents say:
  * its privacy policy and cookie policy (both last updated October 2026) and
@@ -1165,7 +1169,8 @@ export const privacy = {
     {
       heading: "In short",
       body: [
-        "This site sets no cookies and stores nothing in your browser. The only personal data it handles is what you type into the contact form, and only if you send it.",
+        "This site sets no cookies. Apart from what any web host receives, the only personal data it handles is what you type into the contact form, and only if you send it.",
+        "It keeps one value in your browser's session storage, so the header's opening animation plays once per visit instead of on every page. It holds nothing about you, and your browser deletes it when you close the tab.",
       ],
     },
     {
@@ -1182,7 +1187,21 @@ export const privacy = {
     },
     {
       heading: "Analytics",
-      body: ["This section is completed once the site's analytics are chosen and set up."],
+      body: [
+        "The site counts page views with Cloudflare Web Analytics. Cloudflare Pages, which hosts the site, adds its script to every page.",
+        "On each page view the script sends a report to cloudflareinsights.com: the address of the page, the page you came from, the name and version of your browser and operating system, and how long the page took to load and draw. Each report carries a random identifier for that one page view and nothing that links it to another visit.",
+        "It sets no cookies and puts nothing in your browser's local storage; I checked this in a fresh browser. Cloudflare says it uses no client-side state such as cookies or localStorage for analytics, does not track visitors over time by their IP address, browser details or any other fixed attribute, and that Web Analytics does not collect or use visitors' personal data.",
+        "Cloudflare says it does not log query strings. It keeps every report for 7 days, then keeps an aggregate of about a tenth of them, and I can see the previous six months.",
+      ],
+      sources: [
+        { label: "Cloudflare Web Analytics overview", href: "https://developers.cloudflare.com/web-analytics/about/" },
+        { label: "Cloudflare Web Analytics FAQ", href: "https://developers.cloudflare.com/web-analytics/faq/" },
+        {
+          label: "Where the beacon sends its data",
+          href: "https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/",
+        },
+        { label: "Cloudflare's launch post, December 2020", href: "https://blog.cloudflare.com/privacy-first-web-analytics/" },
+      ],
     },
     {
       heading: "Hosting",

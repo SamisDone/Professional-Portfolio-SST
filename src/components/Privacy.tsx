@@ -1,6 +1,6 @@
 import { privacy, profile } from "../data/content";
 import { formatDate } from "../lib/projects";
-import { Label } from "./ui";
+import { Label, TextLink } from "./ui";
 
 /** The privacy page: what the site collects, in plain language. */
 export default function Privacy() {
@@ -35,6 +35,18 @@ export default function Privacy() {
                   {p}
                 </p>
               ))}
+              {"sources" in s && s.sources && (
+                <>
+                  <p className="t-label m-0 mt-2 text-ink-2">Sources</p>
+                  <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                    {s.sources.map((src) => (
+                      <li key={src.href} className="t-small">
+                        <TextLink href={src.href}>{src.label}</TextLink>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </dd>
           </div>
         ))}
