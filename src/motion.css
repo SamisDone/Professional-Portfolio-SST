@@ -105,7 +105,10 @@ html.m-js .m-a1 .border-t-4[data-in]::before {
 
 /* ---------------------------------------------------------------- A2
    The band behind an H1 wipes in from the left. The text and the band's ink
-   border are in place from the first frame; only the fill moves. */
+   border are in place from the first frame; only the fill moves. The fill
+   is one flat colour, so growing it with scaleX from the left edge looks the
+   same as wiping it in with a clip, and a transform runs on the compositor
+   instead of repainting every frame on the main thread. */
 html.m-js .m-a2 .band {
   position: relative;
   isolation: isolate;
@@ -117,11 +120,12 @@ html.m-js .m-a2 .band::before {
   inset: 0;
   z-index: -1;
   background: var(--section);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--m-enter) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--m-enter) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
 }
 html.m-js .m-a2 .band[data-in]::before {
-  clip-path: inset(0 0 0 0);
+  transform: scaleX(1);
 }
 
 /* ---------------------------------------------------------------- A3
@@ -166,12 +170,15 @@ html.m-js .m-a5 div[data-exhibit]::after {
   inset: 0;
   z-index: 1;
   background: var(--paper-2);
-  clip-path: inset(0 0 0 0);
-  transition: clip-path var(--m-enter) var(--m-ease);
+  /* Shrinking toward its right edge: the same as sliding off to the right,
+     for a flat cover, and on the compositor (see A2). */
+  transform-origin: right;
+  transform: scaleX(1);
+  transition: transform var(--m-enter) var(--m-ease);
   pointer-events: none;
 }
 html.m-js .m-a5 div[data-exhibit][data-in]::after {
-  clip-path: inset(0 0 0 100%);
+  transform: scaleX(0);
 }
 html.m-js .m-a5 div[data-exhibit] .exhibit-img {
   opacity: 1;
