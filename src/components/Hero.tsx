@@ -45,7 +45,7 @@ export default function Hero() {
 
       <div className="mt-6 xl:col-start-2 xl:row-start-3 xl:mt-0 xl:self-start xl:pl-8 xl:pt-2">
         <p className="t-lead max-w-[36ch]">{profile.positioning}</p>
-        <div className="mt-6 flex flex-wrap gap-4 xl:mt-3">
+        <div className="mt-4 flex flex-wrap gap-4 sm:mt-6 xl:mt-3">
           <Button to="/work" variant="primary">
             See the work
           </Button>

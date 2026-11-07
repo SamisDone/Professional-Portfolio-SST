@@ -5,13 +5,22 @@ import { Button, Label, ProofMark, TextLink } from "./ui";
 
 const n = (i: number) => String(i + 1).padStart(2, "0");
 
-/** Kind and year, then the title, the summary and the three ways in. */
-function SpreadText({ project, index }: { project: Project; index: number }) {
+/** "Flagship 01 / Chrome extension, 2025". */
+function KindLabel({ project, index, className = "" }: { project: Project; index: number; className?: string }) {
+  return (
+    <Label stamp className={className}>
+      Flagship {n(index)} / {project.kind}, {project.year}
+    </Label>
+  );
+}
+
+/** Kind and year, then the title, the summary and the three ways in.
+    `labelAbove` hides the label below `lg`, where the spread shows it over
+    its picture instead. */
+function SpreadText({ project, index, labelAbove = false }: { project: Project; index: number; labelAbove?: boolean }) {
   return (
     <>
-      <Label stamp>
-        Flagship {n(index)} / {project.kind}, {project.year}
-      </Label>
+      <KindLabel project={project} index={index} className={labelAbove ? "hidden lg:block" : ""} />
       {teamLine(project) && <Label className="mt-1 text-ink">{teamLine(project)}</Label>}
       <h2 className="t-h2 mt-3">{project.title}</h2>
       <p className="t-body mt-3 max-w-measure">{project.summary}</p>
@@ -43,8 +52,9 @@ function Actions({ project }: { project: Project }) {
  * picture over its text; on a phone they stack.
  *
  * The first spread sits closer to the proof row than a section break would
- * put it (the C tier, not A), so the top of its screenshot reaches the first
- * screen: Home should never open without a picture of the work.
+ * put it, so its opening reaches the first screen: on a desktop the top of
+ * its screenshot, and on a phone its 4px rule and its kind and year label,
+ * which there sits over the picture rather than under it.
  */
 export default function Flagships() {
   const [a, b, c] = FLAGSHIPS;
@@ -52,16 +62,18 @@ export default function Flagships() {
   return (
     <div>
       {a && (
-        <article className="shell tier-c">
-          <div className="grid gap-8 border-t-4 border-ink pt-6 sm:pt-8 lg:grid-cols-12">
-            <ProjectVisual
-              project={a}
-              sizes="(min-width: 1280px) 780px, (min-width: 1024px) 64vw, 100vw"
-              className="lg:col-span-8"
-              priority
-            />
+        <article className="shell pt-4 sm:pt-8">
+          <div className="grid gap-8 border-t-4 border-ink pt-4 sm:pt-8 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <KindLabel project={a} index={0} className="mb-3 lg:hidden" />
+              <ProjectVisual
+                project={a}
+                sizes="(min-width: 1280px) 780px, (min-width: 1024px) 64vw, 100vw"
+                priority
+              />
+            </div>
             <div className="lg:col-span-4">
-              <SpreadText project={a} index={0} />
+              <SpreadText project={a} index={0} labelAbove />
             </div>
           </div>
         </article>

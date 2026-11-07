@@ -13,7 +13,7 @@ import Arrow from "./Arrow";
  */
 export default function Proof() {
   return (
-    <section aria-label="Proof" className="shell mt-8">
+    <section aria-label="Proof" className="shell mt-6 sm:mt-8">
       <ul className="grid grid-cols-2 border-t-4 border-ink lg:grid-cols-4">
         {proof.map((item, i) => {
           const where = item.internal ? item.href : domainOf(item.href);
@@ -21,13 +21,13 @@ export default function Proof() {
             <>
               <span className="t-figure">{item.value}</span>
               <span className="t-small mt-3 block">{item.label}</span>
-              <span className="t-label mt-auto block pt-4 text-ink-2 [overflow-wrap:anywhere]">
+              <span className="t-label mt-auto block pt-3 text-ink-2 [overflow-wrap:anywhere] sm:pt-4">
                 {where} <Arrow dir={item.internal ? "right" : "out"} />
               </span>
             </>
           );
           const cls =
-            "press press-quiet flex h-full flex-col p-4 text-ink no-underline [--fill-hover:var(--section-tint)]";
+            "press press-quiet flex h-full flex-col px-4 py-3 sm:p-4 text-ink no-underline [--fill-hover:var(--section-tint)]";
 
           return (
             <li
