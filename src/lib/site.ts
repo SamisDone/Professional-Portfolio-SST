@@ -7,10 +7,9 @@
  * Cloudflare Pages serves at /about with no redirect, so that is the form
  * every canonical and sitemap entry uses.
  */
-// samonwita.vercel.app while Cloudflare Pages is being set up, so every
-// canonical points at an address that answers today. It becomes
-// "https://samonwitasarker.pages.dev" when production on Cloudflare is live.
-export const SITE_URL = "https://samonwita.vercel.app";
+// Cloudflare Pages. The old address, samonwita.vercel.app, and the Render
+// service now only answer 301s to the same path here (vercel.json, server.mjs).
+export const SITE_URL = "https://samonwitasarker.pages.dev";
 
 export const SITE_NAME = "Samonwita Sarker";
 

@@ -1,5 +1,6 @@
 import { featured, notable, otherWork, type Project } from "../data/content";
 import shots from "../data/shots.json";
+import { SITE_URL } from "./site";
 
 /** The three spreads on the home page, and the first three rows of /work. */
 export const FLAGSHIPS = featured.slice(0, 3);
@@ -42,7 +43,7 @@ export function projectNeighbours(slug: string) {
 export function domainOf(url: string | undefined) {
   if (!url) return undefined;
   try {
-    return new URL(url, "https://samonwita.vercel.app").hostname.replace(/^www\./, "");
+    return new URL(url, SITE_URL).hostname.replace(/^www\./, "");
   } catch {
     return undefined;
   }
