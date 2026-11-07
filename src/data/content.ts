@@ -1140,7 +1140,7 @@ export const proof: Proof[] = [
  * false. The form stays visible either way.
  */
 export const contactForm = {
-  apiKey: "",
+  apiKey: "sf_060c8f20d2831410b4d1f96d",
   fallback: true,
   fallbackNotice: "The form is down at the moment. Email me directly:",
 };
@@ -1157,11 +1157,15 @@ export const contactForm = {
  * current docs do not mention cookies, so that sentence cites the launch post.
  *
  * The contact form section says only what Static Forms' own documents say:
- * its privacy policy and cookie policy (both last updated October 2026) and
- * its pricing page. AWS storage, in the US (us-east-1) or the EU
- * (eu-central-1, Frankfurt) as chosen at sign-up; processing that may also
- * happen in the United States and Singapore; up to one year of storage on
- * the free plan; cookies listed only for its own website and dashboard.
+ * its privacy policy (last updated 28 October 2026), its cookie policy and
+ * its pricing page. The account was set up with EU data residency, so form
+ * data (submissions, attachments, webhook and AI reply logs) is stored in
+ * AWS eu-central-1, Frankfurt; account and billing data and request logs are
+ * processed in the US for every account; email goes out through AWS SES in
+ * the US with Singapore as the failover; the AI spam check (TypeSafe AI via
+ * Vercel AI Gateway) runs on every account whatever the region, on filtered
+ * and redacted fields without the IP address, and the policy names no
+ * location for it; the free plan stores submissions for one year.
  */
 export const privacy = {
   updated: "2026-11-07",
@@ -1178,11 +1182,16 @@ export const privacy = {
       body: [
         "When you send the form, your name, your email address and your message go to Static Forms (staticforms.dev), a third-party form service, which emails them to me. Nothing is sent until you press Send message.",
         "The form also carries a hidden field that people never see or fill in. It is there to catch automated spam, and it holds no data about you.",
-        // CHECK: keep only the region chosen when the account is set up.
-        "Static Forms stores messages with Amazon Web Services, in the United States or in the EU (Frankfurt) depending on how the account was set up, and says data may also be processed in the United States and Singapore. On the free plan it keeps a message for up to one year.",
-        "Its cookie policy lists cookies only for its own website and dashboard, none for sending a form. Its own privacy policy is at staticforms.dev/privacy-policy.",
+        "Static Forms stores your message in the EU, with Amazon Web Services in Frankfurt, and on the free plan keeps it for up to one year. It emails it to me through Amazon's email service in the United States, with Singapore as the fallback, and it processes its own account and billing records and its request logs in the United States.",
+        "Before delivering a message, Static Forms runs an automated spam check on it through TypeSafe AI and Vercel AI Gateway. The check sees some of the form's fields, with email addresses and other recognised details removed, and never your IP address. Static Forms says this check runs on every account whatever region it stores data in, and does not say where it runs.",
+        "Its cookie policy lists cookies only for its own website and dashboard, none for sending a form.",
         // CHECK: confirm this is how you actually keep and delete messages.
         "I keep your message in my email for as long as I need it to reply, and I will delete it if you ask me to.",
+      ],
+      sources: [
+        { label: "Static Forms privacy policy, 28 October 2026", href: "https://www.staticforms.dev/privacy-policy" },
+        { label: "Static Forms pricing (storage on the free plan)", href: "https://www.staticforms.dev/pricing" },
+        { label: "Static Forms cookie policy", href: "https://www.staticforms.dev/cookie-policy" },
       ],
     },
     {
