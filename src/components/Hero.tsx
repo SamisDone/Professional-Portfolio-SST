@@ -28,7 +28,7 @@ export default function Hero() {
   return (
     <section
       aria-labelledby="hero-name"
-      className="shell tier-c xl:grid xl:grid-cols-[calc(min(10.8vw,9rem)*5.83)_1fr] xl:grid-rows-[auto_auto_auto]"
+      className="shell tier-c xl:grid xl:grid-cols-[calc(var(--display-size)*5.88)_1fr] xl:grid-rows-[auto_auto_auto]"
     >
       <Label className="text-ink xl:col-span-2 xl:col-start-1 xl:row-start-1">
         {profile.standfirst} / {profile.openTo}

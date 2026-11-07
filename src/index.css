@@ -249,12 +249,31 @@
     font-variant-numeric: tabular-nums;
   }
   /*
-   * The PRD's floor of 3rem put "SAMONWITA" past the edge of a 390px phone:
-   * at width 125 the word is about 8 times the font size wide. 10.8vw keeps it
-   * inside the gutters down to a 320px screen, and still reaches 9rem by 1340.
+   * The display size comes from the width the name actually has. Its first
+   * line, SAMONWITA on its band, is 8.48 times the font size wide plus the
+   * band's 4px of border, so the size is the shell's content width, less the
+   * border, over 8.6, which leaves a few px spare at every width. 10.8vw used
+   * to set it, and was too big for its band from 320px to 375px and at 1440,
+   * where the text ran through the band's right padding to the border.
+   * From 640px the width also allows for a 17px desktop scrollbar; phones
+   * draw theirs over the page. The cap is the 1184px content box at 1280 and
+   * up. Hero.tsx sizes its xl column from the same --display-size.
    */
+  :root {
+    --display-size: clamp(1.75rem, calc((100vw - 44px) / 8.6), 9rem);
+  }
+  @media (min-width: 640px) {
+    :root {
+      --display-size: calc((100vw - 85px) / 8.6);
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --display-size: min(calc((100vw - 117px) / 8.6), calc(1180px / 8.6));
+    }
+  }
   .t-display {
-    font-size: clamp(2rem, 10.8vw, 9rem);
+    font-size: var(--display-size);
     text-transform: uppercase;
   }
   .t-figure {
@@ -542,6 +561,13 @@
     background: var(--section);
     border: 2px solid var(--ink);
     padding: 0.08em 0.22em 0.04em;
+  }
+  /* The name's bands take 0.05em more on the right: display's -0.03em
+     tracking applies after the last letter too, and a closing A or R sits
+     further in than an opening S, so equal padding left the ink visibly
+     closer to the right border. */
+  .t-display > .band {
+    padding-right: 0.27em;
   }
   .band + .band {
     margin-top: -2px;
