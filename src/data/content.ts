@@ -207,7 +207,7 @@ export const featured: Project[] = [
     liveLabel: "Open the simulator",
     shot: "/shots/greenlight.jpg",
     shotAlt:
-      "The Greenlight control suite: a 3D robot arm with jog control, voice input and joint readouts.",
+      "The Greenlight control suite mid-run: the 3D robot arm moving between keys as it enters the PIN 1536, with key 1 verified, beside jog control, voice input and live joint readouts.",
     problem:
       "Vantage Robotics tests every software change on a real arm, which is slow, risky and expensive. A motion change should be provable before hardware is involved at all.",
     approach:

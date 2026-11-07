@@ -30,7 +30,26 @@ const TARGETS = [
   { id: "huntrix", url: "https://huntrix-friction.vercel.app/" },
   { id: "pierra", url: "https://pierrafinal.vercel.app/" },
   { id: "resumeforge", url: "https://resumeforge-sam.netlify.app/" },
-  { id: "greenlight", url: "https://greenlight-ptsd.vercel.app/" },
+  // At rest the arm stands straight up over an empty floor. So the capture
+  // zooms the scene in on the arm, runs the autonomous PIN 1536 and takes the
+  // frame 450ms in: the arm moving between keys, the PIN verifier open, the
+  // joint readouts live and every control panel in view.
+  {
+    id: "greenlight",
+    url: "https://greenlight-ptsd.vercel.app/",
+    async prepare(page) {
+      const box = await (await page.$("canvas")).boundingBox();
+      await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.42);
+      for (let i = 0; i < 9; i++) {
+        await page.mouse.wheel(0, -200);
+        await page.waitForTimeout(120);
+      }
+      await page.waitForTimeout(800);
+      await page.getByPlaceholder(/145/).fill("1536");
+      await page.getByRole("button", { name: /run/i }).click();
+      await page.waitForTimeout(450);
+    },
+  },
   { id: "sortnplay", url: "https://sortnplay.netlify.app/" },
   { id: "pixelart", url: "https://pixelartweb.netlify.app/" },
   { id: "hangman", url: "https://hangman-sam.netlify.app/" },
@@ -72,6 +91,7 @@ for (const target of targets) {
     }
     // Give entry animations on the target site time to settle.
     await page.waitForTimeout(3500);
+    if (target.prepare) await target.prepare(page);
     await page.screenshot({ path: `public/shots/${target.id}.jpg`, type: "jpeg", quality: 80 });
     log[target.id] = { captured: today, url: target.url };
     console.log("captured", target.id);
