@@ -347,15 +347,17 @@ html.m-js .m-c1 [data-chart][data-in] .m-plabel {
    4.0, holds 200ms, then rescales to 3.2 to 4.0 over 400ms while the note
    that says so stamps in; then C1 draws the line. 1.44s in all, once. The
    rescale moves each gridline and tick (translate, not scale), so no text
-   is ever stretched. The full axis's ticks are invisible at rest; the note
+   is ever stretched. The full axis is not rendered at rest, only while the
+   layer is on, so nothing waits at opacity 0 without it; the note
    is part of the chart and stays. */
 .m-full {
-  opacity: 0;
+  display: none;
 }
 html.m-js .m-e4 [data-chart] {
   --m-at: 600ms;
 }
 html.m-js .m-e4 [data-chart] .m-full {
+  display: inline;
   opacity: 1;
   transition:
     opacity var(--m-enter) var(--m-ease) 200ms,

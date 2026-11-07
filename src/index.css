@@ -608,6 +608,13 @@
 .exhibit-img[data-loading="true"] {
   opacity: 0;
 }
+/* Under reduced motion nothing is ever at opacity 0: a loading image stays
+   opaque, so until its pixels arrive the frame's paper-2 fill shows through. */
+@media (prefers-reduced-motion: reduce) {
+  .exhibit-img[data-loading="true"] {
+    opacity: 1;
+  }
+}
 
 /* The phone menu slides down out of the header. */
 @keyframes menu-in {
