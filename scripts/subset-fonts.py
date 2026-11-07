@@ -13,6 +13,10 @@ What it does, and why:
                 display name and the body copy come out of this one file.
   Martian Mono  pinned to a static instance at weight 500 and width 87.5,
                 because the Label step is the only place it is used.
+  Martian Mono  Narrow: a second static instance at weight 500 and width 75,
+                for the proof row's domain lines on phones, cut to the
+                characters a domain line can hold. Browsers fetch it only
+                when a rule uses it, and only a phone-width rule does.
 
 Both are subset to Latin plus the punctuation the copy uses. Neither family
 has the north-east arrow, so arrows are drawn as SVG (src/components/Arrow.tsx)
@@ -46,12 +50,34 @@ def save_subset(font, out):
     subset.save_font(font, out, opts)
 
 
+# What a domain line can hold: letters (shown upper case), digits, the dot,
+# the hyphen and the slash of an internal path.
+NARROW_UNICODES = "U+0020,U+002D-002F,U+0030-0039,U+0041-005A,U+005F,U+0061-007A,U+00A0"
+
+
+def save_narrow(martian, out="src/fonts/MartianMono-Narrow.woff2"):
+    m = instancer.instantiateVariableFont(TTFont(martian), {"wght": 500, "wdth": 75})
+    opts = subset.Options()
+    opts.flavor = "woff2"
+    opts.layout_features = FEATURES
+    opts.name_IDs = ["*"]
+    opts.notdef_outline = True
+    opts.hinting = False
+    opts.desubroutinize = True
+    subsetter = subset.Subsetter(opts)
+    subsetter.populate(unicodes=subset.parse_unicodes(NARROW_UNICODES))
+    subsetter.subset(m)
+    subset.save_font(m, out, opts)
+
+
 def main(archivo, martian):
     a = instancer.instantiateVariableFont(TTFont(archivo), {"wght": (400, 900), "wdth": (100, 125)})
     save_subset(a, "src/fonts/Archivo.woff2")
 
     m = instancer.instantiateVariableFont(TTFont(martian), {"wght": 500, "wdth": 87.5})
     save_subset(m, "src/fonts/MartianMono-Label.woff2")
+
+    save_narrow(martian)
 
 
 if __name__ == "__main__":

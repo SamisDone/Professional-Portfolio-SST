@@ -49,6 +49,19 @@
 }
 
 /*
+ * The same Martian Mono at width 75, for the proof row's domain lines on
+ * phones (.domain-line), cut to the characters a domain can hold. Nothing
+ * else uses it, so nothing else downloads it.
+ */
+@font-face {
+  font-family: "Martian Mono Narrow";
+  src: url("./fonts/MartianMono-Narrow.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
  * Arial scaled to Archivo's body metrics, measured with fontTools on Archivo
  * at weight 400, width 100. While the real file loads the text takes the same
  * space, so the swap does not move the page.
@@ -283,6 +296,31 @@
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+
+  /*
+   * A destination domain under a proof figure. It breaks only after a dot
+   * (Proof.tsx puts a <wbr> after each one) and never inside a word, so a
+   * narrow cell reads ACLANTHOLOGY. / ORG, not ACLANTHOLOGY.OR / G. Below
+   * 640px it is set at Martian Mono's width 75.
+   */
+  .domain-line {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+  @media (max-width: 639.98px) {
+    .domain-line {
+      font-family: "Martian Mono Narrow", "Martian Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
+  }
+  /* Under 360px a cell's text is 108px wide at the narrowest, and
+     CHROMEWEBSTORE. needs 119px with the Label's tracking and 108px with
+     none. Full tracking fits again from about 342px. */
+  @media (max-width: 359.98px) {
+    .domain-line {
+      letter-spacing: 0;
+    }
   }
 
   /*

@@ -1,7 +1,37 @@
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { proof } from "../data/content";
 import { domainOf } from "../lib/projects";
 import Arrow from "./Arrow";
+
+/** "aclanthology.org" with a <wbr> after each dot: the only places it may break. */
+function breakAfterDots(text = "") {
+  const parts = text.split(".");
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      {part}
+      {i < parts.length - 1 && (
+        <>
+          .<wbr />
+        </>
+      )}
+    </Fragment>
+  ));
+}
+
+/**
+ * A long run-together name such as DravidianLangTech may break where its own
+ * capitals join its words, so a 320px cell does not push it past the border.
+ * Never anywhere else, and never with a hyphen.
+ */
+function breakCamelCase(text: string) {
+  return text.split(/(?<=[a-z])(?=[A-Z][a-z])/).map((part, i) => (
+    <Fragment key={i}>
+      {i > 0 && <wbr />}
+      {part}
+    </Fragment>
+  ));
+}
 
 /**
  * Four claims, each with its receipt, directly under the hero and opened by a
@@ -20,9 +50,12 @@ export default function Proof() {
           const body = (
             <>
               <span className="t-figure">{item.value}</span>
-              <span className="t-small mt-3 block">{item.label}</span>
-              <span className="t-label mt-auto block pt-3 text-ink-2 [overflow-wrap:anywhere] sm:pt-4">
-                {where} <Arrow dir={item.internal ? "right" : "out"} />
+              <span className="t-small mt-3 block">{breakCamelCase(item.label)}</span>
+              <span className="t-label domain-line mt-auto block pt-3 text-ink-2 sm:pt-4">
+                {breakAfterDots(where)}
+                {/* A no-break space, so the arrow never wraps onto a line of its own. */}
+                {"\u00A0"}
+                <Arrow dir={item.internal ? "right" : "out"} />
               </span>
             </>
           );

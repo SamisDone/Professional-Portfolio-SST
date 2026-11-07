@@ -175,5 +175,11 @@ export default defineConfig(({ isSsrBuild }) => ({
     // The SSR pass only produces a render function for scripts/prerender.mjs.
     ...(isSsrBuild ? [] : [crawlFilesPlugin(), routeMetaPlugin()]),
   ],
-  build: isSsrBuild ? { outDir: "dist-ssr", ssr: "src/entry-server.tsx" } : {},
+  build: {
+    // Fonts are always files: the CSP allows font-src 'self' only, so a font
+    // inlined as a data: URI (Vite inlines anything under 4kB, which the
+    // narrow Martian Mono is) would be blocked.
+    assetsInlineLimit: (file: string) => (file.endsWith(".woff2") ? false : undefined),
+    ...(isSsrBuild ? { outDir: "dist-ssr", ssr: "src/entry-server.tsx" } : {}),
+  },
 }));

@@ -90,7 +90,9 @@ by link and sit outside the sequence.
   a 3px focus ring, 44px touch targets on touch screens, text contrast of 7:1
   or better, the new page announced on every change, and nothing animating
   under `prefers-reduced-motion`.
-- **Light on the network.** Two font files, 62kB together; responsive WebP
+- **Light on the network.** Two font files, 62kB together, plus a 4kB
+  narrow cut of Martian Mono that only phones fetch, for the proof row's
+  domain lines; responsive WebP
   screenshots at two sizes; no animation library and no icon library.
 - **A skin that stays put.** A ban script fails the build on any gradient,
   blur, glass, rounded corner, banned typeface, em dash, stray hex colour, or
