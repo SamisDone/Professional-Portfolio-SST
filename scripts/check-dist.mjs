@@ -12,7 +12,16 @@
  *   - still holds a template token (__ANYTHING__) or the dev entry
  *     /src/main.tsx, so the route-meta plugin or the client build did not run
  *   - has an empty <div id="root">, so prerender did not run
+ *   - has a template token anywhere in <body>
+ *   - has bare text in <head> (outside a tag, comment, script, style or
+ *     title): a browser ends the head at the first text it meets and moves
+ *     everything after it into the body
  * and when a page in the sitemap, or 404.html, has no file at all.
+ *
+ * The bare-text rule also runs on the index.html template itself, because
+ * that is what the dev server serves: an unfilled token written as raw text
+ * there showed on screen in development and pushed the title, meta tags,
+ * font preloads and icons into the body.
  *
  * It also fails when an inline script in a page has no matching sha256 in
  * the Content-Security-Policy in dist/_headers, because Cloudflare would
@@ -43,6 +52,22 @@ function* html(dir) {
 const headers = existsSync(join(dist, "_headers")) ? readFileSync(join(dist, "_headers"), "utf8") : "";
 const allowed = new Set([...headers.matchAll(/'(sha256-[A-Za-z0-9+/=]+)'/g)].map((m) => m[1]));
 
+/** Text in <head> that is not inside a tag, comment, script, style or title. */
+function bareHeadText(src) {
+  const head = src.match(/<head>([\s\S]*?)<\/head>/)?.[1];
+  if (head === undefined) return "no <head>";
+  const text = head
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|style|title)\b[^>]*>[\s\S]*?<\/\1>/g, "")
+    .replace(/<[^>]+>/g, "")
+    .trim();
+  return text ? text.slice(0, 60) : "";
+}
+
+const template = readFileSync(join(root, "index.html"), "utf8");
+const templateText = bareHeadText(template);
+if (templateText) problems.push(`index.html (template, as the dev server serves it): bare text in <head>: "${templateText}"`);
+
 let pages = 0;
 for (const file of html(dist)) {
   pages++;
@@ -50,6 +75,11 @@ for (const file of html(dist)) {
   const src = readFileSync(file, "utf8");
   const tokens = [...new Set(src.match(/__[A-Z][A-Z0-9_]*__/g) ?? [])];
   if (tokens.length) problems.push(`${rel}: template token(s) left in: ${tokens.join(", ")}`);
+  const bodyHtml = src.slice(src.indexOf("<body"));
+  const bodyTokens = [...new Set(bodyHtml.match(/__[A-Z][A-Z0-9_]*__/g) ?? [])];
+  if (bodyTokens.length) problems.push(`${rel}: template token(s) in <body>: ${bodyTokens.join(", ")}`);
+  const headText = bareHeadText(src);
+  if (headText) problems.push(`${rel}: bare text in <head>: "${headText}"`);
   if (src.includes("/src/main.tsx")) problems.push(`${rel}: links the dev entry /src/main.tsx, not a built bundle`);
   for (const [, body] of src.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
     const hash = `sha256-${createHash("sha256").update(body).digest("base64")}`;

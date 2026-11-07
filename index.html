@@ -20,8 +20,11 @@
       in src/lib/site.ts. Absolute URLs, because Open Graph crawlers do not
       resolve relative ones. Structured data is rendered by the pages
       themselves (src/lib/structured.ts), so each page carries its own.
+      The canonical link is an HTML comment until it is filled, so the dev
+      server parses the same head as production: raw text here would end the
+      head and push everything after it into the body.
     -->
-    __CANONICAL__
+    <!--__CANONICAL__-->
     <title>__PAGE_TITLE__</title>
     <meta name="description" content="__PAGE_DESCRIPTION__" />
     <meta name="author" content="Samonwita Sarker" />

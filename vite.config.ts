@@ -128,7 +128,7 @@ function routeMetaPlugin(): Plugin {
         // it at the home page reads to Google as a soft 404.
         const canonical = path === "/404" ? "" : `<link rel="canonical" href="${absolute(canonicalPath)}" />`;
         return template
-          .replace("__CANONICAL__", canonical)
+          .replace("<!--__CANONICAL__-->", canonical)
           .replaceAll("__PAGE_TITLE__", escape(meta.title))
           .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
           .replaceAll("__PAGE_SECTION__", sectionFor(path))
