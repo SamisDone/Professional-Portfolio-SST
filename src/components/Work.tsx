@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Project } from "../data/content";
 import { ALL_PROJECTS, WORK_INDEX, caseStudyPath, isFlagship, preloadShot, teamLine } from "../lib/projects";
-import { Label, TextLink } from "./ui";
+import { Label, ProofMark, TextLink } from "./ui";
 
 /** Stack items shown in the row; the rest are counted, and listed in full on
     the case study. */
@@ -91,9 +91,9 @@ export function Row({ project, n }: { project: Project; n: number }) {
 
         <div className="relative z-20 col-start-2 flex gap-4 md:col-start-auto md:flex-col md:items-end md:gap-2">
           {project.live && (
-            <TextLink href={project.live} label={`${project.title}, live`} className="t-small">
+            <ProofMark href={project.live} label={`${project.title}, live`} className="t-small">
               Live
-            </TextLink>
+            </ProofMark>
           )}
           <TextLink href={project.repo} label={`${project.title} source code`} className="t-small">
             Code

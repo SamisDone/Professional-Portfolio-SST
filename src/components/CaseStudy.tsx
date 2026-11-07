@@ -7,7 +7,7 @@ import { caseStudy } from "../lib/structured";
 import JsonLd from "./JsonLd";
 import Arrow from "./Arrow";
 import { ProjectVisual } from "./Exhibit";
-import { Button, Label } from "./ui";
+import { Label, ProofMark, TextLink } from "./ui";
 
 /**
  * Numbered steps joined by a 2px ink line, so the list reads as one path.
@@ -115,13 +115,18 @@ export default function CaseStudy({ project }: { project: Project }) {
             ))}
           </dl>
 
-          <div className="mt-6 flex flex-wrap gap-4">
+          {/* The proof rule: the live product is a proof mark, the source is a
+              plain link. The live link is the page's next action, so it is
+              set at body size, ahead of Code. */}
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
             {project.live && (
-              <Button href={project.live} variant="primary">
+              <ProofMark href={project.live} label={`${project.title}, ${project.liveLabel ?? "live"}`} className="t-body font-semibold">
                 {project.liveLabel ?? "Open it"}
-              </Button>
+              </ProofMark>
             )}
-            <Button href={project.repo}>Code</Button>
+            <TextLink href={project.repo} label={`${project.title} source code`} className={project.live ? "t-small" : "t-body font-semibold"}>
+              Code
+            </TextLink>
           </div>
         </div>
       </header>

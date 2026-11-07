@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { profile, type Project } from "../data/content";
 import { ALL_PROJECTS, caseStudyPath } from "../lib/projects";
-import { Label, TextLink } from "./ui";
+import { Label, ProofMark, TextLink } from "./ui";
 
 const owner = (repo: string) => {
   const m = repo.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -43,9 +43,9 @@ function Row({ project, n }: { project: Project; n: number }) {
       <td className="py-4 text-right">
         <span className="inline-flex flex-col items-end gap-2">
           {project.live && (
-            <TextLink href={project.live} label={`${project.title}, live`} className="t-small">
+            <ProofMark href={project.live} label={`${project.title}, live`} className="t-small">
               Live
-            </TextLink>
+            </ProofMark>
           )}
           <TextLink href={project.repo} label={`${project.title} source code`} className="t-small">
             Code

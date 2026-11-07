@@ -85,9 +85,11 @@ const FIRST_SCREEN = {
 };
 const CASE = {
   proof: "main header dl",
-  action: "main header a.btn",
+  // The live link is a proof mark and Code a text link (the proof rule);
+  // a project with no deployment has Code as its next action.
+  action: "main header .proof-mark, main header a.link",
   next: "main article > div.tier-b, main article > dl",
-  extra: { role: "main header dl > div:first-child", "Code link": 'main header a.btn[href*="github.com"]' },
+  extra: { role: "main header dl > div:first-child", "Code link": 'main header a.link[href*="github.com"]' },
 };
 
 const cases = readdirSync(join(root, "dist/work"))
