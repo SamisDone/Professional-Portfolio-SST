@@ -155,6 +155,14 @@ for (const file of files) {
     if (isCopy && !/^\s*(\/\/|\*|\/\*)/.test(line) && HYPE.test(line)) {
       failures.push(`${at}  banned phrasing "${line.match(HYPE)[0]}"`);
     }
+    // A spaced hyphen used as a dash ("BdREN Innovation - Cortex"), inside a
+    // string a visitor reads. Only string literals are checked, so code such
+    // as `i - 1` in these files is left alone.
+    if (isCopy && !/^\s*(\/\/|\*|\/\*)/.test(line)) {
+      for (const [lit] of line.matchAll(/"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`|'(?:[^'\\]|\\.)*'/g)) {
+        if (/\s-\s/.test(lit)) failures.push(`${at}  a spaced hyphen used as a dash: ${lit.slice(0, 60)}`);
+      }
+    }
   });
 }
 

@@ -887,7 +887,7 @@ export const experience: Role[] = [
     // Crawl4AI crawler and the CUET general-portion builders are teammates'
     // work and are not claimed here. PR #3 is still in review. She leads the
     // team; five people commit to its branch.
-    org: "BdREN Innovation - Cortex",
+    org: "Cortex, BdREN Innovation",
     role: "Team Lead, crawler team (industrial attachment)",
     period: "3 September 2026 to 21 September 2026",
     // Her own 47 commits on the public repository, filtered by author, rather
