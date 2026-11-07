@@ -8,6 +8,7 @@ import { Button, Label, ProofMark, TextLink } from "../components/ui";
 import { featured, research } from "../data/content";
 import { ROUTES } from "../lib/routes";
 import { replay } from "../lib/motion";
+import { ESpecimen, FlowE2, FlowE3, TrajectoryE4 } from "./MotionLabE";
 
 /**
  * /motion-lab: every motion of the motion layer as a labelled specimen, to be
@@ -242,6 +243,50 @@ export default function MotionLabPage() {
             The page transitions themselves are unchanged: sheet slide 240ms, tab handoff 240ms, row to exhibit morph 300ms.
           </p>
         </Specimen>
+
+        <section className="tier-a">
+          <h2 className="t-h2 band">Proposals.</h2>
+          <p className="t-body mt-4 max-w-measure">
+            E1 to E4 borrow motion grammar, not visuals: linear drawn lines from Swiss Motion, drafting order and the
+            escapement from Blueprint, an honest axis rescale from Data Storytelling (lemomo-ai/lemo-opuscar). Site tokens
+            only. None of these is on the site.
+          </p>
+        </section>
+
+        <Specimen code="E1" scope="m-e1" title="Drawn lines at constant speed" note="Everything that is drawn moves at constant speed: the section rules (A1) and the case-study connectors (C2) switch from the ease to linear, with the same durations, 480ms and 320ms. The chart's line (C1) is already linear. Arrivals (stamps, wipes, drops) keep the snap ease.">
+          {/* Stacked, with no utility class the site does not already use:
+              Tailwind reads this file too, and a new class here would change
+              the production CSS. */}
+          <div className="flex flex-col gap-10">
+            <div>
+              {["Experience.", "Research.", "What I work with"].map((t) => (
+                <div key={t} className="border-t-4 border-ink pb-6 pt-4">
+                  <p className="t-h3">{t}</p>
+                </div>
+              ))}
+              <div className="mt-6">
+                <Flow steps={greenlight.flow ?? []} />
+              </div>
+            </div>
+            <div className="max-w-xl">
+              <Trajectory />
+            </div>
+          </div>
+        </Specimen>
+
+        <ESpecimen code="E2" scope="m-e2" title="Drafting order" note="The first time the flow enters the screen, it builds the way a drawing is drafted: the connector centre lines (320ms, linear), then the step boxes' outlines (200ms), then the step labels, then the numbers stamping in. Ink only, 40ms between siblings, 1.12s in all for up to six steps.">
+          <FlowE2 steps={greenlight.flow ?? []} />
+        </ESpecimen>
+
+        <ESpecimen code="E3" scope="m-e3" title="Escapement steps" note="The steps advance one at a time, a tooth per tick: each 320ms tick stamps the number and uncovers the label (120ms), draws the connector to the next step (120ms, linear), then holds a hard 80ms pause in which nothing moves. Once. Would replace C2.">
+          <FlowE3 steps={greenlight.flow ?? []} />
+        </ESpecimen>
+
+        <ESpecimen code="E4" scope="m-e4" title="Honest axis zoom" note="The chart opens on its full axis, 0 to 4.0, holds 200ms, then rescales to 3.2 to 4.0 over 400ms while a note stamps in to say so. Then the line draws (600ms) and the points stamp in as in C1. 1.44s in all, once. The note leaves at the end, so the finished chart is today's exactly, with every point labelled.">
+          <div className="max-w-xl">
+            <TrajectoryE4 />
+          </div>
+        </ESpecimen>
       </div>
     </Page>
   );

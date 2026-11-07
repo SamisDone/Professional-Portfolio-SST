@@ -1,0 +1,174 @@
+/*
+ * Motion lab, specimens E1 to E4: proposals, not part of the site. This file
+ * is imported only by MotionLabPage, which only a development build has, so
+ * none of it reaches production. Tokens are the motion layer's own
+ * (src/motion.css). Starting states sit behind html.m-js, as there; reduced
+ * motion and JavaScript off show the end state.
+ *
+ * Grammar borrowed, not visuals: linear drawn lines (Swiss Motion),
+ * drafting order and the escapement (Blueprint), an honest axis rescale
+ * (Data Storytelling), from lemomo-ai/lemo-opuscar. No code copied.
+ */
+
+/* ---------------------------------------------------------------- E1
+   Drawn lines move at constant speed: the section rules (A1) and the
+   case-study connectors (C2) switch to linear, with the same durations.
+   The chart's line (C1) is already linear. Arrivals keep the snap ease. */
+html.m-js .m-e1.m-e1 .border-t-4::before,
+html.m-js .m-e1.m-e1 .m-connector {
+  transition-timing-function: linear;
+}
+
+/* ---------------------------------------------------------------- E2
+   Drafting order, once, in 1.12s at most: the centre lines (connectors),
+   then the step boxes' outlines, then the step labels, then the numbers
+   stamping in. Ink only. Each phase staggers 40ms, six places at most. */
+.e2-box {
+  /* The outline is four flat ink strips over a transparent border, so it
+     can be drawn with background-size; at rest it looks like the border. */
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink)),
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink));
+  background-position: left top, right top, left bottom, left top;
+  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+  border-color: transparent;
+}
+html.m-js .m-e2 [data-e="e2"] .e2-connector {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 320ms linear calc(min(var(--i), 5) * var(--m-stagger));
+}
+html.m-js .m-e2 [data-e="e2"] .e2-box {
+  background-size: 0% 2px, 2px 0%, 0% 2px, 2px 0%;
+  transition: background-size var(--m-state) var(--m-ease) calc(320ms + min(var(--i), 5) * var(--m-stagger));
+}
+html.m-js .m-e2 [data-e="e2"] .e2-text {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-state) var(--m-ease) calc(560ms + min(var(--i), 5) * var(--m-stagger));
+}
+html.m-js .m-e2 [data-e="e2"]:not([data-e-in]) .e2-num {
+  opacity: 0;
+}
+html.m-js .m-e2 [data-e="e2"][data-e-in] .e2-connector {
+  transform: scaleY(1);
+}
+html.m-js .m-e2 [data-e="e2"][data-e-in] .e2-box {
+  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+}
+html.m-js .m-e2 [data-e="e2"][data-e-in] .e2-text {
+  clip-path: inset(0 0 0 0);
+}
+html.m-js .m-e2 [data-e="e2"][data-e-in] .e2-num {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(800ms + min(var(--i), 5) * var(--m-stagger));
+}
+
+/* ---------------------------------------------------------------- E3
+   The escapement: the steps advance one at a time, a tooth per tick. Each
+   tick is 320ms: the number stamps and the label is uncovered (120ms, the
+   snap), the connector to the next step is drawn (120ms, linear), then a
+   hard 80ms pause in which nothing moves. Once; never loops. */
+html.m-js .m-e3 [data-e="e3"]:not([data-e-in]) .e3-num {
+  opacity: 0;
+}
+html.m-js .m-e3 [data-e="e3"] .e3-text {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-snap) var(--m-ease) calc(var(--i) * 320ms);
+}
+html.m-js .m-e3 [data-e="e3"] .e3-connector {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform var(--m-snap) linear calc(var(--i) * 320ms + var(--m-snap));
+}
+html.m-js .m-e3 [data-e="e3"][data-e-in] .e3-num {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--i) * 320ms);
+}
+html.m-js .m-e3 [data-e="e3"][data-e-in] .e3-text {
+  clip-path: inset(0 0 0 0);
+}
+html.m-js .m-e3 [data-e="e3"][data-e-in] .e3-connector {
+  transform: scaleY(1);
+}
+
+/* ---------------------------------------------------------------- E4
+   An honest axis zoom, once, in 1.44s: the chart first shows its y axis
+   from 0 to 4.0, holds 200ms, then rescales to 3.2 to 4.0 over 400ms while
+   a note stamps in to say so. Then the line draws over 600ms and each point
+   stamps as the line reaches it, then its label (C1). The note leaves at
+   the end, so the finished chart is today's chart exactly.
+   The rescale moves each gridline and tick (translate, not scale), so no
+   text is ever stretched. */
+.e4-full,
+.e4-note {
+  opacity: 0;
+}
+html.m-js .m-e4 [data-e="e4"] .e4-full {
+  opacity: 1;
+  transition:
+    opacity var(--m-enter) var(--m-ease) 200ms,
+    transform 400ms var(--m-ease) 200ms;
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-full {
+  opacity: 0;
+  transform: translateY(var(--dy));
+}
+html.m-js .m-e4 [data-e="e4"] .e4-tick {
+  transform: translateY(var(--dy));
+  transition: transform 400ms var(--m-ease) 200ms;
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-tick {
+  transform: translateY(0);
+}
+html.m-js .m-e4 [data-e="e4"]:not([data-e-in]) .e4-ticklabel {
+  opacity: 0;
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-ticklabel {
+  transition: opacity var(--m-state) linear 400ms;
+}
+@keyframes e4-note {
+  0% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  9%,
+  88% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-note {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: e4-note 1240ms linear 200ms;
+}
+html.m-js .m-e4 [data-e="e4"] .e4-line {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-chart) linear 600ms;
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-line {
+  clip-path: inset(0 0 0 0);
+}
+html.m-js .m-e4 [data-e="e4"] .e4-point,
+html.m-js .m-e4 [data-e="e4"] .e4-plabel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+html.m-js .m-e4 [data-e="e4"]:not([data-e-in]) .e4-point,
+html.m-js .m-e4 [data-e="e4"]:not([data-e-in]) .e4-plabel {
+  opacity: 0;
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-point {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(600ms + var(--p) * var(--m-chart) / var(--pn));
+}
+html.m-js .m-e4 [data-e="e4"][data-e-in] .e4-plabel {
+  transition: opacity var(--m-snap) linear;
+  transition-delay: calc(600ms + var(--p) * var(--m-chart) / var(--pn) + var(--m-snap));
+}
