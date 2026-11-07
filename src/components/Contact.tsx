@@ -3,15 +3,15 @@ import { contactForm, profile } from "../data/content";
 import { absolute } from "../lib/site";
 import { Button, Label, TextLink } from "./ui";
 
-// FormSubmit needs no signup and no API key. It forwards whatever is posted
-// to profile.email. The very first message sent to a given address triggers
-// a one-time confirmation mail; until that link is clicked, nothing arrives.
+// Static Forms (staticforms.dev) emails each submission to the account that
+// owns the API key in contactForm.apiKey. The key is public by design: it
+// sits in the HTML, and Static Forms rate-limits per key.
 //
-// Two ways in. With JavaScript, the form posts to the AJAX endpoint and shows
-// its own confirmation. Without it, the browser posts the form itself to the
-// plain endpoint, and FormSubmit sends it back to /contact/sent (`_next`).
-const ENDPOINT = `https://formsubmit.co/ajax/${profile.email}`;
-const NATIVE_ENDPOINT = `https://formsubmit.co/${profile.email}`;
+// Two ways in, one endpoint. With JavaScript, the form posts JSON and shows
+// its own confirmation or error. Without it, the browser posts the form
+// itself, and Static Forms answers with a 303 to `redirectTo`, which must be
+// an absolute URL: /contact/sent. Spam is caught by the honeypot field only.
+const ENDPOINT = "https://api.staticforms.dev/submit";
 const SUBJECT = "Portfolio message";
 
 const SOCIALS = [
@@ -83,13 +83,19 @@ export default function Contact() {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...form, _subject: `${SUBJECT} from ${form.name}`, _honey: honey }),
+        // No redirectTo here: that is for the browser's own post. The email
+        // field becomes the reply-to address of the notification.
+        body: JSON.stringify({
+          apiKey: contactForm.apiKey,
+          ...form,
+          subject: `${SUBJECT} from ${form.name}`,
+          honeypot: honey,
+        }),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      // FormSubmit answers 200 with success "false" when it refuses a message,
-      // for example before the address has been activated.
-      const body = (await res.json().catch(() => ({}))) as { success?: string | boolean };
-      if (body.success === "false" || body.success === false) throw new Error("refused");
+      // Static Forms answers { success: true } with a 200, and an error
+      // status with { success: false, message } when it refuses one.
+      const body = (await res.json().catch(() => ({}))) as { success?: boolean };
+      if (!res.ok || body.success !== true) throw new Error(String(res.status));
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
       setTouched(false);
@@ -171,24 +177,25 @@ export default function Contact() {
           </p>
         )}
         <form
-          action={NATIVE_ENDPOINT}
+          action={ENDPOINT}
           method="POST"
           onSubmit={submit}
           ref={formRef}
           className="flex flex-col gap-6"
         >
           {/* For the post the browser makes with JavaScript off. */}
-          <input type="hidden" name="_subject" value={SUBJECT} />
-          <input type="hidden" name="_next" value={absolute("/contact/sent")} />
-          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="apiKey" value={contactForm.apiKey} />
+          <input type="hidden" name="subject" value={SUBJECT} />
+          <input type="hidden" name="redirectTo" value={absolute("/contact/sent")} />
           {/* The honeypot: off screen, out of the tab order, hidden from
-              screen readers. FormSubmit drops any submission that fills it. */}
+              screen readers. Static Forms silently drops any submission that
+              fills a field whose name contains "honeypot". */}
           <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
             <label htmlFor="c-honey">Leave this empty</label>
             <input
               id="c-honey"
               type="text"
-              name="_honey"
+              name="honeypot"
               tabIndex={-1}
               autoComplete="off"
               value={honey}

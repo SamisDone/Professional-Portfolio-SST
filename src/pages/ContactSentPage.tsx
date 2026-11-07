@@ -4,7 +4,7 @@ import { profile } from "../data/content";
 
 /**
  * Where the contact form lands when JavaScript is off: the browser posts the
- * form to FormSubmit, and FormSubmit sends it back here (the form's `_next`).
+ * form to Static Forms, which sends it back here (the form's `redirectTo`).
  * With JavaScript on, the form shows its own confirmation and never comes
  * here. Kept out of search and the sitemap.
  */

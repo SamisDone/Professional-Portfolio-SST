@@ -1075,6 +1075,9 @@ export const trajectoryNote =
  * The education entry above the chart carries the cumulative 3.51, the same
  * figure the CV prints, so this caption only has to say what each point is.
  */
+/** Pinned to the chart: its y axis starts at 3.2, not 0. */
+export const trajectoryAxisNote = "Axis zoomed to 3.2 to 4.0";
+
 export const trajectoryCaption =
   "Six terms of eight. Each point is one term alone.";
 
@@ -1126,12 +1129,18 @@ export const proof: Proof[] = [
 ];
 
 /**
- * The contact form's fallback. While `fallback` is true, /contact shows the
- * notice above the form with a mailto link, server-rendered so it shows with
- * JavaScript off too. FormSubmit has been answering 522 since 6 November
- * 2026; set this to false once it is back. The form stays visible either way.
+ * The contact form, sent through Static Forms (staticforms.dev).
+ *
+ * `apiKey` is the form's key from the Static Forms dashboard, starting
+ * "sf_". It is public: it ships in the HTML.
+ *
+ * While `fallback` is true, /contact shows the notice above the form with a
+ * mailto link, server-rendered so it shows with JavaScript off too. Keep it
+ * on until a real test message has arrived through the form, then set it to
+ * false. The form stays visible either way.
  */
 export const contactForm = {
+  apiKey: "",
   fallback: true,
   fallbackNotice: "The form is down at the moment. Email me directly:",
 };
@@ -1139,14 +1148,19 @@ export const contactForm = {
 /**
  * The privacy page, written from what the site actually does.
  *
- * Points marked CHECK are ones that could not be verified from here:
- * formsubmit.co did not answer (HTTP 522) while this was written, so nothing
- * is said about FormSubmit beyond what the form itself does. Confirm or edit
- * each before launch. The analytics section is filled in once the analytics
- * choice is made.
+ * Points marked CHECK are ones that could not be verified from here.
+ * Confirm or edit each before launch. The analytics section is filled in
+ * once the analytics choice is made.
+ *
+ * The contact form section says only what Static Forms' own documents say:
+ * its privacy policy and cookie policy (both last updated October 2026) and
+ * its pricing page. AWS storage, in the US (us-east-1) or the EU
+ * (eu-central-1, Frankfurt) as chosen at sign-up; processing that may also
+ * happen in the United States and Singapore; up to one year of storage on
+ * the free plan; cookies listed only for its own website and dashboard.
  */
 export const privacy = {
-  updated: "2026-11-06",
+  updated: "2026-11-07",
   sections: [
     {
       heading: "In short",
@@ -1157,11 +1171,11 @@ export const privacy = {
     {
       heading: "The contact form",
       body: [
-        "When you send the form, your name, your email address and your message go to FormSubmit (formsubmit.co), a third-party form service, which forwards them to my email inbox. Nothing is sent until you press Send message.",
+        "When you send the form, your name, your email address and your message go to Static Forms (staticforms.dev), a third-party form service, which emails them to me. Nothing is sent until you press Send message.",
         "The form also carries a hidden field that people never see or fill in. It is there to catch automated spam, and it holds no data about you.",
-        // CHECK: how long FormSubmit keeps a copy, and what it logs, is set by
-        // FormSubmit. Link its own policy here once it can be read.
-        "FormSubmit handles the message on its own servers under its own terms, which I do not control.",
+        // CHECK: keep only the region chosen when the account is set up.
+        "Static Forms stores messages with Amazon Web Services, in the United States or in the EU (Frankfurt) depending on how the account was set up, and says data may also be processed in the United States and Singapore. On the free plan it keeps a message for up to one year.",
+        "Its cookie policy lists cookies only for its own website and dashboard, none for sending a form. Its own privacy policy is at staticforms.dev/privacy-policy.",
         // CHECK: confirm this is how you actually keep and delete messages.
         "I keep your message in my email for as long as I need it to reply, and I will delete it if you ask me to.",
       ],
