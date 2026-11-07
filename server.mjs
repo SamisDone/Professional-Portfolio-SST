@@ -1,8 +1,11 @@
 /**
- * Production server for Render.
+ * A local server for the built site. Not a host: the site is on Cloudflare
+ * Pages. scripts/measure-pages.mjs starts it on a spare port, and `npm start`
+ * runs it for checks with JavaScript off, which `vite preview` cannot do
+ * because it answers every route with the home page's HTML.
  *
- * Serves the prerendered files in dist/ the way Cloudflare Pages does, so the
- * two hosts answer the same URLs the same way:
+ * Serves the prerendered files in dist/ the way Cloudflare Pages does, so a
+ * check here sees the same URLs answered the same way:
  *
  *   - /about is dist/about.html, / is dist/index.html (routes are flat files);
  *   - the 301s in dist/_redirects apply, including the generated
@@ -13,7 +16,7 @@
  *
  * Every page's canonical link is SITE_URL, written into the HTML at build
  * time, so a page served from here still canonicalises to the main address.
- * /health answers Render's health check.
+ * PORT sets the port; it defaults to 10000.
  */
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
@@ -116,12 +119,6 @@ const server = createServer((req, res) => {
     pathname = decodeURIComponent(url.pathname);
   } catch {
     pathname = "/";
-  }
-
-  if (pathname === "/health") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", timestamp: new Date().toISOString() }));
-    return;
   }
 
   // /about.html to /about, and /index.html to /, as Cloudflare Pages does:

@@ -461,16 +461,19 @@ Each of these was a real bug.
 - **`vite preview` serves the home page's HTML for every route,** so a check
   with JavaScript off proves nothing there. Run those against `npm start`
   (server.mjs), which serves each route's own file and real 404s.
-- **Render's free tier answers 200 with its own "waking up" page.**
+- **Sixpence, DimSum and Kaker Theng run on Render's free tier,** which
+  answers 200 with its own "waking up" page while an instance starts.
   `capture-shots.mjs` waits that page out; a capture taken during it is a
   picture of Render.
 - **Tailwind emits `.relative` after `.absolute`,** so an element with both is
   `relative`.
-- **`vercel.json` accepts only keys in Vercel's schema.** An unknown key fails
-  the whole file, the same as a syntax error.
 - **There is no catch-all rewrite,** deliberately. Every route is a real file, so
-  Vercel serves `404.html` with a real 404 for anything else. A rewrite would
-  answer 200 for junk URLs.
+  Cloudflare Pages serves `404.html` with a real 404 for anything else. A
+  rewrite would answer 200 for junk URLs.
+- **`vercel.json` accepts only keys in Vercel's schema.** An unknown key fails
+  the whole file, the same as a syntax error, and the old address would stop
+  redirecting. Its `/` rule is separate because `/:path*` does not match the
+  root.
 - **Check layouts after any change** at 1920x1080, 1440x900, 1280x720, 1024,
   a 390px phone and a 320px one, where the display name is closest to the edge. Test against the built site: `vite preview`
   is fine for layout, but it falls back to the home page's metadata on every
@@ -478,8 +481,13 @@ Each of these was a real bug.
 
 ## Deployment
 
-Pushing to `main` deploys to Vercel. `vercel.json` sets the caching and security
-headers:
+The site is hosted on Cloudflare Pages, project `samonwitasarker`. Pushing to
+`main` builds and deploys it. `wrangler.toml` sets the output folder to
+`dist/`; the build command (`npm run build`) is set in the Pages dashboard.
+Pages serves only builds that exit 0, and `check-dist.mjs` makes sure a build
+with template tokens or empty pages does not.
+
+`public/_headers` sets the caching and security headers:
 
 - Hashed files under `/assets/` are cached for a year and marked immutable.
 - Screenshots and the social card keep stable filenames, so they are fresh for
@@ -488,16 +496,34 @@ headers:
   content hash as `?v=`, stamped in by `vite.config.ts`. The filename stays
   stable because it gets pasted into applications, but the token changes
   whenever the PDF does, so an updated CV can never be served from a cache.
-- Every response carries `X-Content-Type-Options`, `Referrer-Policy` and
-  `X-Frame-Options`.
+- Every response carries `X-Content-Type-Options`, `Referrer-Policy`,
+  `X-Frame-Options` and a Content-Security-Policy. The CSP allows the inline
+  motion switch by its hash, Cloudflare Web Analytics, and Static Forms.
+- Preview deployments (`<hash>.samonwitasarker.pages.dev`) carry
+  `X-Robots-Tag: noindex`, so only production can be indexed.
+
+Page views are counted by Cloudflare Web Analytics, switched on in the Pages
+dashboard. Pages injects its script into every page at the edge, so it is not
+in the repository; switching it on takes effect from the next deployment.
 
 To deploy by hand:
 
 ```bash
-npm i -g vercel
-vercel login
-vercel --prod
+npm run build
+npx wrangler pages deploy dist --project-name samonwitasarker
 ```
+
+**The old address,** `samonwita.vercel.app`, is a Vercel project kept only to
+redirect: `vercel.json` answers every path with one 301 to the same path on
+`samonwitasarker.pages.dev`, query string included, and sends the two old URLs
+in `_redirects`, trailing-slash forms and `.html` addresses straight to their
+final address so nothing chains. Pushing to `main` redeploys it too.
+
+**`server.mjs`** is a local server, not a host. It serves `dist/` the way
+Cloudflare Pages does: flat route files, the `_redirects` 301s and real 404s.
+`scripts/measure-pages.mjs` (run in CI) starts it on a spare port, and
+`npm start` runs it on port 10000 for checks with JavaScript off, which
+`vite preview` cannot do.
 
 After changing the social card, paste the URL into LinkedIn's Post
 Inspector: LinkedIn caches the card on its first scrape.
