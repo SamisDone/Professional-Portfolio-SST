@@ -1,62 +1,24 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/(shots/.*|og/.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, stale-while-revalidate=604800"
-        }
-      ]
-    },
-    {
-      "source": "/Samonwita_Sarker_CV.pdf",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        }
-      ]
-    }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false,
   "redirects": [
     {
       "source": "/coming-soon",
-      "destination": "/",
+      "destination": "https://samonwitasarker.pages.dev/",
       "statusCode": 301
     },
     {
       "source": "/og.png",
-      "destination": "/og/home.png",
+      "destination": "https://samonwitasarker.pages.dev/og/home.png",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path(.+)/",
+      "destination": "https://samonwitasarker.pages.dev/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://samonwitasarker.pages.dev/:path*",
       "statusCode": 301
     }
   ]
