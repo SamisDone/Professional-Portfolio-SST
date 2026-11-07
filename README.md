@@ -107,9 +107,9 @@ by link and sit outside the sequence.
 | Styling | Tailwind CSS 3, its theme cut down to the design tokens, plus `src/index.css` |
 | Fonts | Archivo (variable, weight and width) and Martian Mono, self-hosted and subset |
 | Tooling | oxlint, the ban script, Playwright (screenshot and image scripts only) |
-| Hosting | Vercel |
+| Hosting | Cloudflare Pages |
 
-The only other runtime dependency is Vercel Web Analytics. The contact form posts to
+There are no other runtime dependencies. The contact form posts to
 [Static Forms](https://www.staticforms.dev), so there is no backend.
 
 ## Getting started
