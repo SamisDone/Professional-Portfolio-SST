@@ -96,10 +96,18 @@ export default function Header() {
           to="/"
           aria-label={`${profile.name}, home`}
           className="tap self-center whitespace-nowrap text-ink no-underline"
-          style={{ fontWeight: 700, fontStretch: "112%", fontSize: "1rem", lineHeight: 1 }}
+          style={{ lineHeight: 1 }}
         >
-          <span className="xl:hidden">{profile.initials}</span>
-          <span className="hidden xl:inline">{profile.name}</span>
+          {/* The initials read as "ss" at 16px and width 112: a wide capital S
+              has the shape of a small s, and it stood no taller than the M of
+              the Menu button beside it. At width 100 and 20px it is taller
+              than it is wide and clearly taller than that M. */}
+          <span className="xl:hidden" style={{ fontWeight: 850, fontStretch: "100%", fontSize: "1.25rem", letterSpacing: "0.02em" }}>
+            {profile.initials}
+          </span>
+          <span className="hidden xl:inline" style={{ fontWeight: 700, fontStretch: "112%", fontSize: "1rem" }}>
+            {profile.name}
+          </span>
         </Link>
 
         <nav aria-label="Pages" data-tabs className="hidden items-end gap-1 lg:flex">
