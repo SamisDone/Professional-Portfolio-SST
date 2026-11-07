@@ -33,14 +33,15 @@ const TARGETS = [
   "[data-tabs]", // A4 nav tabs, first page of a session only
   "div[data-exhibit]", // A5 exhibits, once decoded
   "[data-stamp]", // A6 labels and index numbers
-  "[data-chart]", // C1 the trajectory
-  ".m-step", // C2 how it works
+  "[data-chart]", // C1 and E4, the trajectory
+  "[data-flow]", // E2 and E3, how it works
 ].join(",");
 
 const STAGGER_MAX = 5;
-const STEP_MS = 120 + 320; // a stamp, then the connector below it
-/** Longer than any entrance: the chart's line, last point and label. */
-const DONE_MS = 1200;
+/** Longer than any entrance: the chart's axis zoom, line and last label
+    (1.44s). A flow adds its escapement, one 200ms tick per step. */
+const DONE_MS = 1600;
+const TICK_MS = 200;
 const TABS_KEY = "m-tabs";
 
 let io: IntersectionObserver | undefined;
@@ -54,8 +55,8 @@ const finish = (el: Element) => el.setAttribute("data-in", "now");
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
   el.setAttribute("data-in", "");
-  const delay = parseFloat(el.style.getPropertyValue("--m-d")) || 0;
-  timers.set(el, window.setTimeout(() => finish(el), DONE_MS + delay));
+  const ticks = el.matches("[data-flow]") ? el.children.length * TICK_MS : 0;
+  timers.set(el, window.setTimeout(() => finish(el), DONE_MS + ticks));
 }
 
 function enter(entries: IntersectionObserverEntry[]) {
@@ -66,7 +67,6 @@ function enter(entries: IntersectionObserverEntry[]) {
 
   // Stagger places are counted per kind, in reading order.
   const place = new Map<string, number>();
-  let step = 0;
   for (const el of arriving) {
     io!.unobserve(el);
     const kind = el.matches(".proof-mark") ? "mark" : el.matches("[data-stamp]") ? "stamp" : el.className;
@@ -74,11 +74,6 @@ function enter(entries: IntersectionObserverEntry[]) {
     place.set(kind, i + 1);
     el.style.setProperty("--m-i", String(Math.min(i, STAGGER_MAX)));
 
-    if (el.matches(".m-step")) {
-      // Steps arriving together play one after another, each number landing
-      // as the connector above it reaches it.
-      el.style.setProperty("--m-d", `${step++ * STEP_MS}ms`);
-    }
     if (el.matches("div[data-exhibit]")) {
       const img = el.querySelector("img");
       if (img && !img.complete) {

@@ -17,7 +17,7 @@
  * 2. Each entrance runs once per page view, when its element first enters
  *    the viewport, and then everything stays still. Nothing loops, and
  *    nothing a visitor is already reading moves.
- * 3. Each motion is switched on by its own scope class (m-a1 to m-c2) on an
+ * 3. Each motion is switched on by its own scope class (m-a1 to m-e4) on an
  *    ancestor, so a motion is rolled out, or left out, one at a time.
  *
  * The page transitions (sheet slide, tab handoff, morph) keep their own
@@ -69,19 +69,27 @@ html.m-js [data-in="now"]::after,
 html.m-js .proof-mark[data-in="now"],
 html.m-js [data-in="now"] .m-line,
 html.m-js [data-in="now"] .m-plabel,
-html.m-js [data-in="now"] .m-connector {
+html.m-js [data-in="now"] .m-connector,
+html.m-js [data-in="now"] .m-box,
+html.m-js [data-in="now"] .m-text,
+html.m-js [data-in="now"] .m-full,
+html.m-js [data-in="now"] .m-tick,
+html.m-js [data-in="now"] .m-ticklabel {
   transition: none !important;
 }
 html.m-js [data-stamp][data-in="now"],
 html.m-js [data-in="now"] > .tab,
 html.m-js [data-in="now"] .m-point,
-html.m-js [data-in="now"] .m-num {
+html.m-js [data-in="now"] .m-num,
+html.m-js [data-in="now"] .m-note {
   animation: none !important;
 }
 
 /* ---------------------------------------------------------------- A1
    Section rules draw left to right. The real 4px border stays, so nothing
-   moves; it is made transparent and a ruler line is drawn over it. */
+   moves; it is made transparent and a ruler line is drawn over it. Drawn
+   lines move at constant speed (E1), so the rule is linear; arrivals keep
+   the snap ease. */
 html.m-js .m-a1 .border-t-4 {
   position: relative;
   border-top-color: transparent;
@@ -96,7 +104,7 @@ html.m-js .m-a1 .border-t-4::before {
   background: var(--ink);
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform var(--m-draw) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+  transition: transform var(--m-draw) linear calc(var(--m-i, 0) * var(--m-stagger));
   pointer-events: none;
 }
 html.m-js .m-a1 .border-t-4[data-in]::before {
@@ -306,11 +314,12 @@ html.m-js .m-b6 [role="alert"] {
 }
 
 /* ---------------------------------------------------------------- C1
-   The trajectory: the line is drawn with a ruler over 600ms, each point
-   stamps as the line reaches it, and its label follows. Once. */
+   The trajectory: the line is drawn with a ruler over 600ms (linear, E1),
+   each point stamps as the line reaches it, and its label follows. Once.
+   --m-at is when the line starts: 0, or 600ms after E4's axis zoom. */
 html.m-js .m-c1 [data-chart] .m-line {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--m-chart) linear;
+  transition: clip-path var(--m-chart) linear var(--m-at, 0ms);
 }
 html.m-js .m-c1 [data-chart][data-in] .m-line {
   clip-path: inset(0 0 0 0);
@@ -326,28 +335,109 @@ html.m-js .m-c1 [data-chart]:not([data-in]) .m-plabel {
 }
 html.m-js .m-c1 [data-chart][data-in] .m-point {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: calc(var(--p) * var(--m-chart) / var(--pn));
+  animation-delay: calc(var(--m-at, 0ms) + var(--p) * var(--m-chart) / var(--pn));
 }
 html.m-js .m-c1 [data-chart][data-in] .m-plabel {
   transition: opacity var(--m-snap) linear;
-  transition-delay: calc(var(--p) * var(--m-chart) / var(--pn) + var(--m-snap));
+  transition-delay: calc(var(--m-at, 0ms) + var(--p) * var(--m-chart) / var(--pn) + var(--m-snap));
 }
 
-/* ---------------------------------------------------------------- C2
-   How it works: as each step enters, its number stamps, then the connector
-   to the next step draws downward; the next number stamps when it lands. */
-html.m-js .m-c2 .m-step:not([data-in]) .m-num {
+/* ---------------------------------------------------------------- E4
+   An honest axis zoom, before C1: the chart opens on its full axis, 0 to
+   4.0, holds 200ms, then rescales to 3.2 to 4.0 over 400ms while the note
+   that says so stamps in; then C1 draws the line. 1.44s in all, once. The
+   rescale moves each gridline and tick (translate, not scale), so no text
+   is ever stretched. The full axis's ticks are invisible at rest; the note
+   is part of the chart and stays. */
+.m-full {
   opacity: 0;
 }
-html.m-js .m-c2 .m-step .m-connector {
+html.m-js .m-e4 [data-chart] {
+  --m-at: 600ms;
+}
+html.m-js .m-e4 [data-chart] .m-full {
+  opacity: 1;
+  transition:
+    opacity var(--m-enter) var(--m-ease) 200ms,
+    transform 400ms var(--m-ease) 200ms;
+}
+html.m-js .m-e4 [data-chart][data-in] .m-full {
+  opacity: 0;
+  transform: translateY(var(--dy));
+}
+html.m-js .m-e4 [data-chart] .m-tick {
+  transform: translateY(var(--dy));
+  transition: transform 400ms var(--m-ease) 200ms;
+}
+html.m-js .m-e4 [data-chart][data-in] .m-tick {
+  transform: translateY(0);
+}
+html.m-js .m-e4 [data-chart]:not([data-in]) .m-ticklabel,
+html.m-js .m-e4 [data-chart]:not([data-in]) .m-note {
+  opacity: 0;
+}
+html.m-js .m-e4 [data-chart][data-in] .m-ticklabel {
+  transition: opacity var(--m-state) linear 400ms;
+}
+html.m-js .m-e4 [data-chart] .m-note {
+  transform-box: fill-box;
+  transform-origin: right center;
+}
+html.m-js .m-e4 [data-chart][data-in] .m-note {
+  animation: m-stamp var(--m-snap) var(--m-ease) 200ms backwards;
+}
+
+/* ---------------------------------------------------------------- E2
+   How it works, built in drafting order the first time it enters: the
+   connector centre lines (320ms, linear), then the step boxes' outlines
+   (200ms), then the labels (200ms); 40ms between siblings, six at most.
+   Ink only. The numbers come last: with E3 one per tick, without it
+   stamping 40ms apart. The box outline is four flat ink strips over a
+   transparent border, so at rest it looks exactly like the border. */
+.m-box {
+  border-color: transparent;
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink)),
+    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink));
+  background-position: left top, right top, left bottom, left top;
+  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+}
+html.m-js .m-e2 [data-flow] .m-connector {
   transform-origin: top;
   transform: scaleY(0);
-  transition: transform var(--m-enter) var(--m-ease) calc(var(--m-d, 0ms) + var(--m-snap));
+  transition: transform 320ms linear calc(min(var(--i), 5) * var(--m-stagger));
 }
-html.m-js .m-c2 .m-step[data-in] .m-connector {
+html.m-js .m-e2 [data-flow] .m-box {
+  background-size: 0% 2px, 2px 0%, 0% 2px, 2px 0%;
+  transition: background-size var(--m-state) var(--m-ease) calc(320ms + min(var(--i), 5) * var(--m-stagger));
+}
+html.m-js .m-e2 [data-flow] .m-text {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-state) var(--m-ease) calc(560ms + min(var(--i), 5) * var(--m-stagger));
+}
+html.m-js .m-e2 [data-flow]:not([data-in]) .m-num {
+  opacity: 0;
+}
+html.m-js .m-e2 [data-flow][data-in] .m-connector {
   transform: scaleY(1);
 }
-html.m-js .m-c2 .m-step[data-in] .m-num {
+html.m-js .m-e2 [data-flow][data-in] .m-box {
+  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+}
+html.m-js .m-e2 [data-flow][data-in] .m-text {
+  clip-path: inset(0 0 0 0);
+}
+html.m-js .m-e2 [data-flow][data-in] .m-num {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: var(--m-d, 0ms);
+  animation-delay: calc(800ms + min(var(--i), 5) * var(--m-stagger));
+}
+
+/* ---------------------------------------------------------------- E3
+   The escapement: once the drawing is built, the numbers advance one step
+   per tick, like a mechanism. Each 200ms tick is a 120ms stamp and a hard
+   80ms pause in which nothing moves. Six steps end at 1.88s. Once. */
+html.m-js .m-e2.m-e3 [data-flow][data-in] .m-num {
+  animation-delay: calc(760ms + var(--i) * 200ms);
 }

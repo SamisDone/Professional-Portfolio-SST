@@ -24,7 +24,7 @@ const MotionLabPage = import.meta.env.DEV ? lazy(() => import("./pages/MotionLab
 
 /** Every motion of the layer is switched on here, for the whole site; see
     src/motion.css. Taking one name out turns that motion off. */
-const MOTION = "m-a1 m-a2 m-a3 m-a4 m-a5 m-a6 m-b1 m-b2 m-b3 m-b4 m-b5 m-b6 m-c1 m-c2";
+const MOTION = "m-a1 m-a2 m-a3 m-a4 m-a5 m-a6 m-b1 m-b2 m-b3 m-b4 m-b5 m-b6 m-c1 m-e2 m-e3 m-e4";
 
 /**
  * Everything inside the router, with no router of its own.

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { cgpaHistory, trajectoryCaption, trajectoryNote } from "../data/content";
+import { cgpaHistory, trajectoryAxisNote, trajectoryCaption, trajectoryNote } from "../data/content";
 
 /*
  * The viewBox is narrower than the 900 the old chart used. The chart sits in a
@@ -14,17 +14,22 @@ const PAD_T = 44;
 const PAD_B = 44;
 const DOMAIN: [number, number] = [3.2, 4.0];
 const GRID = [3.2, 3.4, 3.6, 3.8, 4.0];
+/** The full axis the chart opens on before it zooms (E4), 0 to 3.0. */
+const FULL = [0, 1, 2, 3];
 const FONT = 16;
 
 const x = (i: number) => PAD_L + ((W - PAD_L - PAD_R) * i) / (cgpaHistory.length - 1);
 const y = (v: number) => H - PAD_B - ((v - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0])) * (H - PAD_T - PAD_B);
+/** The same value on the full axis, 0 to 4.0. */
+const yFull = (v: number) => H - PAD_B - (v / DOMAIN[1]) * (H - PAD_T - PAD_B);
+const dy = (n: number) => ({ "--dy": `${n}px` }) as CSSProperties;
 
 const line = cgpaHistory.map((p, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(p.value)}`).join(" ");
 const LAST = cgpaHistory.length - 1;
 
 /** The text alternative: every term and its figure, in order. */
 const DESCRIPTION =
-  "Term GPA at CUET, each term on its own rather than cumulative. " +
+  "Term GPA at CUET, each term on its own rather than cumulative, on an axis zoomed to 3.2 to 4.0. " +
   cgpaHistory.map((p) => `${p.full}: ${p.value.toFixed(2)}`).join(". ") +
   ".";
 
@@ -33,9 +38,15 @@ const DESCRIPTION =
  * Level 2 and a climb out of it. Ink only: a 2px line, 8px square points, and
  * every point labelled, so the zoomed axis cannot overstate a change.
  *
- * Rendered complete. The motion layer (C1 in src/motion.css) draws the line
- * once with a ruler, stamps each point as the line reaches it, then shows its
- * label; `--p` is each point's place along the line, for that timing.
+ * The axis is zoomed to 3.2 to 4.0, and the chart says so in a note that is
+ * part of it, with JavaScript or without.
+ *
+ * Rendered complete. The motion layer (E4 and C1 in src/motion.css) opens it
+ * on the full axis, 0 to 4.0, and rescales to the zoomed one while the note
+ * stamps in; then it draws the line once with a ruler, stamps each point as
+ * the line reaches it, then shows its label. `--dy` is how far each tick
+ * travels in the rescale; `--p` is each point's place along the line. The
+ * full axis's ticks exist only for that opening and are invisible at rest.
  */
 export default function Trajectory() {
 
@@ -52,8 +63,16 @@ export default function Trajectory() {
         role="img"
         aria-label={DESCRIPTION}
       >
+        {FULL.map((v) => (
+          <g key={v} aria-hidden className="m-full" style={dy(y(v) - yFull(v))}>
+            <line x1={PAD_L} x2={W - PAD_R} y1={yFull(v)} y2={yFull(v)} stroke="var(--ink)" strokeWidth={v === 0 ? 2 : 1} vectorEffect="non-scaling-stroke" />
+            <text x={PAD_L - 10} y={yFull(v)} textAnchor="end" dominantBaseline="middle" className="t-label" fill="var(--ink-2)" style={{ fontSize: FONT }}>
+              {v.toFixed(1)}
+            </text>
+          </g>
+        ))}
         {GRID.map((v) => (
-          <g key={v}>
+          <g key={v} className="m-tick" style={dy(yFull(v) - y(v))}>
             <line
               x1={PAD_L}
               x2={W - PAD_R}
@@ -63,12 +82,14 @@ export default function Trajectory() {
               strokeWidth={v === DOMAIN[0] ? 2 : 1}
               vectorEffect="non-scaling-stroke"
             />
+            {/* Bunched at the top of the full axis these would overlap, so
+                all but 4.0 wait for the rescale to spread them out. */}
             <text
               x={PAD_L - 10}
               y={y(v)}
               textAnchor="end"
               dominantBaseline="middle"
-              className="t-label"
+              className={v === DOMAIN[1] ? "t-label" : "m-ticklabel t-label"}
               fill="var(--ink-2)"
               style={{ fontSize: FONT }}
             >
@@ -76,6 +97,10 @@ export default function Trajectory() {
             </text>
           </g>
         ))}
+
+        <text x={W - PAD_R} y={PAD_T - 22} textAnchor="end" className="m-note t-label" fill="var(--ink)" style={{ fontSize: FONT }}>
+          {trajectoryAxisNote}
+        </text>
 
         <g className="m-line">
           <path

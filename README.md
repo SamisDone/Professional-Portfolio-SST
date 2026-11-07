@@ -110,7 +110,7 @@ by link and sit outside the sequence.
 | Hosting | Vercel |
 
 The only other runtime dependency is Vercel Web Analytics. The contact form posts to
-[FormSubmit](https://formsubmit.co), so there is no backend.
+[Static Forms](https://www.staticforms.dev), so there is no backend.
 
 ## Getting started
 
@@ -326,14 +326,16 @@ its element first enters the viewport, and then the page is still.
 **Tokens,** all in `src/motion.css` and nothing else used: 120ms for a snap
 (stamps, presses), 200ms for a hover or state change, 320ms for something
 arriving, 480ms for a rule or highlight being drawn, 600ms for the chart's
-line. One curve, `cubic-bezier(0.2, 0, 0, 1)`. A stamp is a single keyframe
+line. Two curves: `cubic-bezier(0.2, 0, 0, 1)` for everything that arrives,
+and linear for everything that is drawn (rules, the chart's line, the flow's
+connectors). A stamp is a single keyframe
 from scale 1.06 to 1. Siblings stagger 40ms apart, six at most. Only
 `transform`, `opacity`, `clip-path` and `background-size` move, and layout
 never shifts (CLS 0).
 
 | | Motion | Where |
 | --- | --- | --- |
-| A1 | Section rules draw left to right | every 4px rule |
+| A1 | Section rules draw left to right, at constant speed | every 4px rule |
 | A2 | The band behind a heading wipes in; the text is there from the start | every `h1` band |
 | A3 | Proof marks sweep in like a highlighter, in reading order | every claim with a receipt |
 | A4 | The nav tabs drop into place, once per session | header |
@@ -346,7 +348,9 @@ never shifts (CLS 0).
 | B5 | Phone menu items drop in 40ms apart; closing is instant | phone menu |
 | B6 | A field's border draws in on focus; an error drops in | contact form |
 | C1 | The CGPA line draws in 600ms, each point stamps as it is reached, then its label | `/about` |
-| C2 | How it works: each step's number stamps, then the connector draws down to the next | case studies |
+| E4 | Before that, the chart opens on its full 0 to 4.0 axis and rescales to 3.2 to 4.0 while its "Axis zoomed" note stamps in | `/about` |
+| E2 | How it works builds in drafting order: connector lines, box outlines, labels | case studies |
+| E3 | Then its numbers advance one step per tick, a stamp and a hard pause each | case studies |
 | C3 | Entrances on a new page wait until the page transition has finished | everywhere |
 
 **How it switches on.** Nothing is hidden in the HTML. Every starting state
@@ -363,7 +367,7 @@ marked finished rather than replayed. The inline script is allowed by its
 sha256 in the CSP in `public/_headers`. Scroll-driven animations are not used:
 they would undraw when the visitor scrolls back up.
 
-Each motion has its own scope class (`m-a1` to `m-c2`) on the app's root in
+Each motion has its own scope class (`m-a1` to `m-e4`) on the app's root in
 `src/App.tsx`, so one can be switched off by deleting its name. In
 development, `/motion-lab` shows every motion as a labelled specimen with a
 replay button; production builds leave that page out.

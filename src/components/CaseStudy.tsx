@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Project } from "../data/content";
 import { caseStudyPath, isFlagship, projectNeighbours } from "../lib/projects";
@@ -9,19 +9,27 @@ import Arrow from "./Arrow";
 import { ProjectVisual } from "./Exhibit";
 import { Button, Label } from "./ui";
 
-/** Numbered steps joined by a 2px ink line, so the list reads as one path. */
+/**
+ * Numbered steps joined by a 2px ink line, so the list reads as one path.
+ *
+ * The motion layer builds it in drafting order (E2 in src/motion.css): the
+ * connector lines, then the boxes' outlines, then the labels; then the
+ * numbers advance one step per tick (E3). For that the box's outline is four
+ * flat ink strips over a transparent border (`.m-box`), which looks the same
+ * as the 2px border at rest, and the number is its own element.
+ */
 export function Flow({ steps }: { steps: string[] }) {
   return (
-    <ol className="m-0 flex flex-col p-0">
+    <ol data-flow className="m-0 flex flex-col p-0">
       {steps.map((step, i) => (
-        <li key={step} className="m-step relative flex gap-4 pb-6 last:pb-0">
+        <li key={step} className="relative flex gap-4 pb-6 last:pb-0" style={{ "--i": i } as CSSProperties}>
           {i < steps.length - 1 && (
             <span aria-hidden className="m-connector absolute bottom-0 left-[13px] top-8 w-0.5 bg-ink" />
           )}
-          <span className="m-num t-label grid h-8 w-8 shrink-0 place-items-center border-2 border-ink text-ink">
-            {i + 1}
+          <span className="m-box t-label grid h-8 w-8 shrink-0 place-items-center border-2 text-ink">
+            <span className="m-num">{i + 1}</span>
           </span>
-          <span className="t-body pt-1">{step}</span>
+          <span className="m-text t-body pt-1">{step}</span>
         </li>
       ))}
     </ol>
