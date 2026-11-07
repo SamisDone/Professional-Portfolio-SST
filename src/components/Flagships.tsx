@@ -110,7 +110,7 @@ export default function Flagships() {
 
       <div className="shell tier-b">
         <p className="t-lead">
-          <TextLink to="/work">All {WORK_INDEX.length} projects</TextLink>
+          <TextLink to="/work">{WORK_INDEX.length} projects on the work page</TextLink>
         </p>
       </div>
     </div>

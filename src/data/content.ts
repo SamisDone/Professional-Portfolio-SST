@@ -1109,7 +1109,8 @@ export const trajectoryCaption =
  * because the last claim counts the project lists and has to read them after
  * they exist.
  */
-const deployed = [...featured, ...notable].filter((p) => p.live).length;
+const workIndex = [...featured, ...notable];
+const deployed = workIndex.filter((p) => p.live).length;
 
 export const proof: Proof[] = [
   {
@@ -1145,7 +1146,7 @@ export const proof: Proof[] = [
     // It counts the twelve on /work only. Counting the small browser games as
     // well made the number bigger and the claim weaker.
     value: String(deployed),
-    label: "projects live and open to try right now",
+    label: `of ${workIndex.length} projects live`,
     href: "/work",
     internal: true,
   },

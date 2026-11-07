@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { profile, type Project } from "../data/content";
-import { ALL_PROJECTS, caseStudyPath } from "../lib/projects";
+import { ALL_PROJECTS, caseStudyPath, WORK_INDEX } from "../lib/projects";
 import { Label, ProofMark, TextLink } from "./ui";
 
 const owner = (repo: string) => {
@@ -75,8 +75,9 @@ export default function Repositories() {
           Everything, listed.
         </h1>
         <p className="t-lead mt-4 max-w-[58ch]">
-          All {ALL_PROJECTS.length} projects, {live} of them with something running you can open. Source on every
-          row. Where a repository is not mine, the row says whose it is and what I did on it.
+          {ALL_PROJECTS.length} projects, {live} with something running you can open. The work page shows{" "}
+          {WORK_INDEX.length} of them, {WORK_INDEX.filter((p) => p.live).length} of those live. Source on every row.
+          Where a repository is not mine, the row says whose it is and what I did on it.
         </p>
       </section>
 
