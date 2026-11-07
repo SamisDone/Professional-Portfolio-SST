@@ -147,7 +147,7 @@ export default function CaseStudy({ project }: { project: Project }) {
       <nav aria-label="More case studies" className="shell tier-b">
         <div className="flex flex-wrap items-stretch justify-between gap-4 border-t-2 border-ink pt-8">
           {prev ? (
-            <Link to={caseStudyPath(prev)} className="btn btn-secondary press">
+            <Link to={caseStudyPath(prev)} className="btn btn-secondary press pager-btn">
               <Arrow dir="left" />
               <span>
                 <span className="t-label mr-2 text-ink-2">Previous</span>
@@ -158,7 +158,7 @@ export default function CaseStudy({ project }: { project: Project }) {
             <span />
           )}
           {next && (
-            <Link to={caseStudyPath(next)} className="btn btn-secondary press">
+            <Link to={caseStudyPath(next)} className="btn btn-secondary press pager-btn pager-next">
               <span>
                 <span className="t-label mr-2 text-ink-2">Next</span>
                 {next.title}

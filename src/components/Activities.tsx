@@ -53,7 +53,7 @@ export default function Activities() {
           </h2>
           <ol className="m-0 mt-4 list-none p-0">
             {competitions.map((c) => (
-              <Entry key={c.event} title={c.result} meta={c.event} period={c.period} note={c.note} />
+              <Entry key={c.event} title={c.result} meta={c.event} period={c.period} note={c.note} receipts={c.receipts} />
             ))}
           </ol>
         </section>

@@ -14,14 +14,16 @@ function Row({ project, n }: { project: Project; n: number }) {
   const ownerLine = theirs ? `${project.role ?? "Contributor"}, ${o.user}'s repository` : null;
 
   return (
-    <tr className="tint-row border-t border-ink align-top">
+    // Below md a row is a two-column grid: the number, then the project with
+    // its links under it, so nothing needs to scroll sideways on a phone.
+    <tr className="tint-row border-t border-ink align-top max-md:grid max-md:grid-cols-[2.75rem_1fr]">
       <td className="py-4 pr-4">
         <Label as="span" stamp className="inline-block text-ink">
           {String(n).padStart(2, "0")}
         </Label>
       </td>
       <td className="py-4 pr-6">
-        <Link to={caseStudyPath(project)} className="link t-small font-bold">
+        <Link to={caseStudyPath(project)} className="link tap t-small font-bold">
           {project.title}
         </Link>
         <span className="t-small mt-1 block max-w-[52ch]">{project.summary}</span>
@@ -40,8 +42,8 @@ function Row({ project, n }: { project: Project; n: number }) {
         </Label>
         {ownerLine && <Label className="mt-2 text-ink">{ownerLine}</Label>}
       </td>
-      <td className="py-4 text-right">
-        <span className="inline-flex flex-col items-end gap-2">
+      <td className="py-4 text-right max-md:col-start-2 max-md:pt-0 max-md:text-left">
+        <span className="inline-flex flex-col items-end gap-2 max-md:flex-row max-md:items-start max-md:gap-6">
           {project.live && (
             <ProofMark href={project.live} label={`${project.title}, live`} className="t-small">
               Live
@@ -82,20 +84,14 @@ export default function Repositories() {
       </section>
 
       <section className="shell tier-b">
-        {/* The one box allowed to scroll sideways, and only on a phone. It is
-            an arrow surface, so the arrow keys scroll it instead of paging. */}
-        <div
-          className="overflow-x-auto"
-          data-arrow-surface
-          tabIndex={0}
-          role="region"
-          aria-label="All projects, scrolls sideways"
-        >
-          <table className="w-full min-w-[34rem] border-collapse text-left">
+        <div>
+          <table className="w-full border-collapse text-left">
             <caption className="sr-only">
               Every project, with its source repository and live demo where one exists.
             </caption>
-            <thead>
+            {/* On a phone the rows are stacked, so the column headings are
+                for screen readers only; the table keeps its semantics. */}
+            <thead className="max-md:sr-only">
               <tr className="border-b-2 border-ink">
                 {[
                   ["No.", ""],

@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { Project } from "../data/content";
 import { captionFor } from "../lib/projects";
+import { ProofMark } from "./ui";
 
 /** useLayoutEffect warns when rendered to a string; this is the same hook
     with the warning removed, since there is nothing to measure on a server. */
@@ -77,33 +78,37 @@ export function Exhibit({
 
 /**
  * For work with no interface to photograph. The project's own measured
- * figures, in the same 16:10 box, split by ink rules. Never a mocked-up
- * screen standing in for a real one.
+ * figures, split by ink rules, as tall as the figures need: four across from
+ * lg, two by two below. A 16:10 box the size of a screenshot left four
+ * small numbers floating in 740px of nothing. The caption links where the
+ * figures are published. Never a mocked-up screen standing in for a real one.
  */
 export function FiguresPanel({ project, className = "" }: { project: Project; className?: string }) {
   const figures = (project.figures ?? []).slice(0, 4);
   return (
     <figure className={`m-0 ${className}`}>
-      <dl
-        className="m-0 grid grid-cols-2 border-2 border-ink"
-        style={{ aspectRatio: "16 / 10" }}
-      >
+      <dl className="m-0 grid grid-cols-2 border-2 border-ink lg:grid-cols-4">
         {figures.map((f, i) => (
           <div
             key={f.label}
             // Reversed so the figure reads first while the markup keeps the
             // order a definition list requires: the term, then its value.
-            className={`flex flex-col-reverse justify-center gap-2 p-4 sm:p-6 ${i % 2 === 1 ? "border-l-2 border-ink" : ""} ${
-              i > 1 ? "border-t-2 border-ink" : ""
-            }`}
+            className={`flex flex-col-reverse justify-end gap-2 p-4 sm:p-6 ${i % 2 === 1 ? "border-l-2 border-ink" : ""} ${
+              i > 1 ? "border-t-2 border-ink lg:border-t-0" : ""
+            } ${i === 2 ? "lg:border-l-2" : ""}`}
           >
             <dt className="t-label text-ink-2">{f.label}</dt>
             <dd className="t-figure m-0">{f.value}</dd>
           </div>
         ))}
       </dl>
-      <figcaption className="t-label border-2 border-t-0 border-ink px-3 py-2 text-ink-2">
-        {project.title} / Published results
+      <figcaption className="t-label flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-2 border-t-0 border-ink px-3 py-2 text-ink-2">
+        <span>{project.title} / Published results</span>
+        {project.figuresSource && (
+          <ProofMark href={project.figuresSource.href} className="t-label">
+            {project.figuresSource.label}
+          </ProofMark>
+        )}
       </figcaption>
     </figure>
   );

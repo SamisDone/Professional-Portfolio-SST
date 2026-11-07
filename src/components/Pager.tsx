@@ -69,7 +69,7 @@ export default function Pager() {
         {prev ? (
           // The accessible name is the visible text with its purpose in front,
           // so a voice user saying what they see still hits it.
-          <Link to={prev.path} className="btn btn-secondary press">
+          <Link to={prev.path} className="btn btn-secondary press pager-btn">
             <Arrow dir="left" />
             <span>
               <span className="sr-only">Previous page: </span>
@@ -82,7 +82,7 @@ export default function Pager() {
           <span />
         )}
         {next && (
-          <Link to={next.path} className="btn btn-secondary press">
+          <Link to={next.path} className="btn btn-secondary press pager-btn pager-next">
             <KeyHint dir="right" />
             <span>
               <span className="sr-only">Next page: </span>

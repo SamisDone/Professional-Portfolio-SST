@@ -118,6 +118,8 @@ export type Project = {
    * a mocked-up interface standing in for a real one.
    */
   figures?: { value: string; label: string }[];
+  /** Where `figures` are published, so the panel can link its receipt. */
+  figuresSource?: { href: string; label: string };
   highlights?: string[];
   /** The page's meta description, where the one built from the summary in
       lib/meta.ts falls outside 120 to 160 characters or reads badly. */
@@ -544,6 +546,8 @@ export const notable: Project[] = [
       { value: "0.75", label: "Macro F1" },
       { value: "~11M", label: "Parameters" },
     ],
+    // All four are in the README's results table and its first paragraph.
+    figuresSource: { href: "https://github.com/SamisDone/Violence-Detection#readme", label: "Results in the README" },
     problem:
       "Anomaly detection on surveillance footage usually means a model too heavy to run anywhere near the camera, so the video has to travel to the compute instead.",
     approach:
@@ -1024,12 +1028,16 @@ export const leadership = [
  * something it was not. The ACL shared task appears here as a placing and on
  * the research page as the paper, because it is genuinely both.
  */
-export const competitions = [
+/** A receipt under an entry: a published record (href) or a page here (to). */
+export type Receipt = { label: string; href?: string; to?: string };
+
+export const competitions: { result: string; event: string; period: string; note: string; receipts?: Receipt[] }[] = [
   {
     result: "7th place",
     event: "DravidianLangTech shared task, ACL 2026",
     period: "2026",
-    note: "Telugu prompt-style recovery, against international teams. The system paper is on the research page.",
+    note: "Telugu prompt-style recovery, against international teams.",
+    receipts: [{ label: "The system paper, ACL Anthology", href: "https://aclanthology.org/2026.dravidianlangtech-1.58/" }],
   },
   {
     /* Certificate of achievement, IEEE CUET Student Branch with SheSTEM. The
@@ -1045,7 +1053,8 @@ export const competitions = [
     result: "Finalist",
     event: "IUT Techathon",
     period: "2026",
-    note: "Built Greenlight, a robot arm driven from the browser six ways through one motion pipeline. It is on the work page.",
+    note: "Built Greenlight, a robot arm driven from the browser six ways through one motion pipeline.",
+    receipts: [{ label: "Greenlight's case study", to: "/work/greenlight" }],
   },
   {
     result: "Finalist",
@@ -1064,6 +1073,7 @@ export const competitions = [
     event: "MicroOps Hackathon",
     period: "2025",
     note: "24-hour hackathon. A full-stack MVP, API and client, submitted inside the deadline.",
+    receipts: [{ label: "Microops case study", to: "/work/microops" }],
   },
 ];
 
@@ -1249,7 +1259,7 @@ export const privacy = {
     {
       heading: "Your data",
       body: [
-        "You can ask me what I hold from a message you sent, and ask me to delete it, by writing to the address below.",
+        "You can ask me what I hold from a message you sent, and ask me to delete it, by writing to the address under Contact at the top of this page.",
       ],
     },
   ],

@@ -52,7 +52,10 @@ export default function Privacy() {
         ))}
       </dl>
 
-      <p className="shell tier-c t-small max-w-measure">{privacy.note}</p>
+      {/* On the sections' grid, so it lines up with their text column. */}
+      <div className="shell tier-c lg:grid lg:grid-cols-12 lg:gap-8">
+        <p className="t-small m-0 max-w-measure lg:col-span-9 lg:col-start-4">{privacy.note}</p>
+      </div>
     </>
   );
 }

@@ -286,6 +286,14 @@
     font-stretch: 112%;
     letter-spacing: -0.01em;
   }
+  /* Below 390px a single long word on a band ("ResumeForge", "Replacement"
+     in a case-study header) was wider than its box. The size follows the
+     screen here, from 30px at 320 to the usual 36px at 390. */
+  @media (max-width: 389.98px) {
+    .t-h1 {
+      font-size: max(1.875rem, 9.2vw);
+    }
+  }
   .t-h2 {
     font-size: 1.75rem;
     line-height: 1.1;
@@ -448,6 +456,25 @@
   }
   .btn-primary {
     --fill: var(--section);
+  }
+  /*
+   * Previous and next, at the foot of a page or a case study. A title such
+   * as "Task Scheduling with ML, DL and DRL" is longer than a phone, so the
+   * label may wrap here, and below 640px both buttons take the full width,
+   * which also makes the pair the same width.
+   */
+  .pager-btn {
+    white-space: normal;
+    max-width: 100%;
+  }
+  @media (max-width: 639.98px) {
+    .pager-btn {
+      flex: 1 1 100%;
+    }
+    .pager-btn.pager-next {
+      justify-content: flex-end;
+      text-align: right;
+    }
   }
   .btn-secondary {
     --fill: var(--paper);

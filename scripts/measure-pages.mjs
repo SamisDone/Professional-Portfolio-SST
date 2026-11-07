@@ -26,7 +26,13 @@
  *             1024px wide, the top of its screenshot; on a phone, its 4px
  *             opening rule and its kind and year label (by their top edges).
  *
+ *   sideways  no page may scroll sideways at any width from 320 to 1920
+ *             (320, 360, 390, 768, 1024, 1280, 1440, 1920). This one fails
+ *             the script: a page that scrolls sideways is broken.
+ *
  * Full-page screenshots at 1280x800 and 390x844 go to the output directory.
+ * Each page is scrolled to the bottom and back first, so every entrance has
+ * played; a capture straight after load shows them in their starting state.
  */
 import { spawn } from "node:child_process";
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
@@ -110,6 +116,7 @@ await new Promise((ok, fail) => {
 
 const browser = await chromium.launch();
 const rows = [];
+const sideways = [];
 
 try {
   for (const reduced of [false, true]) {
@@ -162,12 +169,34 @@ try {
 
         if (!reduced && ((w === 1280 && h === 800) || w === 390)) {
           const name = route === "/" ? "home" : route.slice(1).replaceAll("/", "_");
+          await page.evaluate(async () => {
+            for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight * 0.6) {
+              scrollTo(0, y);
+              await new Promise((r) => setTimeout(r, 120));
+            }
+            await new Promise((r) => setTimeout(r, 1800));
+            scrollTo(0, 0);
+          });
           await page.screenshot({ path: join(OUT, "screens", `${w}x${h}__${name}.png`), fullPage: true });
         }
       }
       await ctx.close();
     }
   }
+
+  // Sideways scrolling, at every width a visitor might have.
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  for (const w of [320, 360, 390, 768, 1024, 1280, 1440, 1920]) {
+    await page.setViewportSize({ width: w, height: 900 });
+    for (const route of ROUTES) {
+      await page.goto(route === "/404" ? `${BASE}/this-page-does-not-exist` : BASE + route, { waitUntil: "load" });
+      await page.evaluate(() => document.fonts.ready);
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (over > 0) sideways.push(`${route} at ${w}px: ${over}px wider than the screen`);
+    }
+  }
+  await ctx.close();
 } finally {
   await browser.close();
   server.kill();
@@ -198,4 +227,6 @@ const diffs = rows.filter((r) => r.reduced).filter((r) => {
   return twin && (twin.length !== r.length || twin.rule1 !== r.rule1 || twin.rule4 !== r.rule4);
 });
 console.log(diffs.length ? `\nreduced motion differs:\n${diffs.map(fmt).join("\n")}` : "\nreduced motion: identical results");
+console.log(sideways.length ? `\nSIDEWAYS FAIL:\n  ${sideways.join("\n  ")}` : "\nsideways: no page scrolls sideways from 320 to 1920");
 console.log(`\nscreenshots and measure.json in ${OUT}`);
+if (sideways.length) process.exitCode = 1;

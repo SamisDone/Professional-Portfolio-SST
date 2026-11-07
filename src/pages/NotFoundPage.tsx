@@ -8,8 +8,11 @@ export default function NotFoundPage() {
         <p aria-hidden className="t-display">
           404
         </p>
-        <h1 tabIndex={-1} className="t-h1 band mt-6 max-w-[18ch]">
-          That page does not exist.
+        {/* One band per line, as wide as its words, like the name on Home. A
+            single band with a max-width kept that width when the text wrapped,
+            leaving a run of empty orange after "That page". */}
+        <h1 tabIndex={-1} className="t-h1 mt-6">
+          <span className="band">That page</span> <span className="band">does not exist.</span>
         </h1>
         <div className="mt-8">
           <Button to="/work" variant="primary">
