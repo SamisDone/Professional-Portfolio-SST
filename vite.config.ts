@@ -16,7 +16,7 @@ const escape = (s: string) =>
  * page also reads src/data/content.ts, so that is added to all of them.
  */
 const SOURCES: Record<string, string[]> = {
-  "/": ["src/components/Hero.tsx", "src/components/Proof.tsx", "src/components/Flagships.tsx"],
+  "/": ["src/components/Hero.tsx", "src/components/Proof.tsx", "src/components/Flagships.tsx", "src/components/Credentials.tsx"],
   "/work": ["src/components/Work.tsx"],
   "/experience": ["src/components/Experience.tsx"],
   "/research": ["src/components/Research.tsx"],
