@@ -1175,13 +1175,13 @@ export const proof: Proof[] = [
  * "sf_". It is public: it ships in the HTML.
  *
  * While `fallback` is true, /contact shows the notice above the form with a
- * mailto link, server-rendered so it shows with JavaScript off too. Keep it
- * on until a real test message has arrived through the form, then set it to
- * false. The form stays visible either way.
+ * mailto link, server-rendered so it shows with JavaScript off too. It is for
+ * an outage only. The form stays visible either way. A real test message was
+ * accepted by the endpoint on 8 November 2026, so it is off.
  */
 export const contactForm = {
   apiKey: "sf_060c8f20d2831410b4d1f96d",
-  fallback: true,
+  fallback: false,
   fallbackNotice: "The form is down at the moment. Email me directly:",
 };
 
