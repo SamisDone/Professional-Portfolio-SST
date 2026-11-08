@@ -103,8 +103,6 @@ const kindFrom = (search: string) => {
   return WORK_FILTERS.some((f) => f.key === k) ? k : null;
 };
 
-const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 /**
  * Every project on /work in one index table, the flagships first and marked,
  * every row opening a real page.
@@ -113,8 +111,8 @@ const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefe
  * query string, so a filtered view can be shared. The inline script in
  * index.html copies ?kind= onto <html data-kind> before the first paint and
  * CSS hides the rows that do not match, so a shared link never shows every
- * row first. Choosing a chip cuts the rows that leave at once and slides
- * the rows that stay to their new places (transform only, 200ms). With
+ * row first. Choosing a chip collapses the rows that leave and moves the
+ * rows that stay to their new places, in 250ms (src/motion.css). With
  * JavaScript off the page shows every row, with a note saying so.
  *
  * From 1024px a sticky exhibit frame beside the table shows the pointed-at
@@ -124,7 +122,6 @@ const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefe
 export default function Work() {
   const { search } = useLocation();
   const kind = kindFrom(search);
-  const list = useRef<HTMLOListElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   // Coming back from a case study, its row is the one in the frame.
   const [active, setActive] = useState<string>(
@@ -137,27 +134,12 @@ export default function Work() {
     if ((p.shot || p.figures) && p.slug !== active) setActive(p.slug);
   };
 
-  // Apply the filter: measure the rows, switch, measure again, and slide the
-  // rows that stayed from where they were (FLIP). Rows that leave are cut.
+  // Apply the filter, inside the view transition that moves the rows
+  // (lib/transitions.ts), or at once where there is none.
   useIsoLayoutEffect(() => {
     const html = document.documentElement;
-    const rows = [...(list.current?.children ?? [])] as HTMLElement[];
-    const before = new Map(rows.map((r) => [r, r.getBoundingClientRect().top]));
     if (kind) html.dataset.kind = kind;
     else delete html.dataset.kind;
-    if (!reduced()) {
-      for (const r of rows) {
-        if (!r.offsetParent) continue;
-        const from = before.get(r)!;
-        const to = r.getBoundingClientRect().top;
-        if (from && Math.abs(from - to) > 1 && before.get(r) !== undefined) {
-          r.animate([{ transform: `translateY(${from - to}px)` }, { transform: "none" }], {
-            duration: 200,
-            easing: "cubic-bezier(0.2, 0, 0, 1)",
-          });
-        }
-      }
-    }
     // The frame follows: if its project was filtered out, the first one left.
     const current = WORK_INDEX.find((p) => p.slug === active);
     if (current && !visible(current)) {
@@ -229,7 +211,7 @@ export default function Work() {
                 </Label>
               ))}
             </div>
-            <ol ref={list} data-ledger="bottom" className="border-t-2 border-ink md:border-t-0">
+            <ol data-ledger="bottom" className="border-t-2 border-ink md:border-t-0">
               {WORK_INDEX.map((p, i) => (
                 <Row key={p.slug} project={p} n={i + 1} onPick={() => pick(p)} />
               ))}

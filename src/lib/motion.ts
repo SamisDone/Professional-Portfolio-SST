@@ -36,6 +36,7 @@ const TARGETS = [
   "[data-flow]", // E2 and E3, how it works
   "[data-print]", // F1, the proof row printing
   "[data-ledger]", // F2, ledgers and tables ruling
+  ".glitch", // G, the 404
 ].join(",");
 
 const STAGGER_MAX = 5;
@@ -99,10 +100,37 @@ function revealBands(root: ParentNode = document) {
 /** Shown and finished: nothing on it plays again. */
 const finish = (el: Element) => el.setAttribute("data-in", "now");
 
+const COUNT_MS = 600;
+
+/** G: a figure such as 12 or 7th counts up from 0, once. Others stay as they are. */
+function countUp(el: HTMLElement) {
+  const final = el.textContent ?? "";
+  const match = /^(\d+)(\D*)$/.exec(final);
+  if (!match) return;
+  const target = Number(match[1]);
+  let frame = 0;
+  const end = () => {
+    cancelAnimationFrame(frame);
+    off();
+    el.textContent = final;
+  };
+  const off = onSkip(end);
+  const start = performance.now();
+  const tick = (now: number) => {
+    const t = Math.min(1, (now - start) / COUNT_MS);
+    el.textContent = `${Math.round(target * (1 - (1 - t) ** 3))}${match[2]}`;
+    if (t < 1) frame = requestAnimationFrame(tick);
+    else end();
+  };
+  el.textContent = `0${match[2]}`;
+  frame = requestAnimationFrame(tick);
+}
+
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
   entrancesUntil = Math.max(entrancesUntil, performance.now() + DONE_MS);
   el.setAttribute("data-in", "");
+  el.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
   timers.set(el, window.setTimeout(() => finish(el), DONE_MS));
 }
 

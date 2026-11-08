@@ -36,7 +36,14 @@ export default function Proof() {
           const where = item.internal ? item.href : domainOf(item.href);
           const body = (
             <>
-              <span className="t-figure">{item.value}</span>
+              {/* The script counts the visible copy up (G); the figure a screen
+                  reader hears never changes. */}
+              <span className="t-figure">
+                <span aria-hidden data-count>
+                  {item.value}
+                </span>
+                <span className="sr-only">{item.value}</span>
+              </span>
               <span className="t-small proof-label mt-3 block">{item.label}</span>
               <span className="t-label domain-line mt-auto block pt-3 text-ink-2 sm:pt-4">
                 {/* Under 480px a domain cannot fit its cell, so the line names

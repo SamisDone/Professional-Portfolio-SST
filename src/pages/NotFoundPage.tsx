@@ -6,7 +6,7 @@ export default function NotFoundPage() {
   return (
     <Page title="Page not found">
       <section className="shell tier-a">
-        <p aria-hidden className="t-display">
+        <p aria-hidden data-text="404" className="t-display glitch">
           404
         </p>
         {/* One band per line, as wide as its words, like the name on Home. A

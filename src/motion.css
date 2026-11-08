@@ -290,6 +290,99 @@ html.m-js [data-ocr="done"] .peer-stamp {
   animation: m-peer 250ms var(--m-ease) backwards;
 }
 
+/* ---------------------------------------------------------------- G
+   The 404's glitch, once, under 400ms: two channels of the figure split and
+   jitter over it, then go. A nod to Glitch Breach. Filled with the palette's
+   red-orange and blue through background-clip, so no text takes a colour. */
+.glitch {
+  position: relative;
+  width: fit-content;
+}
+@keyframes m-jitter {
+  20% {
+    transform: translate(-3px, 1px);
+  }
+  40% {
+    transform: translate(3px, -2px);
+  }
+  60% {
+    transform: translate(-2px, 2px);
+  }
+  80% {
+    transform: translate(2px, 0);
+  }
+}
+@keyframes m-split-a {
+  0%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-7px, 2px);
+    clip-path: inset(0 0 55% 0);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(5px, -2px);
+    clip-path: inset(40% 0 20% 0);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-4px, 0);
+    clip-path: inset(70% 0 0 0);
+  }
+}
+@keyframes m-split-b {
+  0%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(7px, -2px);
+    clip-path: inset(50% 0 10% 0);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(-5px, 2px);
+    clip-path: inset(0 0 60% 0);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(4px, 1px);
+    clip-path: inset(25% 0 45% 0);
+  }
+}
+html.m-js .glitch[data-in=""] {
+  animation: m-jitter 360ms steps(5) 1;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+}
+.glitch::before {
+  background-color: var(--orange);
+}
+.glitch::after {
+  background-color: var(--blue);
+}
+html.m-js .glitch[data-in=""]::before {
+  animation: m-split-a 360ms steps(5) 1;
+}
+html.m-js .glitch[data-in=""]::after {
+  animation: m-split-b 360ms steps(5) 1;
+}
+
 /* Any press during an entrance: everything jumps to its final state. */
 html[data-m-skip] *,
 html[data-m-skip] *::before,
@@ -340,18 +433,6 @@ html.m-js .m-a6 [data-stamp]:not([data-in]) {
 html.m-js .m-a6 [data-stamp][data-in] {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
   animation-delay: calc(var(--m-i, 0) * var(--m-stagger));
-}
-
-/* ---------------------------------------------------------------- B1
-   Buttons and pressables, retimed: hover on --m-state, press on --m-snap. */
-.m-b1 .press,
-.m-b1 .press::before {
-  transition-duration: var(--m-state);
-  transition-timing-function: var(--m-ease);
-}
-.m-b1 .press:active,
-.m-b1 .press:active::before {
-  transition-duration: var(--m-snap);
 }
 
 /* ---------------------------------------------------------------- B2
@@ -786,6 +867,34 @@ html[data-vt="morph"]::view-transition-new(morph-title) {
 }
 html[data-vt="morph"]::view-transition-old(page-stage) {
   translate: 0 var(--vt-old-y, 0);
+}
+
+/*
+ * 3b. /work filters. Every row has its own group for that one change: rows
+ * that stay move, rows that leave collapse from the bottom, rows that arrive
+ * open up, all in 250ms.
+ */
+@keyframes vt-row-out {
+  to {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+}
+@keyframes vt-row-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+}
+html[data-vt="filter"]::view-transition-group(*) {
+  animation-duration: 250ms;
+  animation-timing-function: var(--ease);
+}
+html[data-vt="filter"]::view-transition-old(*):only-child {
+  animation: vt-row-out 250ms var(--ease) both;
+}
+html[data-vt="filter"]::view-transition-new(*):only-child {
+  animation: vt-row-in 250ms var(--ease) both;
 }
 
 /*
