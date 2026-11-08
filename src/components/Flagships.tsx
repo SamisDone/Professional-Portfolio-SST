@@ -1,118 +1,151 @@
+import { useEffect, useRef, useState } from "react";
 import type { Project } from "../data/content";
-import { FLAGSHIPS, WORK_INDEX, caseStudyPath, teamLine } from "../lib/projects";
+import { scan } from "../lib/motion";
+import { FLAGSHIPS, WORK_INDEX, caseStudyPath, preloadShot, teamLine } from "../lib/projects";
 import { ProjectVisual } from "./Exhibit";
-import { Button, Label, ProofMark, TextLink } from "./ui";
+import { Label, ProofMark, TextLink } from "./ui";
 
 const n = (i: number) => String(i + 1).padStart(2, "0");
 
-/** "Flagship 01 / Chrome extension, 2025". */
-function KindLabel({ project, index, className = "" }: { project: Project; index: number; className?: string }) {
+/** A phone's own small picture for a row, 16:10, at 40% of the row. */
+function Thumb({ project, eager }: { project: Project; eager: boolean }) {
+  if (!project.shot) return null;
+  const stem = project.shot.replace(/\.(jpg|jpeg|png)$/i, "");
   return (
-    <Label stamp className={className}>
-      Flagship {n(index)} / {project.kind}, {project.year}
-    </Label>
+    <img
+      src={`${stem}-700.webp`}
+      alt=""
+      width={700}
+      height={438}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      className="aspect-[16/10] w-full border-2 border-ink bg-paper-2 object-cover object-top lg:hidden"
+    />
   );
 }
 
-/** Kind and year, then the title, the summary and the three ways in.
-    `labelAbove` hides the label below `lg`, where the spread shows it over
-    its picture instead. */
-function SpreadText({ project, index, labelAbove = false }: { project: Project; index: number; labelAbove?: boolean }) {
+/** One flagship as a row: number, kind and year, title, one line, three ways in. */
+function FlagRow({
+  project,
+  index,
+  selected,
+  onPick,
+}: {
+  project: Project;
+  index: number;
+  selected: boolean;
+  onPick: () => void;
+}) {
   return (
-    <>
-      <KindLabel project={project} index={index} className={labelAbove ? "hidden lg:block" : ""} />
-      {teamLine(project) && <Label className="mt-1 text-ink">{teamLine(project)}</Label>}
-      <h2 className="t-h2 mt-3">{project.title}</h2>
-      <p className="t-body mt-3 max-w-measure">{project.summary}</p>
-      {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
-      <Actions project={project} />
-    </>
-  );
-}
-
-function Actions({ project }: { project: Project }) {
-  return (
-    <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
-      <Button to={caseStudyPath(project)}>Read the case study</Button>
-      {project.live && (
-        <ProofMark href={project.live} label={`${project.title}, ${project.liveLabel ?? "live"}`} className="t-small">
-          {project.liveLabel ?? "Live"}
-        </ProofMark>
-      )}
-      <TextLink href={project.repo} label={`${project.title} source code`} className="t-small">
-        Code
-      </TextLink>
-    </div>
+    <li
+      data-flag-row
+      aria-current={selected ? "true" : undefined}
+      onPointerEnter={onPick}
+      onFocus={onPick}
+      className="tint-row grid grid-cols-[40%_minmax(0,1fr)] gap-x-4 border-t border-ink py-5 first:border-t-0 first:pt-0 lg:block lg:py-5 lg:pl-5 lg:first:pt-5"
+    >
+      <Thumb project={project} eager={index === 0} />
+      <div>
+        <Label stamp className="text-ink">
+          {n(index)} / {project.kind}, {project.year}
+        </Label>
+        {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
+        <h3 className="t-h3 mt-2">
+          <TextLink to={caseStudyPath(project)} arrow={false} className="font-bold">
+            {project.title}
+          </TextLink>
+        </h3>
+        <p className="t-small mt-2 max-w-measure">{project.summary}</p>
+        {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <TextLink to={caseStudyPath(project)} className="t-small font-semibold">
+            Read the case study
+          </TextLink>
+          {project.live && (
+            <ProofMark href={project.live} label={`${project.title}, ${project.liveLabel ?? "live"}`} className="t-small">
+              {project.liveLabel ?? "Live"}
+            </ProofMark>
+          )}
+          <TextLink href={project.repo} label={`${project.title} source code`} className="t-small">
+            Code
+          </TextLink>
+        </div>
+      </div>
+    </li>
   );
 }
 
 /**
- * Three projects, deliberately not the same shape, so the page does not read
- * as a grid of identical cards. The first is exhibit-led and wide. The other
- * two share a row at unequal widths, seven columns and five, each with its
- * picture over its text; on a phone they stack.
+ * The three flagships as an index and a viewer. From lg, one exhibit frame
+ * (seven columns) beside the three as numbered rows (five): hovering or
+ * keyboard-focusing a row puts that project's screenshot and caption in the
+ * frame, behind the same paper cover that slides off every exhibit (A5).
+ * The first row is selected in the prerendered page, and the frame changes
+ * only when a row is pointed at or focused, never on its own. Below lg there
+ * is no shared frame: each row carries its own small picture.
  *
- * The first spread sits closer to the proof row than a section break would
- * put it, so its opening reaches the first screen: on a desktop the top of
- * its screenshot, and on a phone its 4px rule and its kind and year label,
- * which there sits over the picture rather than under it.
+ * Its 4px opening rule sits close to the proof row, so on a desktop the top
+ * of the frame, and on a phone the rule and the first row's label, reach the
+ * first screen.
  */
 export default function Flagships() {
-  const [a, b, c] = FLAGSHIPS;
+  const [active, setActive] = useState(0);
+  const frame = useRef<HTMLDivElement>(null);
+  const first = useRef(true);
+  const shown = FLAGSHIPS[active];
+
+  // A swapped-in exhibit is new to the motion layer: hand it over, so its
+  // cover slides off once the picture has decoded. Under reduced motion the
+  // layer is off and the swap is instant.
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    if (frame.current) scan(frame.current);
+  }, [active]);
+
+  const pick = (i: number) => {
+    if (i !== active) setActive(i);
+  };
+  // The other two pictures load once the list is pointed at or focused, so a
+  // swap rarely waits on the network.
+  const warm = () => FLAGSHIPS.forEach(preloadShot);
 
   return (
-    <div>
-      {a && (
-        <article className="shell pt-4 sm:pt-8">
-          <div className="grid gap-8 border-t-4 border-ink pt-4 sm:pt-8 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <KindLabel project={a} index={0} className="mb-3 lg:hidden" />
-              <ProjectVisual
-                project={a}
-                sizes="(min-width: 1280px) 780px, (min-width: 1024px) 64vw, 100vw"
-                priority
-              />
-            </div>
-            <div className="lg:col-span-4">
-              <SpreadText project={a} index={0} labelAbove />
-            </div>
-          </div>
-        </article>
-      )}
-
-      {(b || c) && (
-        <div className="shell tier-a">
-          <div className="grid gap-x-8 gap-y-16 lg:grid-cols-12">
-            {[b, c].map(
-              (p, i) =>
-                p && (
-                  <article
-                    key={p.slug}
-                    className={`border-t-4 border-ink pt-8 ${i === 0 ? "lg:col-span-7" : "lg:col-span-5"}`}
-                  >
-                    <ProjectVisual
-                      project={p}
-                      sizes={
-                        i === 0
-                          ? "(min-width: 1280px) 680px, (min-width: 1024px) 56vw, 100vw"
-                          : "(min-width: 1280px) 480px, (min-width: 1024px) 40vw, 100vw"
-                      }
-                    />
-                    <div className="mt-6">
-                      <SpreadText project={p} index={i + 1} />
-                    </div>
-                  </article>
-                ),
-            )}
-          </div>
+    <section aria-labelledby="flagships" className="shell pt-4 sm:pt-8">
+      <div data-flagships className="border-t-4 border-ink pt-4 sm:pt-6 lg:grid lg:grid-cols-12 lg:gap-8">
+        {/* For the outline only: the numbered labels say what these are, and
+            a visible heading here pushed Flagship 01 off the first screen. */}
+        <h2 id="flagships" className="sr-only">
+          Flagships
+        </h2>
+        <div ref={frame} data-flag-frame className="hidden lg:col-span-7 lg:block">
+          {shown && (
+            <ProjectVisual
+              key={shown.slug}
+              project={shown}
+              sizes="(min-width: 1280px) 690px, 56vw"
+              priority={active === 0}
+            />
+          )}
         </div>
-      )}
+        <ol
+          className="m-0 list-none p-0 lg:col-span-5 lg:border-l-2 lg:border-ink"
+          onPointerEnter={warm}
+          onFocus={warm}
+        >
+          {FLAGSHIPS.map((p, i) => (
+            <FlagRow key={p.slug} project={p} index={i} selected={i === active} onPick={() => pick(i)} />
+          ))}
+        </ol>
+      </div>
 
-      <div className="shell tier-b">
+      <div className="tier-b">
         <p className="t-lead">
           <TextLink to="/work">{WORK_INDEX.length} projects on the work page</TextLink>
         </p>
       </div>
-    </div>
+    </section>
   );
 }

@@ -322,6 +322,26 @@
   }
 
   /*
+   * Home's flagship index: from lg the row whose project is in the frame
+   * carries a 4px bar in the section colour on the list's rule. A state, so
+   * it changes at once.
+   */
+  @media (min-width: 1024px) {
+    [data-flag-row] {
+      position: relative;
+    }
+    [data-flag-row][aria-current]::before {
+      content: "";
+      position: absolute;
+      left: -3px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--section);
+    }
+  }
+
+  /*
    * "+N" after a skill's first receipt on About: a native disclosure, styled
    * as the link it behaves like. Open, it takes the receipts column's full width.
    */

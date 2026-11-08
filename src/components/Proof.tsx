@@ -25,7 +25,9 @@ function breakAfterDots(text = "") {
  * Never anywhere else, and never with a hyphen.
  */
 function breakCamelCase(text: string) {
-  return text.split(/(?<=[a-z])(?=[A-Z][a-z])/).map((part, i) => (
+  // Only the first join in each word, so it reads Dravidian / LangTech,
+  // never DravidianLang / Tech.
+  return text.split(/(?<=\b[A-Z][a-z]+)(?=[A-Z][a-z])/).map((part, i) => (
     <Fragment key={i}>
       {i > 0 && <wbr />}
       {part}
