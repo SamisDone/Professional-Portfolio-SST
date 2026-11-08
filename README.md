@@ -217,7 +217,7 @@ numbers each, from `chromeStore` near the top of `src/data/content.ts`:
 `installs` from the developer dashboard (Chrome Web Store, the item, Analytics,
 Installs), and `users`, the number printed on the public listing, so a visitor
 who follows the link finds it there. Update both and set `asOf` to the day you
-read them; every sentence and the "Users as of" label read from that one place.
+read them; every sentence and the "Weekly active users as of" label read from that one place.
 The CV states the same figures in `cv/Samonwita_Sarker_CV.tex` (the Chrome
 Extensions entry), so change them there too and rebuild the PDF.
 
