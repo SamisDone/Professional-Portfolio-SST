@@ -52,6 +52,9 @@ export function Exhibit({
     <figure className={`m-0 ${className}`}>
       {/* data-exhibit marks the frame the /work thumbnail grows into. */}
       <div data-exhibit={project.slug} className="relative border-2 border-ink bg-paper-2" style={{ aspectRatio: "16 / 10" }}>
+        {/* The full-size file. With JavaScript, Inspect opens it in a sheet
+            over the page instead (F4); without, this link is the way in. */}
+        <a href={src} data-inspect className="block h-full" aria-label={`${project.title} screenshot, full size`}>
         <img
           ref={img}
           src={src}
@@ -68,6 +71,7 @@ export function Exhibit({
           data-loading={loading}
           className="exhibit-img block h-full w-full object-cover object-top"
         />
+        </a>
       </div>
       <figcaption className="t-label border-2 border-t-0 border-ink px-3 py-2 text-ink-2">
         {captionFor(project)}

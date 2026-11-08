@@ -1,38 +1,31 @@
-import { Link } from "react-router-dom";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import type { Project } from "../data/content";
-import { ALL_PROJECTS, WORK_INDEX, caseStudyPath, isFlagship, preloadShot, teamLine } from "../lib/projects";
+import { scan } from "../lib/motion";
+import {
+  ALL_PROJECTS,
+  WORK_FILTERS,
+  WORK_INDEX,
+  caseStudyPath,
+  filtersOf,
+  isFlagship,
+  preloadShot,
+  teamLine,
+} from "../lib/projects";
+import { ProjectVisual } from "./Exhibit";
 import { Label, ProofMark, TextLink } from "./ui";
+
+/** useLayoutEffect warns when rendered to a string; there is nothing to
+    measure on a server. */
+const useIsoLayoutEffect = typeof window === "undefined" ? () => {} : useLayoutEffect;
 
 /** Stack items shown in the row; the rest are counted, and listed in full on
     the case study. */
 const STACK = 3;
 
-const COLS =
-  "md:grid-cols-[40px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_112px] lg:grid-cols-[40px_160px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_112px]";
+const COLS = "md:grid-cols-[40px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_96px]";
 
-function Thumb({ project, eager }: { project: Project; eager: boolean }) {
-  // No capture, no picture: the cell stays empty rather than holding a box.
-  if (!project.shot) return <span aria-hidden className="hidden lg:block" />;
-  const stem = project.shot.replace(/\.(jpg|jpeg|png)$/i, "");
-  return (
-    <img
-      src={`${stem}-700.webp`}
-      srcSet={`${stem}-700.webp 700w, ${stem}.webp 1400w`}
-      sizes="160px"
-      alt=""
-      // The source of the morph into this project's case study exhibit.
-      data-exhibit={project.slug}
-      width={160}
-      height={100}
-      // The first rows sit on the first screen; the rest wait until scrolled to.
-      loading={eager ? "eager" : "lazy"}
-      decoding="async"
-      className="hidden aspect-[16/10] w-40 border-2 border-ink bg-paper-2 object-cover object-top lg:block"
-    />
-  );
-}
-
-export function Row({ project, n }: { project: Project; n: number }) {
+export function Row({ project, n, onPick }: { project: Project; n: number; onPick?: () => void }) {
   const extra = project.stack.length - STACK;
   const stack = (
     <>
@@ -44,8 +37,16 @@ export function Row({ project, n }: { project: Project; n: number }) {
   return (
     <li
       className="border-b border-ink"
-      onPointerEnter={() => preloadShot(project)}
-      onFocus={() => preloadShot(project)}
+      data-kinds={filtersOf(project).join(" ")}
+      data-slug={project.slug}
+      onPointerEnter={() => {
+        preloadShot(project);
+        onPick?.();
+      }}
+      onFocus={() => {
+        preloadShot(project);
+        onPick?.();
+      }}
     >
       <div
         data-row
@@ -56,7 +57,6 @@ export function Row({ project, n }: { project: Project; n: number }) {
             {String(n).padStart(2, "0")}
           </span>
         </span>
-        <Thumb project={project} eager={n <= 3} />
 
         <div>
           {isFlagship(project) && (
@@ -77,9 +77,6 @@ export function Row({ project, n }: { project: Project; n: number }) {
           {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
           <p className="t-small mt-2 md:hidden">{project.summary}</p>
           {project.figureNote && <Label className="mt-2 md:hidden">{project.figureNote}</Label>}
-          <Label className="mt-2 md:hidden">
-            {stack} / {project.year}
-          </Label>
         </div>
 
         <div className="col-start-2 hidden md:col-start-auto md:block">
@@ -87,7 +84,9 @@ export function Row({ project, n }: { project: Project; n: number }) {
           {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
         </div>
         <Label className="hidden pt-1 md:block">{stack}</Label>
-        <Label className="hidden pt-1 md:block">{project.year}</Label>
+        <Label date className="hidden pt-1 md:block">
+          {project.year}
+        </Label>
 
         <div className="relative z-20 col-start-2 flex gap-4 md:col-start-auto md:flex-col md:items-end md:gap-2">
           {project.live && (
@@ -104,12 +103,87 @@ export function Row({ project, n }: { project: Project; n: number }) {
   );
 }
 
+const kindFrom = (search: string) => {
+  const k = new URLSearchParams(search).get("kind");
+  return WORK_FILTERS.some((f) => f.key === k) ? k : null;
+};
+
+const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 /**
- * Every project on /work in one index table. The 3-up grid of identical cards
- * and the list under it were two designs for one job; this is one. The
- * flagships come first and are marked, and every row opens a real page.
+ * Every project on /work in one index table, the flagships first and marked,
+ * every row opening a real page.
+ *
+ * Filters: chips by kind, worked out from content.ts. Each is a link with a
+ * query string, so a filtered view can be shared. The inline script in
+ * index.html copies ?kind= onto <html data-kind> before the first paint and
+ * CSS hides the rows that do not match, so a shared link never shows every
+ * row first. Choosing a chip cuts the rows that leave at once and slides
+ * the rows that stay to their new places (transform only, 200ms). With
+ * JavaScript off the page shows every row, with a note saying so.
+ *
+ * From 1024px a sticky exhibit frame beside the table shows the pointed-at
+ * or focused row's screenshot, the first row's by default; a phone gets
+ * text rows only.
  */
 export default function Work() {
+  const { search } = useLocation();
+  const kind = kindFrom(search);
+  const list = useRef<HTMLOListElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState<string>(WORK_INDEX.find((p) => p.shot || p.figures)?.slug ?? "");
+  const firstFrame = useRef(true);
+
+  const visible = (p: Project) => !kind || filtersOf(p).includes(kind);
+  const pick = (p: Project) => {
+    if ((p.shot || p.figures) && p.slug !== active) setActive(p.slug);
+  };
+
+  // Apply the filter: measure the rows, switch, measure again, and slide the
+  // rows that stayed from where they were (FLIP). Rows that leave are cut.
+  useIsoLayoutEffect(() => {
+    const html = document.documentElement;
+    const rows = [...(list.current?.children ?? [])] as HTMLElement[];
+    const before = new Map(rows.map((r) => [r, r.getBoundingClientRect().top]));
+    if (kind) html.dataset.kind = kind;
+    else delete html.dataset.kind;
+    if (!reduced()) {
+      for (const r of rows) {
+        if (!r.offsetParent) continue;
+        const from = before.get(r)!;
+        const to = r.getBoundingClientRect().top;
+        if (from && Math.abs(from - to) > 1 && before.get(r) !== undefined) {
+          r.animate([{ transform: `translateY(${from - to}px)` }, { transform: "none" }], {
+            duration: 200,
+            easing: "cubic-bezier(0.2, 0, 0, 1)",
+          });
+        }
+      }
+    }
+    // The frame follows: if its project was filtered out, the first one left.
+    const current = WORK_INDEX.find((p) => p.slug === active);
+    if (current && !visible(current)) {
+      const next = WORK_INDEX.find((p) => visible(p) && (p.shot || p.figures));
+      if (next) setActive(next.slug);
+    }
+  }, [kind]);
+
+  // Leaving /work: the filter belongs to this page only.
+  useEffect(() => () => void delete document.documentElement.dataset.kind, []);
+
+  // A project new to the frame is handed to the motion layer, so its cover
+  // slides off once the picture has decoded (A5).
+  useEffect(() => {
+    if (firstFrame.current) {
+      firstFrame.current = false;
+      return;
+    }
+    if (frame.current) scan(frame.current);
+  }, [active]);
+
+  const shown = WORK_INDEX.find((p) => p.slug === active);
+  const count = (key: string) => WORK_INDEX.filter((p) => filtersOf(p).includes(key)).length;
+
   return (
     <>
       <section className="shell tier-a">
@@ -122,22 +196,52 @@ export default function Work() {
       </section>
 
       <section aria-label="Project index" className="shell tier-b">
-        <div aria-hidden className={`hidden gap-x-4 border-b-2 border-ink px-2 pb-2 md:grid ${COLS}`}>
-          {["No.", null, "Project", "What it is", "Stack", "Year", "Proof"].map((h, i) =>
-            h === null ? (
-              <span key={i} className="hidden lg:block" />
-            ) : (
-              <Label as="span" key={h} className={`text-ink ${h === "Proof" ? "text-right" : ""}`}>
-                {h}
-              </Label>
-            ),
-          )}
+        <nav aria-label="Filter by kind" className="mb-6">
+          <ul className="m-0 flex list-none flex-wrap gap-3 p-0">
+            {[{ key: null, label: "All", n: WORK_INDEX.length }, ...WORK_FILTERS.map((f) => ({ ...f, n: count(f.key) }))].map(
+              (f) => (
+                <li key={f.label}>
+                  <Link
+                    to={f.key ? `/work?kind=${f.key}` : "/work"}
+                    data-chip={f.key ?? "all"}
+                    aria-current={kind === f.key ? "true" : undefined}
+                    className="chip press t-small"
+                  >
+                    {f.label} <span className="t-label">{f.n}</span>
+                  </Link>
+                </li>
+              ),
+            )}
+          </ul>
+          <noscript>
+            <p className="t-small mt-3">Filtering needs JavaScript, so every project is shown below.</p>
+          </noscript>
+        </nav>
+
+        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-8">
+            <div aria-hidden className={`hidden gap-x-4 border-b-2 border-ink px-2 pb-2 md:grid ${COLS}`}>
+              {["No.", "Project", "What it is", "Stack", "Year", "Proof"].map((h) => (
+                <Label as="span" key={h} className={`text-ink ${h === "Proof" ? "text-right" : ""}`}>
+                  {h}
+                </Label>
+              ))}
+            </div>
+            <ol ref={list} data-ledger="bottom" className="border-t-2 border-ink md:border-t-0">
+              {WORK_INDEX.map((p, i) => (
+                <Row key={p.slug} project={p} n={i + 1} onPick={() => pick(p)} />
+              ))}
+            </ol>
+          </div>
+          <div className="hidden lg:col-span-4 lg:block">
+            <div ref={frame} data-work-frame className="sticky top-24">
+              {shown && (
+                <ProjectVisual key={shown.slug} project={shown} sizes="(min-width: 1280px) 380px, 30vw" priority />
+              )}
+            </div>
+          </div>
         </div>
-        <ol className="border-t-2 border-ink md:border-t-0">
-          {WORK_INDEX.map((p, i) => (
-            <Row key={p.slug} project={p} n={i + 1} />
-          ))}
-        </ol>
+
         <p className="t-small tier-c">
           <TextLink to="/repositories">All {ALL_PROJECTS.length} projects, with source</TextLink>
         </p>

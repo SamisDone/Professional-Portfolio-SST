@@ -106,7 +106,7 @@ export default function Repositories() {
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody data-ledger="top">
               {ALL_PROJECTS.map((p, i) => (
                 <Row key={p.slug} project={p} n={i + 1} />
               ))}

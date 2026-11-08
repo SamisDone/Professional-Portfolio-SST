@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Pager from "./components/Pager";
 import Footer from "./components/Footer";
 import RouteEffects from "./components/RouteEffects";
+import Inspect from "./components/Inspect";
 import HomePage from "./pages/HomePage";
 import WorkPage from "./pages/WorkPage";
 import CaseStudyPage from "./pages/CaseStudyPage";
@@ -24,7 +25,8 @@ const MotionLabPage = import.meta.env.DEV ? lazy(() => import("./pages/MotionLab
 
 /** Every motion of the layer is switched on here, for the whole site; see
     src/motion.css. Taking one name out turns that motion off. */
-const MOTION = "m-a1 m-a2 m-a3 m-a4 m-a5 m-a6 m-b1 m-b2 m-b3 m-b4 m-b5 m-b6 m-c1 m-e2 m-e3 m-e4";
+const MOTION =
+  "m-a1 m-a2 m-a3 m-a4 m-a5 m-a6 m-b1 m-b2 m-b3 m-b4 m-b5 m-b6 m-c1 m-e2 m-e3 m-e4 m-f1 m-f2 m-f3 m-f5 m-f7";
 
 /**
  * Everything inside the router, with no router of its own.
@@ -46,6 +48,8 @@ export function AppShell() {
         Skip to main content
       </a>
       <RouteEffects />
+      {/* F4: the sheet a screenshot opens in. */}
+      <Inspect />
       {/* The one place a page change is announced. RouteEffects writes the
           new page's title here after each swap. */}
       <p id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />

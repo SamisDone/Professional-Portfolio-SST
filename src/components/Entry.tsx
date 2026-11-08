@@ -26,7 +26,9 @@ export default function Entry({
           instead of dropping it under itself. */}
       <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-4">
         <h3 className="t-h3">{title}</h3>
-        <Label as="span">{period}</Label>
+        <Label as="span" date>
+          {period}
+        </Label>
       </div>
       <p className="t-body mt-2 max-w-measure">
         {meta}. {note}

@@ -181,7 +181,7 @@ export default function Contact() {
           method="POST"
           onSubmit={submit}
           ref={formRef}
-          className="flex flex-col gap-6"
+          className="relative flex flex-col gap-6"
         >
           {/* For the post the browser makes with JavaScript off. */}
           <input type="hidden" name="apiKey" value={contactForm.apiKey} />
@@ -203,9 +203,17 @@ export default function Contact() {
             />
           </div>
           {status === "sent" && (
-            <p role="status" className="t-body border-2 border-ink bg-paper-2 px-4 py-3">
-              Message sent. I will get back to you.
-            </p>
+            <>
+              {/* F7: a SENT stamp lands over the form, then the line below
+                  says it in words. Decoration only; the status line is what
+                  a screen reader hears. */}
+              <span aria-hidden className="sent-stamp">
+                Sent
+              </span>
+              <p role="status" className="sent-note t-body border-2 border-ink bg-paper-2 px-4 py-3">
+                Message sent. I will get back to you.
+              </p>
+            </>
           )}
           {status === "error" && (
             <p role="alert" className="t-body border-2 border-ink bg-paper-2 px-4 py-3">

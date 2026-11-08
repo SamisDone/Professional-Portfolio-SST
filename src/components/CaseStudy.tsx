@@ -1,8 +1,8 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Project } from "../data/content";
 import { caseStudyPath, isFlagship, projectNeighbours } from "../lib/projects";
-import { routeIndex } from "../lib/routes";
+import { routeIndex, sectionFor } from "../lib/routes";
 import { caseStudy } from "../lib/structured";
 import JsonLd from "./JsonLd";
 import Arrow from "./Arrow";
@@ -74,6 +74,33 @@ export default function CaseStudy({ project }: { project: Project }) {
     ),
   });
   rows.push({ term: "Stack", body: prose(project.stack.join(", ")) });
+  const idOf = (term: string) => term.toLowerCase().replace(/[^a-z]+/g, "-");
+
+  // The index marks the section being read: the last one whose top has
+  // passed a line a third of the way down the screen. Without JavaScript the
+  // index still works, as plain anchor links, with nothing marked.
+  const body = useRef<HTMLDListElement>(null);
+  const [current, setCurrent] = useState<string | null>(null);
+  useEffect(() => {
+    const sections = [...(body.current?.querySelectorAll<HTMLElement>("[id]") ?? [])];
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight / 3;
+      let id: string | null = sections[0]?.id ?? null;
+      for (const s of sections) if (s.getBoundingClientRect().top <= line) id = s.id;
+      setCurrent(id);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [project.slug]);
 
   return (
     <article>
@@ -108,7 +135,7 @@ export default function CaseStudy({ project }: { project: Project }) {
 
           <dl className="mt-6 grid gap-4 border-t-2 border-ink pt-4 sm:grid-cols-3">
             {facts.map(([term, value]) => (
-              <div key={term}>
+              <div key={term} data-stamp>
                 <dt className="t-label text-ink-2">{term}</dt>
                 <dd className="t-body m-0 mt-1 font-semibold">{value}</dd>
               </div>
@@ -118,7 +145,7 @@ export default function CaseStudy({ project }: { project: Project }) {
           {/* The proof rule: the live product is a proof mark, the source is a
               plain link. The live link is the page's next action, so it is
               set at body size, ahead of Code. */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div data-stamp className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
             {project.live && (
               <ProofMark href={project.live} label={`${project.title}, ${project.liveLabel ?? "live"}`} className="t-body font-semibold">
                 {project.liveLabel ?? "Open it"}
@@ -135,19 +162,40 @@ export default function CaseStudy({ project }: { project: Project }) {
         <ProjectVisual project={project} sizes="(min-width: 1280px) 1184px, 100vw" priority />
       </div>
 
-      <dl className="shell tier-b m-0">
-        {rows.map(({ term, body }) => (
-          <div key={term} className="tint-row grid gap-3 border-t-2 border-ink py-6 lg:grid-cols-12 lg:gap-8">
-            <dt className="t-label pt-1 text-ink-2 lg:col-span-3">{term}</dt>
-            <dd className="m-0 lg:col-span-9">{body}</dd>
-          </div>
-        ))}
-      </dl>
+      {/* From lg the left column is an index of the sections, sticky as the
+          page scrolls, with the one being read marked by a 4px bar in the
+          section colour. */}
+      <div className="shell tier-b lg:grid lg:grid-cols-12 lg:gap-8">
+        <nav aria-label="On this page" className="case-index hidden lg:col-span-3 lg:block">
+          <ol className="sticky top-24 m-0 list-none border-t-2 border-ink p-0 pt-4">
+            {rows.map(({ term }) => (
+              <li key={term}>
+                <a
+                  href={`#${idOf(term)}`}
+                  aria-current={current === idOf(term) ? "location" : undefined}
+                  className="t-label block py-2 pl-4 text-ink no-underline"
+                >
+                  {term}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <dl ref={body} className="m-0 lg:col-span-9">
+          {rows.map(({ term, body }) => (
+            <div key={term} id={idOf(term)} className="tint-row scroll-mt-24 border-t-2 border-ink py-6">
+              <dt className="t-label text-ink-2">{term}</dt>
+              <dd className="m-0 mt-3">{body}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
 
       <nav aria-label="More case studies" className="shell tier-b">
         <div className="flex flex-wrap items-stretch justify-between gap-4 border-t-2 border-ink pt-8">
           {prev ? (
             <Link to={caseStudyPath(prev)} className="btn btn-secondary press pager-btn">
+              <span aria-hidden className="pager-preview" style={{ "--dest": `var(--${sectionFor(caseStudyPath(prev))})` } as CSSProperties} />
               <Arrow dir="left" />
               <span>
                 <span className="t-label mr-2 text-ink-2">Previous</span>
@@ -159,6 +207,7 @@ export default function CaseStudy({ project }: { project: Project }) {
           )}
           {next && (
             <Link to={caseStudyPath(next)} className="btn btn-secondary press pager-btn pager-next">
+              <span aria-hidden className="pager-preview" style={{ "--dest": `var(--${sectionFor(caseStudyPath(next))})` } as CSSProperties} />
               <span>
                 <span className="t-label mr-2 text-ink-2">Next</span>
                 {next.title}

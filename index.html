@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
-      Switches the motion layer on before the first paint, so an entrance
+      Copies /work's ?kind= filter onto <html data-kind>, so a shared filtered
+      link hides the other rows from the first paint, and switches the motion
+      layer on before the first paint, so an entrance
       starts from its first frame instead of the finished page redrawing. If
       the site's script has not taken over within 1.5s, the starting states
       come off and everything shows; src/lib/motion.ts then leaves what is
       already on screen as it is. Allowed by its sha256 in public/_headers,
       which scripts/check-dist.mjs checks against the built page.
     -->
-    <script>(function(d,w){try{if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||!("IntersectionObserver"in w))return;d.classList.add("m-js");w.__mOff=setTimeout(function(){d.classList.remove("m-js")},1500)}catch(e){}})(document.documentElement,window)</script>
+    <script>(function(d,w){try{var k=/[?&]kind=([a-z-]+)/.exec(w.location.search);if(k&&w.location.pathname==="/work")d.setAttribute("data-kind",k[1]);if(w.matchMedia("(prefers-reduced-motion: reduce)").matches||!("IntersectionObserver"in w))return;d.classList.add("m-js");w.__mOff=setTimeout(function(){d.classList.remove("m-js")},1500)}catch(e){}})(document.documentElement,window)</script>
 
     <!--
       Every double-underscore token below is filled per route at build time by the route-meta

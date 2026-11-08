@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { proof } from "../data/content";
 import { domainOf } from "../lib/projects";
@@ -46,7 +46,8 @@ function breakCamelCase(text: string) {
 export default function Proof() {
   return (
     <section aria-label="Proof" className="shell mt-6 sm:mt-8">
-      <ul className="grid grid-cols-2 border-t-4 border-ink lg:grid-cols-4">
+      {/* data-print: the row prints like a receipt as it enters (F1). */}
+      <ul data-print className="grid grid-cols-2 border-t-4 border-ink lg:grid-cols-4">
         {proof.map((item, i) => {
           const where = item.internal ? item.href : domainOf(item.href);
           const body = (
@@ -67,6 +68,7 @@ export default function Proof() {
           return (
             <li
               key={item.label}
+              style={{ "--c": i } as CSSProperties}
               className={[
                 "border-ink",
                 i % 2 === 1 ? "border-l-2" : "",

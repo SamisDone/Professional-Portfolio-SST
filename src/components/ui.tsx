@@ -117,6 +117,7 @@ export function Label({
   className = "",
   id,
   stamp = false,
+  date = false,
 }: {
   children: ReactNode;
   as?: "p" | "span" | "dt" | "h2" | "h3" | "div";
@@ -124,9 +125,16 @@ export function Label({
   id?: string;
   /** Stamps into place as it enters (motion A6). */
   stamp?: boolean;
+  /** A date in a ledger: stamps as its row is revealed (motion F2). */
+  date?: boolean;
 }) {
   return (
-    <Tag id={id} data-stamp={stamp || undefined} className={`t-label text-ink-2 ${className}`}>
+    <Tag
+      id={id}
+      data-stamp={stamp || undefined}
+      data-date={date || undefined}
+      className={`t-label text-ink-2 ${className}`}
+    >
       {children}
     </Tag>
   );

@@ -39,6 +39,28 @@ export function projectNeighbours(slug: string) {
   };
 }
 
+/**
+ * The /work filters. Each is worked out from the project's own kind and
+ * stack in content.ts, so a new project files itself. A project can sit
+ * under more than one. The key is what goes in ?kind=.
+ */
+const any = (p: Project, names: string[]) => p.stack.some((s) => names.includes(s));
+export const WORK_FILTERS: { key: string; label: string; test: (p: Project) => boolean }[] = [
+  { key: "chrome", label: "Chrome extensions", test: (p) => p.kind === "Chrome extension" },
+  {
+    key: "web",
+    label: "Web apps",
+    test: (p) => any(p, ["Next.js", "React", "TanStack Start", "PHP 8", "Bun", "Node.js"]),
+  },
+  {
+    key: "ai-ml",
+    label: "AI and ML",
+    test: (p) => any(p, ["Gemini API", "Claude API", "PyTorch", "YOLO11-OBB", "TFLite", "RAG"]),
+  },
+  { key: "hackathon", label: "Hackathon builds", test: (p) => p.kind === "Hackathon build" },
+];
+export const filtersOf = (p: Project) => WORK_FILTERS.filter((f) => f.test(p)).map((f) => f.key);
+
 /** Stack names that count as a skill on About, beyond the skill's own name. */
 const SKILL_ALSO: Record<string, string[]> = {
   SQL: ["SQL Server", "PostgreSQL"],

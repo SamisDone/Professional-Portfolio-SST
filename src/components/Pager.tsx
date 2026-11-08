@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, type CSSProperties } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { neighbours, routeIndex } from "../lib/routes";
 import Arrow from "./Arrow";
@@ -39,6 +39,8 @@ export default function Pager() {
     (event: KeyboardEvent) => {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      // An open screenshot (Inspect) owns the keyboard.
+      if (document.querySelector("dialog[open]")) return;
       const el = event.target as HTMLElement | null;
       if (el) {
         if (TYPING.has(el.tagName) || el.isContentEditable) return;
@@ -70,6 +72,7 @@ export default function Pager() {
           // The accessible name is the visible text with its purpose in front,
           // so a voice user saying what they see still hits it.
           <Link to={prev.path} className="btn btn-secondary press pager-btn">
+            <span aria-hidden className="pager-preview" style={{ "--dest": `var(--${prev.section})` } as CSSProperties} />
             <Arrow dir="left" />
             <span>
               <span className="sr-only">Previous page: </span>
@@ -83,6 +86,7 @@ export default function Pager() {
         )}
         {next && (
           <Link to={next.path} className="btn btn-secondary press pager-btn pager-next">
+            <span aria-hidden className="pager-preview" style={{ "--dest": `var(--${next.section})` } as CSSProperties} />
             <KeyHint dir="right" />
             <span>
               <span className="sr-only">Next page: </span>

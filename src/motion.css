@@ -443,3 +443,201 @@ html.m-js .m-e2 [data-flow][data-in] .m-num {
 html.m-js .m-e2.m-e3 [data-flow][data-in] .m-num {
   animation-delay: calc(760ms + var(--i) * 200ms);
 }
+
+/* ---------------------------------------------------------------- F1
+   Receipt print, the proof row: as it enters, each cell prints from the top
+   down. Its ink rules are drawn by the print head (a linear clip from the
+   top, 240ms), then its figure stamps, then its label and domain line
+   appear, and the domain line's arrow nudges once, a receipt being torn
+   off. Cells 60ms apart; the fourth is finished at 860ms. Each step is an
+   animation filled backwards only, so once it has played the cell has no
+   clip at all and its hover shadow is whole. */
+@keyframes m-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes m-appear {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes m-nudge-out {
+  50% {
+    transform: translate(3px, -3px);
+  }
+}
+@keyframes m-nudge-right {
+  50% {
+    transform: translateX(4px);
+  }
+}
+html.m-js .m-f1 [data-print]:not([data-in]) > li {
+  clip-path: inset(0 0 100% 0);
+}
+html.m-js .m-f1 [data-print][data-in] > li {
+  animation: m-print 240ms linear backwards;
+  animation-delay: calc(var(--c, 0) * 60ms);
+}
+html.m-js .m-f1 [data-print][data-in] .t-figure {
+  display: inline-block;
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--c, 0) * 60ms + 240ms);
+}
+html.m-js .m-f1 [data-print][data-in] li .t-small,
+html.m-js .m-f1 [data-print][data-in] .domain-line {
+  animation: m-appear var(--m-snap) linear backwards;
+  animation-delay: calc(var(--c, 0) * 60ms + 360ms);
+}
+html.m-js .m-f1 [data-print][data-in] .domain-line svg[data-dir="out"] {
+  animation: m-nudge-out var(--m-state) var(--m-ease);
+  animation-delay: calc(var(--c, 0) * 60ms + 480ms);
+}
+html.m-js .m-f1 [data-print][data-in] .domain-line svg[data-dir="right"] {
+  animation: m-nudge-right var(--m-state) var(--m-ease);
+  animation-delay: calc(var(--c, 0) * 60ms + 480ms);
+}
+
+/* ---------------------------------------------------------------- F7
+   Sent: when the contact form has gone, a SENT stamp lands over it with the
+   snap, and the confirmation line appears after it. On failure nothing
+   shakes: the error block drops in as before (B6). */
+html.m-js .m-f7 .sent-stamp {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+}
+html.m-js .m-f7 .sent-note {
+  animation: m-appear var(--m-snap) linear var(--m-snap) backwards;
+}
+
+/* ---------------------------------------------------------------- F2
+   Ledger ruling, on Experience, Research, Activities, /repositories and the
+   /work index: when a ledger enters, its row rules are drawn left to right
+   one after another (linear, 320ms, 40ms apart, six at most and then the
+   rest together), and each row's text is revealed from the top as its rule
+   finishes. Dates and years stamp. The rule is a flat ink line over the
+   row's own border, made transparent; motion.ts gives it the border's
+   width, so the end state is the page without the layer. Experience's 4px
+   rules are A1's, so there only the text and dates move. */
+@keyframes m-reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+html.m-js .m-f2 [data-ledger] > :nth-child(2) { --r: 1; }
+html.m-js .m-f2 [data-ledger] > :nth-child(3) { --r: 2; }
+html.m-js .m-f2 [data-ledger] > :nth-child(4) { --r: 3; }
+html.m-js .m-f2 [data-ledger] > :nth-child(5) { --r: 4; }
+html.m-js .m-f2 [data-ledger] > :nth-child(6) { --r: 5; }
+html.m-js .m-f2 [data-ledger] > :nth-child(n + 7) { --r: 6; }
+html.m-js .m-f2 [data-ledger="top"] > *,
+html.m-js .m-f2 [data-ledger="bottom"] > * {
+  background-image: linear-gradient(var(--ink), var(--ink));
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-size: 0% var(--rule, 1px);
+  transition:
+    background-color var(--t-hover) var(--ease),
+    background-size 320ms linear calc(var(--r, 0) * var(--m-stagger));
+}
+html.m-js .m-f2 [data-ledger="top"] > * {
+  border-top-color: transparent;
+  background-position: left top;
+}
+html.m-js .m-f2 [data-ledger="bottom"] > * {
+  border-bottom-color: transparent;
+  background-position: left bottom;
+}
+html.m-js .m-f2 [data-ledger][data-in] > * {
+  background-size: 100% var(--rule, 1px);
+}
+html.m-js .m-f2 [data-ledger]:not([data-in]) > * > * {
+  clip-path: inset(0 0 100% 0);
+}
+html.m-js .m-f2 [data-ledger][data-in] > * > * {
+  animation: m-reveal var(--m-state) var(--m-ease) backwards;
+  animation-delay: calc(var(--r, 0) * var(--m-stagger) + 320ms);
+}
+/* A real table (/repositories from 768px): Chrome does not reliably repaint
+   a table row's background as it changes, which left rules missing, so its
+   rows keep their own border and only their text and dates move. Below
+   768px those rows are grid boxes and draw like any other ledger. */
+@media (min-width: 768px) {
+  html.m-js .m-f2 tbody[data-ledger] > tr {
+    border-top-color: var(--ink);
+    background-image: none;
+  }
+}
+html.m-js .m-f2 [data-ledger][data-in] [data-date] {
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--r, 0) * var(--m-stagger) + 440ms);
+}
+
+/* ---------------------------------------------------------------- F3
+   Filing: once an exhibit's cover has slid off (A5), its caption bar slides
+   out from behind the frame's bottom edge, a label pulled from a file.
+   The frame sits above its caption, so the caption is hidden under it
+   until it moves; nothing outside the figure moves. */
+html.m-js .m-f3 figure > div[data-exhibit] {
+  z-index: 1;
+}
+html.m-js .m-f3 div[data-exhibit] + figcaption {
+  position: relative;
+  transform: translateY(-100%);
+  transition: transform var(--m-enter) var(--m-ease) var(--m-enter);
+}
+html.m-js .m-f3 div[data-exhibit][data-in] + figcaption {
+  transform: none;
+}
+html.m-js .m-f3 div[data-exhibit][data-in="now"] + figcaption {
+  transition: none;
+}
+
+/* ---------------------------------------------------------------- F5
+   The next sheet, previewed: pointing at or focusing a pager button slides
+   the destination page's section colour in behind its label, from the edge
+   its arrow points to (clip-path, --m-state). ink-2 never sits on a fill,
+   so the button's grey label turns ink with it. */
+.pager-preview {
+  display: none;
+}
+.m-f5 .pager-preview {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--dest);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--m-state) var(--m-ease);
+  pointer-events: none;
+}
+.m-f5 .pager-next .pager-preview {
+  clip-path: inset(0 0 0 100%);
+}
+.m-f5 .pager-btn > :not(.pager-preview) {
+  position: relative;
+  z-index: 1;
+}
+.m-f5 .pager-btn:focus-visible .pager-preview {
+  clip-path: inset(0 0 0 0);
+}
+.m-f5 .pager-btn:focus-visible .text-ink-2 {
+  color: var(--ink);
+}
+@media (hover: hover) {
+  .m-f5 .pager-btn:hover .pager-preview {
+    clip-path: inset(0 0 0 0);
+  }
+  .m-f5 .pager-btn:hover .text-ink-2 {
+    color: var(--ink);
+  }
+}
+
+/* ---------------------------------------------------------------- F6
+   A case study's facts stamp in one after another, Role, Type, Status, and
+   its Live and Code links arrive last. This is A6's stamp on each of them;
+   motion.ts staggers them 40ms apart in reading order. */

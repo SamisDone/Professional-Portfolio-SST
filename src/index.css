@@ -322,6 +322,101 @@
   }
 
   /*
+   * The SENT stamp over the contact form once a message has gone (F7): the
+   * Label face, set large, on a paper slip with a 4px ink border. It sits
+   * in the middle of the form, which it covers, until the form resets.
+   */
+  .sent-stamp {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    padding: 10px 22px 8px;
+    border: 4px solid var(--ink);
+    background: var(--paper);
+    font-family: "Martian Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    pointer-events: none;
+  }
+
+  /*
+   * A case study's index: the section being read carries a 4px bar in the
+   * section colour on its left edge. A state, so it changes at once.
+   */
+  .case-index a {
+    position: relative;
+  }
+  .case-index a[aria-current]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    background: var(--section);
+  }
+  @media (hover: hover) {
+    .case-index a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+  }
+
+  /*
+   * The /work filter chips. Pressable, so they carry the shadow; the chosen
+   * one takes the section colour. Which rows show is decided here, from
+   * <html data-kind>, which the inline script in index.html sets from
+   * ?kind= before the first paint, so a shared link never shows every row
+   * first. With no filter, "All" is the chosen chip.
+   */
+  .chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  html:not([data-kind]) [data-chip="all"] {
+    --fill: var(--section);
+  }
+  html[data-kind="chrome"] [data-kinds]:not([data-kinds~="chrome"]) {
+    display: none;
+  }
+  html[data-kind="chrome"] [data-chip="chrome"] {
+    --fill: var(--section);
+  }
+  html[data-kind="web"] [data-kinds]:not([data-kinds~="web"]) {
+    display: none;
+  }
+  html[data-kind="web"] [data-chip="web"] {
+    --fill: var(--section);
+  }
+  html[data-kind="ai-ml"] [data-kinds]:not([data-kinds~="ai-ml"]) {
+    display: none;
+  }
+  html[data-kind="ai-ml"] [data-chip="ai-ml"] {
+    --fill: var(--section);
+  }
+  html[data-kind="hackathon"] [data-kinds]:not([data-kinds~="hackathon"]) {
+    display: none;
+  }
+  html[data-kind="hackathon"] [data-chip="hackathon"] {
+    --fill: var(--section);
+  }
+
+  /*
    * Home's flagship index: from lg the row whose project is in the frame
    * carries a 4px bar in the section colour on the list's rule. A state, so
    * it changes at once.
@@ -641,7 +736,7 @@
   }
   .tint-row:hover,
   .tint-row:focus-within {
-    background: var(--section-tint);
+    background-color: var(--section-tint);
   }
   .tint-row:hover .text-ink-2,
   .tint-row:focus-within .text-ink-2,
@@ -855,3 +950,34 @@ html[data-vt="morph"]::view-transition-group(*) {
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * 4. Inspect (F4). A screenshot grows out of its thumbnail into the sheet,
+ * and shrinks back on close, as the group "inspect", in --m-enter. Only the
+ * picture moves: the page does not, and with image animations off the
+ * destination sits opaque over the source.
+ */
+html[data-vt="inspect"]::view-transition-group(inspect) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease);
+}
+html[data-vt="inspect"]::view-transition-old(inspect) {
+  display: none;
+}
+
+/* The sheet Inspect opens: a 4px-ruled frame on a paper-2 ground. */
+.inspect {
+  width: min(92vw, 1400px);
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.inspect::backdrop {
+  background: var(--paper-2);
+}
+.inspect > figure {
+  max-height: 92vh;
+}
+

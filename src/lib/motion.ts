@@ -35,6 +35,8 @@ const TARGETS = [
   "[data-stamp]", // A6 labels and index numbers
   "[data-chart]", // C1 and E4, the trajectory
   "[data-flow]", // E2 and E3, how it works
+  "[data-print]", // F1, the proof row printing
+  "[data-ledger]", // F2, ledgers and tables ruling
 ].join(",");
 
 const STAGGER_MAX = 5;
@@ -54,6 +56,10 @@ const finish = (el: Element) => el.setAttribute("data-in", "now");
 
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
+  // A ledger's drawn rules match each row's own border, so the drawing ends
+  // exactly where the page without the layer starts.
+  const side = el.dataset.ledger === "bottom" ? "borderBottomWidth" : "borderTopWidth";
+  if (el.dataset.ledger) for (const r of el.children) (r as HTMLElement).style.setProperty("--rule", getComputedStyle(r)[side]);
   el.setAttribute("data-in", "");
   const ticks = el.matches("[data-flow]") ? el.children.length * TICK_MS : 0;
   timers.set(el, window.setTimeout(() => finish(el), DONE_MS + ticks));

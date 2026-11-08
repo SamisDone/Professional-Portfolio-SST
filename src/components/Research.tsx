@@ -39,10 +39,10 @@ export default function Research() {
         <div className="lg:col-span-8">
           {years.map((year) => (
             <section key={year} aria-label={year} className="border-t-4 border-ink pt-6 [&+&]:mt-12">
-              <Label as="h2" className="text-ink">
+              <Label as="h2" stamp className="text-ink">
                 {year}
               </Label>
-              <ul className="m-0 mt-4 list-none p-0">
+              <ul data-ledger="top" className="m-0 mt-4 list-none p-0">
                 {research
                   .filter((m) => m.year === year)
                   .map((m) => (

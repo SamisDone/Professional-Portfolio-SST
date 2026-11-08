@@ -21,11 +21,14 @@ export default function Experience() {
         </div>
       </section>
 
-      <ol className="shell tier-b m-0 list-none">
+      {/* The 4px rules are drawn by A1; F2 reveals each role's text. */}
+      <ol data-ledger="none" className="shell tier-b m-0 list-none">
         {experience.map((role) => (
           <li key={role.org} className="tint-row grid gap-4 border-t-4 border-ink pb-12 pt-6 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-3">
-              <Label className="text-ink">{role.period}</Label>
+              <Label date className="text-ink">
+                {role.period}
+              </Label>
               {role.location && <Label className="mt-1">{role.location}</Label>}
             </div>
             <div className="lg:col-span-9">

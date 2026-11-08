@@ -23,7 +23,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-JQc8ZKKU4rutD2IjUmap9PNskqLqRXfKhbyp7BxRdNs=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.staticforms.dev https://cloudflareinsights.com; form-action 'self' https://api.staticforms.dev; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-wWve2Avc+Lbh049GffVm8sSMgDAtTyV4CtE4Sqy+ciE=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.staticforms.dev https://cloudflareinsights.com; form-action 'self' https://api.staticforms.dev; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
 
 # Preview deployments only (<hash or branch>.samonwitasarker.pages.dev). Pages
 # already sends this on previews; it is stated here as well so a preview can
