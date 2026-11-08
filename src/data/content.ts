@@ -237,7 +237,7 @@ export const featured: Project[] = [
     approach:
       "Six input methods, joystick, keyboard, voice keyword, voice agent, autonomous PIN entry and agentic natural language, all resolve to the same MotionCommand and run through one pipeline: an inverse-kinematics planner, a safety gate that validates the move, then an executor that animates it. One pipeline triggered six ways rather than six features bolted together, which is what stops any path from skipping the gate.",
     outcome:
-      "Built for the IUT Techathon and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
+      "Finalist at IUT Techathon 2026. Built for the competition and deployed, drivable in a browser with no hardware in the loop, alongside a Wokwi hardware simulation.",
   },
   {
     /**
