@@ -1100,12 +1100,12 @@ export type CgpaPoint = { label: string; full: string; value: number };
 
 /** Term GPAs, drawn as the trend chart on About beside the CGPA line. */
 export const cgpaHistory: CgpaPoint[] = [
-  { label: "L1-T1", full: "Level 1, Term I", value: 3.45 },
-  { label: "L1-T2", full: "Level 1, Term II", value: 3.44 },
-  { label: "L2-T1", full: "Level 2, Term I", value: 3.43 },
-  { label: "L2-T2", full: "Level 2, Term II", value: 3.33 },
-  { label: "L3-T1", full: "Level 3, Term I", value: 3.58 },
-  { label: "L3-T2", full: "Level 3, Term II", value: 3.85 },
+  { label: "Y1 T1", full: "Year 1, Term 1", value: 3.45 },
+  { label: "Y1 T2", full: "Year 1, Term 2", value: 3.44 },
+  { label: "Y2 T1", full: "Year 2, Term 1", value: 3.43 },
+  { label: "Y2 T2", full: "Year 2, Term 2", value: 3.33 },
+  { label: "Y3 T1", full: "Year 3, Term 1", value: 3.58 },
+  { label: "Y3 T2", full: "Year 3, Term 2", value: 3.85 },
 ];
 
 export const trajectoryNote =
