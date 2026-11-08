@@ -207,8 +207,14 @@ function certificates() {
     });
 }
 
+/** The looping videos that exist in public/shots, by file name. */
+function shotLoops() {
+  return existsSync("public/shots") ? readdirSync("public/shots").filter((f) => f.endsWith("-loop.mp4")) : [];
+}
+
 export default defineConfig(({ isSsrBuild }) => ({
   define: {
+    __SHOT_LOOPS__: JSON.stringify(shotLoops()),
     __CV_VERSION__: JSON.stringify(cvVersion()),
     __CERTIFICATES__: JSON.stringify(certificates()),
   },

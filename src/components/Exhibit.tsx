@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type Ref } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type Ref } from "react";
 import type { Project } from "../data/content";
-import { captionFor, shotPreview } from "../lib/projects";
+import { captionFor, shotLoop, shotPreview } from "../lib/projects";
 import { ProofMark } from "./ui";
 
 /** useLayoutEffect warns when rendered to a string; this is the same hook
@@ -31,6 +31,76 @@ export function ShotPicture({
 }
 
 /**
+ * A short muted loop over a project's screenshot, playing only while on
+ * screen, and never under reduced motion. With `hover`, it also waits until
+ * the visitor is pointing at or focused inside the section around it, and its
+ * project is the one showing. It takes no pointer events, so the picture's
+ * link still opens it.
+ */
+function ShotVideo({ src, poster, hover, active }: { src: string; poster: string; hover?: boolean; active?: boolean }) {
+  const video = useRef<HTMLVideoElement>(null);
+  const state = useRef({ inView: false, hovering: false, active });
+  const sync = useRef(() => {});
+
+  useEffect(() => {
+    const el = video.current;
+    if (!el) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    sync.current = () => {
+      const s = state.current;
+      if (s.inView && !motion.matches && (!hover || (s.hovering && s.active))) el.play().catch(() => {});
+      else el.pause();
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      state.current.inView = entry.isIntersecting;
+      sync.current();
+    });
+    observer.observe(el);
+    const onMotion = () => sync.current();
+    motion.addEventListener("change", onMotion);
+    const area = hover ? el.closest("section") : null;
+    const set = (hovering: boolean) => () => {
+      state.current.hovering = hovering;
+      sync.current();
+    };
+    const enter = set(true);
+    const leave = set(false);
+    area?.addEventListener("pointerover", enter);
+    area?.addEventListener("pointerleave", leave);
+    area?.addEventListener("focusin", enter);
+    area?.addEventListener("focusout", leave);
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener("change", onMotion);
+      area?.removeEventListener("pointerover", enter);
+      area?.removeEventListener("pointerleave", leave);
+      area?.removeEventListener("focusin", enter);
+      area?.removeEventListener("focusout", leave);
+    };
+  }, [hover]);
+
+  useEffect(() => {
+    state.current.active = active;
+    sync.current();
+  }, [active]);
+
+  return (
+    <video
+      ref={video}
+      src={src}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden
+      tabIndex={-1}
+      className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
+    />
+  );
+}
+
+/**
  * A screenshot shown as an exhibit: 16:10, a 2px ink frame, and a caption bar
  * saying what it is, where it was captured and when.
  *
@@ -44,17 +114,23 @@ export function Exhibit({
   sizes,
   priority = false,
   className = "",
+  hoverVideo,
+  active,
 }: {
   project: Project;
   /** The `sizes` hint, so a phone takes the 700px file. */
   sizes: string;
   priority?: boolean;
   className?: string;
+  /** In a project frame: a loop waits for hover and for its turn in the frame. */
+  hoverVideo?: boolean;
+  active?: boolean;
 }) {
   const [loading, setLoading] = useState(typeof window !== "undefined");
   const img = useRef<HTMLImageElement | null>(null);
   const src = project.shot!;
   const preview = shotPreview(src);
+  const loop = shotLoop(src);
 
   // A cached image can finish before React attaches onLoad.
   useIsoLayoutEffect(() => {
@@ -88,6 +164,7 @@ export function Exhibit({
           className="exhibit-img block h-full w-full object-cover object-top"
         />
         </a>
+        {loop && <ShotVideo src={loop} poster={src} hover={hoverVideo} active={active} />}
       </div>
       <figcaption className="t-label border-2 border-t-0 border-ink px-3 py-2 text-ink-2">
         {captionFor(project)}
@@ -160,7 +237,7 @@ export function ProjectFrame({
         .filter((p) => shown.includes(p.slug))
         .map((p) => (
           <div key={p.slug} data-on={p.slug === active || undefined} inert={p.slug !== active}>
-            <ProjectVisual project={p} sizes={sizes} priority={p.slug === priority} />
+            <ProjectVisual project={p} sizes={sizes} priority={p.slug === priority} hoverVideo active={p.slug === active} />
           </div>
         ))}
     </div>
@@ -173,6 +250,8 @@ export function ProjectVisual(props: {
   sizes: string;
   priority?: boolean;
   className?: string;
+  hoverVideo?: boolean;
+  active?: boolean;
 }) {
   if (props.project.shot) return <Exhibit {...props} />;
   if (props.project.figures?.length) return <FiguresPanel project={props.project} className={props.className} />;

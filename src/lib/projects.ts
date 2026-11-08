@@ -105,6 +105,12 @@ export function shotPreview(shot: string): string | undefined {
   return (previews as Record<string, string>)[stem];
 }
 
+/** The looping video for a shot, when <name>-loop.mp4 exists in public/shots. */
+export function shotLoop(shot: string): string | undefined {
+  const file = `${shot.replace(/^.*\//, "").replace(/\.\w+$/, "")}-loop.mp4`;
+  return __SHOT_LOOPS__.includes(file) ? `/shots/${file}` : undefined;
+}
+
 /**
  * Starts fetching a project's full-size screenshot, the one its case study
  * exhibit will draw. Called when a /work row is hovered or focused, so by the
