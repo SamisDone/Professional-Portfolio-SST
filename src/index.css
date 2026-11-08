@@ -751,9 +751,6 @@
    * Table, ledger and index rows take the section tint on hover. ink-2 is
    * under 7:1 on every tint, so their secondary text turns ink with it.
    */
-  .tint-row {
-    transition: background-color var(--t-hover) var(--ease);
-  }
   .tint-row:hover,
   .tint-row:focus-within {
     background-color: var(--section-tint);

@@ -40,10 +40,8 @@ const TARGETS = [
 ].join(",");
 
 const STAGGER_MAX = 5;
-/** Longer than any entrance: the chart's axis zoom, line and last label
-    (1.44s). A flow adds its escapement, one 200ms tick per step. */
-const DONE_MS = 1600;
-const TICK_MS = 200;
+/** Longer than any entrance, stagger included. */
+const DONE_MS = 700;
 const TABS_KEY = "m-tabs";
 
 let io: IntersectionObserver | undefined;
@@ -56,13 +54,8 @@ const finish = (el: Element) => el.setAttribute("data-in", "now");
 
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
-  // A ledger's drawn rules match each row's own border, so the drawing ends
-  // exactly where the page without the layer starts.
-  const side = el.dataset.ledger === "bottom" ? "borderBottomWidth" : "borderTopWidth";
-  if (el.dataset.ledger) for (const r of el.children) (r as HTMLElement).style.setProperty("--rule", getComputedStyle(r)[side]);
   el.setAttribute("data-in", "");
-  const ticks = el.matches("[data-flow]") ? el.children.length * TICK_MS : 0;
-  timers.set(el, window.setTimeout(() => finish(el), DONE_MS + ticks));
+  timers.set(el, window.setTimeout(() => finish(el), DONE_MS));
 }
 
 function enter(entries: IntersectionObserverEntry[]) {

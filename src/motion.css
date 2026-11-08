@@ -2,9 +2,9 @@
  * The motion layer. Every motion token lives here, and nothing else is used.
  *
  * Character: mechanical. Things are stamped, slid, snapped into place, drawn
- * with a ruler, highlighted with a marker. Crisp starts, hard stops, no
- * springs, no bounce. Only transform, opacity, clip-path and background-size
- * move.
+ * with a ruler. Crisp starts, hard stops, no springs, no bounce. Only
+ * transform, opacity, clip-path and stroke-dashoffset move, and every
+ * sequence, stagger included, is over inside 600ms.
  *
  * Three rules hold everywhere:
  *
@@ -27,8 +27,8 @@
   --m-snap: 120ms; /* stamps, presses */
   --m-state: 200ms; /* hovers and state changes */
   --m-enter: 320ms; /* things arriving */
-  --m-draw: 480ms; /* rules and highlights drawn */
-  --m-chart: 600ms; /* the trajectory line, specified on its own */
+  --m-draw: 320ms; /* rules and highlights drawn */
+  --m-chart: 280ms; /* the trajectory line */
   --m-stagger: 40ms; /* between siblings, six at most */
   --m-ease: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -72,16 +72,13 @@ html.m-js [data-in="now"] .m-plabel,
 html.m-js [data-in="now"] .m-connector,
 html.m-js [data-in="now"] .m-box,
 html.m-js [data-in="now"] .m-text,
-html.m-js [data-in="now"] .m-full,
-html.m-js [data-in="now"] .m-tick,
-html.m-js [data-in="now"] .m-ticklabel {
+html.m-js [data-in="now"] .m-note {
   transition: none !important;
 }
 html.m-js [data-stamp][data-in="now"],
 html.m-js [data-in="now"] > .tab,
 html.m-js [data-in="now"] .m-point,
-html.m-js [data-in="now"] .m-num,
-html.m-js [data-in="now"] .m-note {
+html.m-js [data-in="now"] .m-num {
   animation: none !important;
 }
 
@@ -137,20 +134,15 @@ html.m-js .m-a2 .band[data-in]::before {
 }
 
 /* ---------------------------------------------------------------- A3
-   Proof marks, the signature: the yellow sweeps in like a highlighter, in
-   reading order. The ink border and the arrow are there from the start, so
-   the meaning never waits on the animation. The flat "gradient" is one
-   colour twice, the only way to give a fill a size to animate. */
+   Proof marks: each one is wiped in from the left, in reading order. */
+html.m-js .m-a3 .proof-mark:not([data-in]) {
+  clip-path: inset(0 100% 0 0);
+}
 html.m-js .m-a3 .proof-mark {
-  background-color: transparent;
-  background-image: linear-gradient(var(--proof), var(--proof));
-  background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 0% 100%;
-  transition: background-size var(--m-draw) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
+  transition: clip-path var(--m-draw) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
 }
 html.m-js .m-a3 .proof-mark[data-in] {
-  background-size: 100% 100%;
+  clip-path: inset(0 0 0 0);
 }
 
 /* ---------------------------------------------------------------- A4
@@ -273,33 +265,17 @@ html.m-js .m-b5 .menu-panel li:nth-child(5) { animation-delay: calc(4 * var(--m-
 html.m-js .m-b5 .menu-panel li:nth-child(n + 6) { animation-delay: calc(5 * var(--m-stagger)); }
 
 /* ---------------------------------------------------------------- B6
-   Form fields: on focus the 3px border draws in, its inner edge growing from
-   the left and top over --m-state. An error message drops 8px with the snap. */
-html.m-js .m-b6 .field {
-  background-image:
-    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink)),
-    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink));
-  background-repeat: no-repeat;
-  background-position: left top, left bottom, left top, right top;
-  background-size: 0% 1px, 0% 1px, 1px 0%, 1px 0%;
-  transition: background-size var(--m-state) var(--m-ease);
-}
-html.m-js .m-b6 .field:focus,
-html.m-js .m-b6 .field:focus-visible {
-  outline: none;
-  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
-}
+   An error message drops 8px with the snap. */
 html.m-js .m-b6 [role="alert"] {
   animation: m-drop var(--m-snap) var(--m-ease) backwards;
 }
 
 /* ---------------------------------------------------------------- C1
-   The trajectory: the line is drawn with a ruler over 600ms (linear, E1),
-   each point stamps as the line reaches it, and its label follows. Once.
-   --m-at is when the line starts: 0, or 600ms after E4's axis zoom. */
+   The trajectory, once, when it first scrolls into view: the line draws left
+   to right, then each point pops in with its label, in order. */
 html.m-js .m-c1 [data-chart] .m-line {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--m-chart) linear var(--m-at, 0ms);
+  transition: clip-path var(--m-chart) linear;
 }
 html.m-js .m-c1 [data-chart][data-in] .m-line {
   clip-path: inset(0 0 0 0);
@@ -315,89 +291,31 @@ html.m-js .m-c1 [data-chart]:not([data-in]) .m-plabel {
 }
 html.m-js .m-c1 [data-chart][data-in] .m-point {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: calc(var(--m-at, 0ms) + var(--p) * var(--m-chart) / var(--pn));
+  animation-delay: calc(var(--m-chart) + var(--p) * 36ms);
 }
 html.m-js .m-c1 [data-chart][data-in] .m-plabel {
-  transition: opacity var(--m-snap) linear;
-  transition-delay: calc(var(--m-at, 0ms) + var(--p) * var(--m-chart) / var(--pn) + var(--m-snap));
-}
-
-/* ---------------------------------------------------------------- E4
-   An honest axis zoom, before C1: the chart opens on its full axis, 0 to
-   4.0, holds 200ms, then rescales to 3.2 to 4.0 over 400ms while the note
-   that says so stamps in; then C1 draws the line. 1.44s in all, once. The
-   rescale moves each gridline and tick (translate, not scale), so no text
-   is ever stretched. The full axis is not rendered at rest, only while the
-   layer is on, so nothing waits at opacity 0 without it; the note
-   is part of the chart and stays. */
-.m-full {
-  display: none;
-}
-html.m-js .m-e4 [data-chart] {
-  --m-at: 600ms;
-}
-html.m-js .m-e4 [data-chart] .m-full {
-  display: inline;
-  opacity: 1;
-  transition:
-    opacity var(--m-enter) var(--m-ease) 200ms,
-    transform 400ms var(--m-ease) 200ms;
-}
-html.m-js .m-e4 [data-chart][data-in] .m-full {
-  opacity: 0;
-  transform: translateY(var(--dy));
-}
-html.m-js .m-e4 [data-chart] .m-tick {
-  transform: translateY(var(--dy));
-  transition: transform 400ms var(--m-ease) 200ms;
-}
-html.m-js .m-e4 [data-chart][data-in] .m-tick {
-  transform: translateY(0);
-}
-html.m-js .m-e4 [data-chart]:not([data-in]) .m-ticklabel,
-html.m-js .m-e4 [data-chart]:not([data-in]) .m-note {
-  opacity: 0;
-}
-html.m-js .m-e4 [data-chart][data-in] .m-ticklabel {
-  transition: opacity var(--m-state) linear 400ms;
-}
-html.m-js .m-e4 [data-chart] .m-note {
-  transform-box: fill-box;
-  transform-origin: right center;
-}
-html.m-js .m-e4 [data-chart][data-in] .m-note {
-  animation: m-stamp var(--m-snap) var(--m-ease) 200ms backwards;
+  animation: m-stamp var(--m-snap) var(--m-ease) backwards;
+  animation-delay: calc(var(--m-chart) + var(--p) * 36ms);
 }
 
 /* ---------------------------------------------------------------- E2
    How it works, built in drafting order the first time it enters: the
-   connector centre lines (320ms, linear), then the step boxes' outlines
-   (200ms), then the labels (200ms); 40ms between siblings, six at most.
-   Ink only. The numbers come last: with E3 one per tick, without it
-   stamping 40ms apart. The box outline is four flat ink strips over a
-   transparent border, so at rest it looks exactly like the border. */
+   connector lines, the step boxes, the labels, then the numbers. */
 .m-box {
-  border-color: transparent;
-  background-origin: border-box;
-  background-repeat: no-repeat;
-  background-image:
-    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink)),
-    linear-gradient(var(--ink), var(--ink)), linear-gradient(var(--ink), var(--ink));
-  background-position: left top, right top, left bottom, left top;
-  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+  border-color: var(--ink);
 }
 html.m-js .m-e2 [data-flow] .m-connector {
   transform-origin: top;
   transform: scaleY(0);
-  transition: transform 320ms linear calc(min(var(--i), 5) * var(--m-stagger));
+  transition: transform 160ms linear calc(min(var(--i), 5) * 16ms);
 }
 html.m-js .m-e2 [data-flow] .m-box {
-  background-size: 0% 2px, 2px 0%, 0% 2px, 2px 0%;
-  transition: background-size var(--m-state) var(--m-ease) calc(320ms + min(var(--i), 5) * var(--m-stagger));
+  opacity: 0;
+  transition: opacity 100ms linear calc(120ms + min(var(--i), 5) * 16ms);
 }
 html.m-js .m-e2 [data-flow] .m-text {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--m-state) var(--m-ease) calc(560ms + min(var(--i), 5) * var(--m-stagger));
+  transition: clip-path 160ms var(--m-ease) calc(200ms + min(var(--i), 5) * 16ms);
 }
 html.m-js .m-e2 [data-flow]:not([data-in]) .m-num {
   opacity: 0;
@@ -406,32 +324,21 @@ html.m-js .m-e2 [data-flow][data-in] .m-connector {
   transform: scaleY(1);
 }
 html.m-js .m-e2 [data-flow][data-in] .m-box {
-  background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+  opacity: 1;
 }
 html.m-js .m-e2 [data-flow][data-in] .m-text {
   clip-path: inset(0 0 0 0);
 }
 html.m-js .m-e2 [data-flow][data-in] .m-num {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: calc(800ms + min(var(--i), 5) * var(--m-stagger));
-}
-
-/* ---------------------------------------------------------------- E3
-   The escapement: once the drawing is built, the numbers advance one step
-   per tick, like a mechanism. Each 200ms tick is a 120ms stamp and a hard
-   80ms pause in which nothing moves. Six steps end at 1.88s. Once. */
-html.m-js .m-e2.m-e3 [data-flow][data-in] .m-num {
-  animation-delay: calc(760ms + var(--i) * 200ms);
+  animation-delay: calc(340ms + min(var(--i), 5) * 24ms);
 }
 
 /* ---------------------------------------------------------------- F1
    Receipt print, the proof row: as it enters, each cell prints from the top
-   down. Its ink rules are drawn by the print head (a linear clip from the
-   top, 240ms), then its figure stamps, then its label and domain line
-   appear, and the domain line's arrow nudges once, a receipt being torn
-   off. Cells 60ms apart; the fourth is finished at 860ms. Each step is an
-   animation filled backwards only, so once it has played the cell has no
-   clip at all and its hover shadow is whole. */
+   down, then its figure stamps and its label appears. Cells 40ms apart, done
+   by 400ms. Each step is filled backwards only, so once it has played the
+   cell has no clip at all and its hover shadow is whole. */
 @keyframes m-print {
   from {
     clip-path: inset(0 0 100% 0);
@@ -445,40 +352,22 @@ html.m-js .m-e2.m-e3 [data-flow][data-in] .m-num {
     opacity: 0;
   }
 }
-@keyframes m-nudge-out {
-  50% {
-    transform: translate(3px, -3px);
-  }
-}
-@keyframes m-nudge-right {
-  50% {
-    transform: translateX(4px);
-  }
-}
 html.m-js .m-f1 [data-print]:not([data-in]) > li {
   clip-path: inset(0 0 100% 0);
 }
 html.m-js .m-f1 [data-print][data-in] > li {
-  animation: m-print 240ms linear backwards;
-  animation-delay: calc(var(--c, 0) * 60ms);
+  animation: m-print 160ms linear backwards;
+  animation-delay: calc(var(--c, 0) * 40ms);
 }
 html.m-js .m-f1 [data-print][data-in] .t-figure {
   display: inline-block;
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: calc(var(--c, 0) * 60ms + 240ms);
+  animation-delay: calc(var(--c, 0) * 40ms + 120ms);
 }
 html.m-js .m-f1 [data-print][data-in] li .t-small,
 html.m-js .m-f1 [data-print][data-in] .domain-line {
-  animation: m-appear var(--m-snap) linear backwards;
-  animation-delay: calc(var(--c, 0) * 60ms + 360ms);
-}
-html.m-js .m-f1 [data-print][data-in] .domain-line svg[data-dir="out"] {
-  animation: m-nudge-out var(--m-state) var(--m-ease);
-  animation-delay: calc(var(--c, 0) * 60ms + 480ms);
-}
-html.m-js .m-f1 [data-print][data-in] .domain-line svg[data-dir="right"] {
-  animation: m-nudge-right var(--m-state) var(--m-ease);
-  animation-delay: calc(var(--c, 0) * 60ms + 480ms);
+  animation: m-appear 100ms linear backwards;
+  animation-delay: calc(var(--c, 0) * 40ms + 180ms);
 }
 
 /* ---------------------------------------------------------------- F7
@@ -493,14 +382,10 @@ html.m-js .m-f7 .sent-note {
 }
 
 /* ---------------------------------------------------------------- F2
-   Ledger ruling, on Experience, Research, Activities, /repositories and the
-   /work index: when a ledger enters, its row rules are drawn left to right
-   one after another (linear, 320ms, 40ms apart, six at most and then the
-   rest together), and each row's text is revealed from the top as its rule
-   finishes. Dates and years stamp. The rule is a flat ink line over the
-   row's own border, made transparent; motion.ts gives it the border's
-   width, so the end state is the page without the layer. Experience's 4px
-   rules are A1's, so there only the text and dates move. */
+   Ledgers, on Experience, Activities, /repositories and the /work index:
+   when a ledger enters, each row's text is revealed from the top, 40ms apart,
+   six at most and then the rest together. Dates stamp. Each row keeps its own
+   border throughout. */
 @keyframes m-reveal {
   from {
     clip-path: inset(0 0 100% 0);
@@ -515,51 +400,20 @@ html.m-js .m-f2 [data-ledger] > :nth-child(4) { --r: 3; }
 html.m-js .m-f2 [data-ledger] > :nth-child(5) { --r: 4; }
 html.m-js .m-f2 [data-ledger] > :nth-child(6) { --r: 5; }
 html.m-js .m-f2 [data-ledger] > :nth-child(n + 7) { --r: 6; }
-html.m-js .m-f2 [data-ledger="top"] > *,
-html.m-js .m-f2 [data-ledger="bottom"] > * {
-  background-image: linear-gradient(var(--ink), var(--ink));
-  background-repeat: no-repeat;
-  background-origin: border-box;
-  background-size: 0% var(--rule, 1px);
-  transition:
-    background-color var(--t-hover) var(--ease),
-    background-size 320ms linear calc(var(--r, 0) * var(--m-stagger));
-}
-html.m-js .m-f2 [data-ledger="top"] > * {
-  border-top-color: transparent;
-  background-position: left top;
-}
-html.m-js .m-f2 [data-ledger="bottom"] > * {
-  border-bottom-color: transparent;
-  background-position: left bottom;
-}
-html.m-js .m-f2 [data-ledger][data-in] > * {
-  background-size: 100% var(--rule, 1px);
-}
 html.m-js .m-f2 [data-ledger]:not([data-in]) > * > * {
   clip-path: inset(0 0 100% 0);
 }
 html.m-js .m-f2 [data-ledger][data-in] > * > * {
   animation: m-reveal var(--m-state) var(--m-ease) backwards;
-  animation-delay: calc(var(--r, 0) * var(--m-stagger) + 320ms);
-}
-/* A real table (/repositories from 768px): Chrome does not reliably repaint
-   a table row's background as it changes, which left rules missing, so its
-   rows keep their own border and only their text and dates move. Below
-   768px those rows are grid boxes and draw like any other ledger. */
-@media (min-width: 768px) {
-  html.m-js .m-f2 tbody[data-ledger] > tr {
-    border-top-color: var(--ink);
-    background-image: none;
-  }
+  animation-delay: calc(var(--r, 0) * var(--m-stagger));
 }
 html.m-js .m-f2 [data-ledger][data-in] [data-date] {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
-  animation-delay: calc(var(--r, 0) * var(--m-stagger) + 440ms);
+  animation-delay: calc(var(--r, 0) * var(--m-stagger) + 160ms);
 }
 
 /* ---------------------------------------------------------------- F3
-   Filing: once an exhibit's cover has slid off (A5), its caption bar slides
+   Filing: once an exhibit's image has decoded, its caption bar slides
    out from behind the frame's bottom edge, a label pulled from a file.
    The frame sits above its caption, so the caption is hidden under it
    until it moves; nothing outside the figure moves. */
@@ -569,7 +423,7 @@ html.m-js .m-f3 figure > div[data-exhibit] {
 html.m-js .m-f3 div[data-exhibit] + figcaption {
   position: relative;
   transform: translateY(-100%);
-  transition: transform var(--m-enter) var(--m-ease) var(--m-enter);
+  transition: transform var(--m-enter) var(--m-ease);
 }
 html.m-js .m-f3 div[data-exhibit][data-in] + figcaption {
   transform: none;
