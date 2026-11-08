@@ -46,17 +46,15 @@ function lastmod(path: string) {
   }
 }
 
-/** robots.txt and sitemap.xml, generated so they carry SITE_URL. */
+/**
+ * sitemap.xml, generated so it carries SITE_URL and every route. robots.txt
+ * is a plain file in public/; scripts/check-seo.mjs fails the build if it
+ * stops pointing here.
+ */
 function crawlFilesPlugin(): Plugin {
   return {
     name: "crawl-files",
     generateBundle() {
-      this.emitFile({
-        type: "asset",
-        fileName: "robots.txt",
-        source: `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
-      });
-
       // Every indexable route: ROUTES, /repositories, /privacy and every case
       // study. The 404 and the form's thank-you page are noindex and left out.
       const urls = Object.entries(ROUTE_META)
@@ -131,7 +129,8 @@ function devMetaPlugin(): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html, ctx) {
-        const path = ctx.path.replace(/\.html$/, "").replace(/^\/index$/, "/") || "/";
+        // ctx.path is /index.html for every route, after the SPA fallback.
+        const path = (ctx.originalUrl ?? ctx.path).split(/[?#]/)[0];
         const known = path in ROUTE_META;
         return fillTemplate(html, known ? path : "/404", known ? ROUTE_META[path] : NOT_FOUND_META, known ? path : "/");
       },
