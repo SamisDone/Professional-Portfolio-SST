@@ -227,13 +227,9 @@
   .tier-c {
     padding-top: 24px;
   }
+  /* Desktop and tablet were 112px and 72px for tiers A and B, which made
+     every page longer than its content. They now match the phone values. */
   @media (min-width: 640px) {
-    .tier-a {
-      padding-top: 112px;
-    }
-    .tier-b {
-      padding-top: 72px;
-    }
     .tier-c {
       padding-top: 32px;
     }
