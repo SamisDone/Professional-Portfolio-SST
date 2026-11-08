@@ -58,6 +58,8 @@ export type Proof = {
   href?: string;
   /** Routes through the router rather than opening a new tab. */
   internal?: boolean;
+  /** Replaces the destination line under 480px, where a domain cannot fit. */
+  short?: string;
 };
 
 
@@ -1135,6 +1137,7 @@ export const proof: Proof[] = [
     // Web Store developer page to link, it goes here with `internal` removed.
     href: "/work?kind=chrome",
     internal: true,
+    short: "Web Store",
   },
   {
     // "1" rendered at the same size as the others undersold this badly. The
@@ -1142,6 +1145,7 @@ export const proof: Proof[] = [
     value: "IEEE",
     label: "peer-reviewed paper at ICECTE 2026",
     href: "https://ieeexplore.ieee.org/document/11429440",
+    short: "IEEE Xplore",
   },
   {
     // Was "7th of the field", which implies a denominator. The shared task
@@ -1152,6 +1156,7 @@ export const proof: Proof[] = [
     value: "7th",
     label: "place, DravidianLangTech, ACL 2026",
     href: "https://aclanthology.org/2026.dravidianlangtech-1.58/",
+    short: "ACL Anthology",
   },
   {
     // This slot read "300+ competitive programming problems solved" over a
@@ -1167,6 +1172,7 @@ export const proof: Proof[] = [
     label: `of ${workIndex.length} projects live`,
     href: "/work",
     internal: true,
+    short: "All work",
   },
 ];
 

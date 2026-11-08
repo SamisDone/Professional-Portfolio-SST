@@ -41,8 +41,8 @@
     -->
     <link rel="preload" href="/src/fonts/Archivo.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/src/fonts/MartianMono-Label.woff2" as="font" type="font/woff2" crossorigin />
-    <!-- Phones only: the proof row's domain lines, on the first screen there. -->
-    <link rel="preload" href="/src/fonts/MartianMono-Narrow.woff2" as="font" type="font/woff2" crossorigin media="(max-width: 639.98px)" />
+    <!-- Large phones only: the proof row's domain lines. Under 480px they are short labels. -->
+    <link rel="preload" href="/src/fonts/MartianMono-Narrow.woff2" as="font" type="font/woff2" crossorigin media="(min-width: 480px) and (max-width: 639.98px)" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- iOS ignores an SVG here, so the home-screen icon is a 180px PNG. -->

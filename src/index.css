@@ -477,6 +477,26 @@
   }
 
   /*
+   * The proof row under 480px: the short destination replaces the domain, and
+   * the claim scales with the cell, so the longest word, DravidianLangTech,
+   * fits whole from 320px up without being allowed to break.
+   */
+  .proof-short {
+    display: none;
+  }
+  @media (max-width: 479.98px) {
+    .proof-short {
+      display: inline;
+    }
+    .proof-full {
+      display: none;
+    }
+    .proof-label {
+      font-size: min(0.9375rem, 3.75vw);
+    }
+  }
+
+  /*
    * ---- Pressable. ----
    *
    * The one shadow on the site, and it means "you can press this". Drawn as

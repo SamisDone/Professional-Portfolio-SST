@@ -20,22 +20,6 @@ function breakAfterDots(text = "") {
 }
 
 /**
- * A long run-together name such as DravidianLangTech may break where its own
- * capitals join its words, so a 320px cell does not push it past the border.
- * Never anywhere else, and never with a hyphen.
- */
-function breakCamelCase(text: string) {
-  // Only the first join in each word, so it reads Dravidian / LangTech,
-  // never DravidianLang / Tech.
-  return text.split(/(?<=\b[A-Z][a-z]+)(?=[A-Z][a-z])/).map((part, i) => (
-    <Fragment key={i}>
-      {i > 0 && <wbr />}
-      {part}
-    </Fragment>
-  ));
-}
-
-/**
  * Four claims, each with its receipt, directly under the hero and opened by a
  * 4px rule. The whole cell is the link, and it says where it goes before you
  * press it: the destination domain sits at the foot of every cell.
@@ -53,9 +37,12 @@ export default function Proof() {
           const body = (
             <>
               <span className="t-figure">{item.value}</span>
-              <span className="t-small mt-3 block">{breakCamelCase(item.label)}</span>
+              <span className="t-small proof-label mt-3 block">{item.label}</span>
               <span className="t-label domain-line mt-auto block pt-3 text-ink-2 sm:pt-4">
-                {breakAfterDots(where)}
+                {/* Under 480px a domain cannot fit its cell, so the line names
+                    the destination instead. */}
+                <span className="proof-short">{item.short}</span>
+                <span className="proof-full">{breakAfterDots(where)}</span>
                 {/* A no-break space, so the arrow never wraps onto a line of its own. */}
                 {"\u00A0"}
                 <Arrow dir={item.internal ? "right" : "out"} />
