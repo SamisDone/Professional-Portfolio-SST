@@ -25,7 +25,7 @@ export default function TransitionRouter({ children }: { children: ReactNode }) 
   const [state, setState] = useState({ action: history.action, location: history.location });
   // Where the last navigation was headed, not what is on screen: during a run
   // of fast arrow presses the direction is taken from the previous target.
-  const last = useRef(history.location.pathname);
+  const last = useRef(history.location.pathname + history.location.search);
   const latest = useRef(0);
 
   useLayoutEffect(() => {
@@ -34,12 +34,13 @@ export default function TransitionRouter({ children }: { children: ReactNode }) 
     window.history.scrollRestoration = "manual";
     return history.listen(({ action, location }) => {
       const from = last.current;
-      last.current = location.pathname;
+      const to = location.pathname + location.search;
+      last.current = to;
       const id = ++latest.current;
       const go = () => {
         // A newer navigation has already taken over while this page loaded.
         if (id !== latest.current) return;
-        transitionTo(from, location.pathname, action === "REPLACE", () =>
+        transitionTo(from, to, action === "REPLACE", action === "POP", () =>
           flushSync(() => setState({ action, location })),
         );
       };

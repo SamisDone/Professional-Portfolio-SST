@@ -44,6 +44,8 @@ export function AppShell() {
       <p id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />
       <div className="flex min-h-[100dvh] flex-col">
         <Header />
+        {/* The part of the page that slides on a page change. */}
+        <div className="page-stage flex flex-1 flex-col">
         <Routes>
           <Route path="/" element={<RoutePage name="HomePage" />} />
           <Route path="/work" element={<RoutePage name="WorkPage" />} />
@@ -72,6 +74,7 @@ export function AppShell() {
           <Route path="*" element={<RoutePage name="NotFoundPage" />} />
         </Routes>
         <Pager />
+        </div>
         <Footer />
       </div>
     </div>

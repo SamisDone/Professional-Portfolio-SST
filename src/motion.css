@@ -20,8 +20,8 @@
  * 3. Each motion is switched on by its own scope class (m-a1 to m-e4) on an
  *    ancestor, so a motion is rolled out, or left out, one at a time.
  *
- * The page transitions (sheet slide, tab handoff, morph) keep their own
- * timings in src/index.css; entrances start after a transition finishes.
+ * The page transitions are at the end of this file; entrances start after a
+ * transition finishes.
  */
 :root {
   --m-snap: 120ms; /* stamps, presses */
@@ -475,3 +475,128 @@ html.m-js .m-f3 div[data-exhibit][data-in="now"] + figcaption {
    A case study's facts stamp in one after another, Role, Type, Status, and
    its Live and Code links arrive last. This is A6's stamp on each of them;
    motion.ts staggers them 40ms apart in reading order. */
+
+/*
+ * ---- Page transitions: View Transitions API. ----
+ *
+ * src/lib/transitions.ts decides which kind a navigation gets and sets it as
+ * `data-vt` on <html> for the length of the transition. Nothing here applies
+ * outside a transition, so none of it can hide anything in the prerendered
+ * HTML, and a browser without the API never reads it.
+ *
+ * Every image animation is off by default, which removes the browser's
+ * cross-fade: a swap with no `data-vt` rule is instant.
+ */
+:root {
+  --vt-slide: 320ms;
+  --vt-ease: cubic-bezier(0.7, 0, 0.3, 1);
+}
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none;
+}
+::view-transition-group(*) {
+  animation-duration: var(--vt-slide);
+  animation-timing-function: var(--vt-ease);
+}
+
+/* The header and footer are not part of the content. They stay still. Only
+   .page-stage, the page and its pager, slides. */
+.site-header {
+  view-transition-name: site-header;
+}
+.site-footer {
+  view-transition-name: site-footer;
+}
+.page-stage {
+  view-transition-name: page-stage;
+  background: var(--paper);
+}
+.tab-fill {
+  view-transition-name: tab-fill;
+}
+::view-transition-group(site-header),
+::view-transition-group(site-footer),
+::view-transition-group(page-stage) {
+  animation: none;
+}
+/* Paint order follows the document, which would slide the content over the
+   header. The header, the moving tab fill and the tab labels stay above. */
+::view-transition-group(site-header) {
+  z-index: 10;
+}
+::view-transition-group(tab-fill) {
+  z-index: 11;
+}
+::view-transition-group(tab-label-01),
+::view-transition-group(tab-label-02),
+::view-transition-group(tab-label-03),
+::view-transition-group(tab-label-04),
+::view-transition-group(tab-label-05),
+::view-transition-group(tab-label-06),
+::view-transition-group(tab-label-07) {
+  z-index: 12;
+  animation: none;
+}
+
+/*
+ * 1. Direction-aware slide. The new content is a paper sheet laid over the
+ * old, from the right when its number is higher and from the left when it is
+ * lower. The old content does not move, and --vt-old-y holds it where it was
+ * on screen. The leading edge is a 2px ink rule, a 4px strip of the
+ * destination's section colour, and a hard ink edge. Transform only.
+ */
+@keyframes sheet-from-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes sheet-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+html[data-vt="forward"]::view-transition-old(page-stage),
+html[data-vt="back"]::view-transition-old(page-stage) {
+  translate: 0 var(--vt-old-y, 0);
+}
+html[data-vt="forward"]::view-transition-new(page-stage) {
+  animation: sheet-from-right var(--vt-slide) var(--vt-ease) both;
+  box-shadow:
+    -2px 0 0 0 var(--ink),
+    -6px 0 0 0 var(--section),
+    -8px 0 0 0 var(--ink),
+    -12px 0 0 0 var(--ink);
+}
+html[data-vt="back"]::view-transition-new(page-stage) {
+  animation: sheet-from-left var(--vt-slide) var(--vt-ease) both;
+  box-shadow:
+    2px 0 0 0 var(--ink),
+    6px 0 0 0 var(--section),
+    8px 0 0 0 var(--ink),
+    12px 0 0 0 var(--ink);
+}
+
+/*
+ * 2. Active tab. The fill travels along the tab row with the slide. Only the
+ * new fill is drawn, so its colour does not cross-fade, and it passes under
+ * the labels, which keep their own groups.
+ */
+::view-transition-old(tab-fill) {
+  display: none;
+}
+
+/*
+ * 4. Inspect. A screenshot grows out of its thumbnail into the sheet and
+ * shrinks back on close, as the group "inspect". Only the picture moves.
+ */
+html[data-vt="inspect"]::view-transition-group(inspect) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease);
+}
+html[data-vt="inspect"]::view-transition-old(inspect) {
+  display: none;
+}

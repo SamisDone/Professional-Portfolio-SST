@@ -107,13 +107,11 @@
   --pink: #ff7eb6;
   --pink-tint: #f6d8e0;
 
-  /* One curve, three durations, plus the chart and the morph. */
+  /* One curve, three durations. Page transitions are in src/motion.css. */
   --ease: cubic-bezier(0.2, 0, 0, 1);
   --t-press: 80ms;
   --t-hover: 150ms;
   --t-menu: 250ms;
-  --t-sheet: 240ms;
-  --t-morph: 300ms;
 }
 
 /*
@@ -668,7 +666,7 @@
    * active fill, the 6px strip in the tab's own section colour, then the
    * three-sided border (::after). The active fill is its own element, the
    * one with `view-transition-name: tab-fill`, so on a page change it
-   * travels along the row from the old tab to the new one.
+   * travels along the row from the old tab to the new one (src/motion.css).
    */
   .tab {
     position: relative;
@@ -699,7 +697,6 @@
   .tab-fill {
     background: var(--section);
     bottom: -2px;
-    view-transition-name: tab-fill;
   }
   .tab-strip {
     position: absolute;
@@ -919,98 +916,6 @@ html.menu-open {
 
 
 /*
- * ---- Page transitions: View Transitions API. ----
- *
- * src/lib/transitions.ts decides which kind a navigation gets and sets it as
- * `data-vt` on <html> for the length of the transition. Nothing here applies
- * outside a transition, so none of it can hide anything in the prerendered
- * HTML, and a browser without the API never reads it.
- *
- * Every image animation is off by default, which removes the browser's
- * cross-fade: a swap with no `data-vt` rule is instant.
- */
-::view-transition {
-  pointer-events: none;
-}
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation: none;
-}
-::view-transition-group(*) {
-  animation-duration: var(--t-sheet);
-  animation-timing-function: var(--ease);
-}
-
-/* The header and footer are not part of the sheet. They stay put. */
-.site-header {
-  view-transition-name: site-header;
-}
-.site-footer {
-  view-transition-name: site-footer;
-}
-::view-transition-group(site-header),
-::view-transition-group(site-footer) {
-  animation: none;
-}
-
-/*
- * 1. Sheet slide. The new page is a paper sheet laid over the old one, from
- * the right when it is later in the reading order and from the left when it
- * is earlier. The old page does not move. The leading edge, from the sheet
- * outwards: a 2px ink rule, a 4px strip of the destination's section colour,
- * a 2px ink border, and a hard 4px ink shadow falling on the old page.
- * Transform only.
- */
-@keyframes sheet-from-right {
-  from {
-    transform: translateX(100%);
-  }
-}
-@keyframes sheet-from-left {
-  from {
-    transform: translateX(-100%);
-  }
-}
-html[data-vt="forward"]::view-transition-new(root) {
-  animation: sheet-from-right var(--t-sheet) var(--ease) both;
-  box-shadow:
-    -2px 0 0 0 var(--ink),
-    -6px 0 0 0 var(--section),
-    -8px 0 0 0 var(--ink),
-    -12px 0 0 0 var(--ink);
-}
-html[data-vt="back"]::view-transition-new(root) {
-  animation: sheet-from-left var(--t-sheet) var(--ease) both;
-  box-shadow:
-    2px 0 0 0 var(--ink),
-    6px 0 0 0 var(--section),
-    8px 0 0 0 var(--ink),
-    12px 0 0 0 var(--ink);
-}
-
-/*
- * 2. Tab handoff. The fill travels along the tab row in the same 240ms. Only
- * the new fill is drawn, so its colour does not cross-fade. Each tab's label
- * has a name of its own (tab-label-01 to 07); groups paint in document order
- * and the labels come after the fill, so the moving fill passes under the
- * text rather than over it.
- */
-::view-transition-old(tab-fill) {
-  display: none;
-}
-
-/*
- * 3. Index row to case study. The clicked row's thumbnail grows into the
- * case study's exhibit, and shrinks back on the way out, as one group named
- * exhibit-<slug>. transitions.ts sets that name on the two elements for that
- * navigation only. Both are 16:10, and with image animations off the
- * destination image sits opaque over the source, so nothing cross-fades.
- */
-html[data-vt="morph"]::view-transition-group(*) {
-  animation-duration: var(--t-morph);
-}
-
-/*
  * Under reduced motion everything renders its end state at once. The server
  * render is always the end state, so nothing here hides content.
  */
@@ -1022,20 +927,6 @@ html[data-vt="morph"]::view-transition-group(*) {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/*
- * 4. Inspect (F4). A screenshot grows out of its thumbnail into the sheet,
- * and shrinks back on close, as the group "inspect", in --m-enter. Only the
- * picture moves: the page does not, and with image animations off the
- * destination sits opaque over the source.
- */
-html[data-vt="inspect"]::view-transition-group(inspect) {
-  animation-duration: 320ms;
-  animation-timing-function: var(--ease);
-}
-html[data-vt="inspect"]::view-transition-old(inspect) {
-  display: none;
 }
 
 /* The sheet Inspect opens: a 4px-ruled frame on a paper-2 ground. */
