@@ -1132,7 +1132,10 @@ export const proof: Proof[] = [
   {
     value: "2",
     label: "extensions on the Chrome Web Store",
-    href: "https://chromewebstore.google.com/detail/riphours/iagjeekneaalapjnnofnifleaiondbbb",
+    // The two extensions, listed, rather than one of them. When there is a
+    // Web Store developer page to link, it goes here with `internal` removed.
+    href: "/work?kind=chrome",
+    internal: true,
   },
   {
     // "1" rendered at the same size as the others undersold this badly. The
