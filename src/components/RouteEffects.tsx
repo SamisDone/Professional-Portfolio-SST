@@ -45,7 +45,14 @@ export default function RouteEffects() {
       return;
     }
     afterNavigation();
-    document.querySelector<HTMLElement>("main h1")?.focus({ preventScroll: true });
+    // Leaving through the phone menu, focus goes back to the Menu button.
+    const menu = document.getElementById("menu-button");
+    if (menu?.dataset.returnFocus) {
+      delete menu.dataset.returnFocus;
+      menu.focus({ preventScroll: true });
+    } else {
+      document.querySelector<HTMLElement>("main h1")?.focus({ preventScroll: true });
+    }
     const announcer = document.getElementById("route-announcer");
     if (announcer) announcer.textContent = metaFor(pathname).title;
   }, [pathname]);

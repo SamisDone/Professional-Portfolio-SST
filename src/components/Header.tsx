@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { profile } from "../data/content";
 import { ROUTES } from "../lib/routes";
@@ -69,6 +70,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const menuButton = useRef<HTMLButtonElement | null>(null);
+  const sheet = useRef<HTMLDialogElement | null>(null);
 
   // Closing the menu is a reaction to the route changing, so it is adjusted
   // during render rather than from an effect.
@@ -78,16 +80,35 @@ export default function Header() {
     setOpen(false);
   }
 
+  /** Shuts the sheet and hands focus back to the Menu button. */
+  const close = () => {
+    flushSync(() => setOpen(false));
+    menuButton.current?.focus();
+  };
+
+  // A modal <dialog> keeps focus inside it and makes the page behind inert.
+  // The scroll lock pads out the scrollbar it removes, so nothing shifts.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setOpen(false);
-      menuButton.current?.focus();
+    sheet.current?.showModal();
+    const html = document.documentElement;
+    html.style.setProperty("--scrollbar", `${window.innerWidth - html.clientWidth}px`);
+    html.classList.add("menu-open");
+    // The sheet is for narrow screens: a window widened past lg has tabs again.
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const onWide = (e: MediaQueryListEvent) => e.matches && setOpen(false);
+    wide.addEventListener("change", onWide);
+    return () => {
+      html.classList.remove("menu-open");
+      wide.removeEventListener("change", onWide);
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
+
+  const onMenuLink = (to: string) => {
+    // RouteEffects would otherwise move focus to the new page's heading.
+    if (to !== pathname && menuButton.current) menuButton.current.dataset.returnFocus = "true";
+    close();
+  };
 
   return (
     <header className="site-header sticky top-0 z-50 border-b-2 border-ink bg-paper">
@@ -144,13 +165,14 @@ export default function Header() {
           </a>
           <button
             ref={menuButton}
+            id="menu-button"
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="site-menu"
             className="btn btn-secondary press lg:hidden"
           >
-            {open ? "Close" : "Menu"}
+            Menu
           </button>
         </div>
       </div>
@@ -158,17 +180,31 @@ export default function Header() {
       <ReadProgress />
 
       {open && (
-        <nav
+        <dialog
+          ref={sheet}
           id="site-menu"
-          aria-label="Pages"
-          className="menu-panel absolute inset-x-0 top-full border-b-2 border-ink bg-paper lg:hidden"
+          aria-label="Menu"
+          className="menu-sheet"
+          onCancel={(e) => {
+            e.preventDefault();
+            close();
+          }}
         >
+          <div className="border-b-2 border-ink">
+            <div className="shell flex h-16 items-center justify-end">
+              <button type="button" autoFocus onClick={close} className="btn btn-secondary press">
+                Close
+              </button>
+            </div>
+          </div>
+          <nav aria-label="Pages" className="menu-panel">
           <ul className="shell flex flex-col py-3">
             {ROUTES.map((r, i) => (
               <li key={r.path} data-section={r.section} className="border-x-2 border-b-2 border-ink first:border-t-2">
                 <NavLink
                   to={r.path}
                   end={r.path === "/"}
+                  onClick={() => onMenuLink(r.path)}
                   className={({ isActive }) =>
                     `relative flex min-h-12 items-baseline gap-4 py-3 pl-8 pr-3 text-ink no-underline ${
                       isActive ? "bg-section" : "hover:bg-paper-2"
@@ -195,7 +231,8 @@ export default function Header() {
               </a>
             </li>
           </ul>
-        </nav>
+          </nav>
+        </dialog>
       )}
     </header>
   );

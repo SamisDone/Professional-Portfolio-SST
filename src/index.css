@@ -884,6 +884,29 @@
   animation: menu-in var(--t-menu) var(--ease);
 }
 
+/* The sheet fills the screen, so no page shows behind it. */
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-y: auto;
+}
+.menu-sheet::backdrop {
+  background: var(--paper);
+}
+html.menu-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar, 0);
+}
+
 
 /*
  * ---- Page transitions: View Transitions API. ----
