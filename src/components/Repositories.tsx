@@ -43,7 +43,7 @@ function Row({ project, n }: { project: Project; n: number }) {
         {ownerLine && <Label className="mt-2 text-ink">{ownerLine}</Label>}
       </td>
       <td className="py-4 text-right max-md:col-start-2 max-md:pt-0 max-md:text-left">
-        <span className="inline-flex flex-col items-end gap-2 max-md:flex-row max-md:items-start max-md:gap-6">
+        <span className="tap-row inline-flex flex-col items-end gap-2 max-md:flex-row max-md:items-start max-md:gap-6">
           {project.live && (
             <ProofMark href={project.live} label={`${project.title}, live`} className="t-small">
               Live

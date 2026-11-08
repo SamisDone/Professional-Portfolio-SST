@@ -145,7 +145,7 @@ export default function CaseStudy({ project }: { project: Project }) {
           {/* The proof rule: the live product is a proof mark, the source is a
               plain link. The live link is the page's next action, so it is
               set at body size, ahead of Code. */}
-          <div data-stamp className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div data-stamp className="tap-row mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
             {project.live && (
               <ProofMark href={project.live} label={`${project.title}, ${project.liveLabel ?? "live"}`} className="t-body font-semibold">
                 {project.liveLabel ?? "Open it"}

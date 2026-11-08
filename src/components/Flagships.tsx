@@ -57,7 +57,7 @@ function FlagRow({
         </h3>
         <p className="t-small mt-2 max-w-measure">{project.summary}</p>
         {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
-        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="tap-row mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
           <TextLink to={caseStudyPath(project)} className="t-small font-semibold">
             Read the case study
           </TextLink>

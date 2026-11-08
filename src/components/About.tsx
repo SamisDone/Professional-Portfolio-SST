@@ -32,12 +32,12 @@ function Skill({ name }: { name: string }) {
       <span className="t-body font-semibold">{name}</span>
       {/* The receipts have a column of their own, so a "+N" that wraps, and
           the list it opens, hang under the first receipt. */}
-      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <span className="tap-row flex flex-wrap items-baseline gap-x-5 gap-y-1">
         {first}
         {rest.length > 0 && (
           <details className="skill-more">
             <summary className="link tap t-small">+{rest.length}</summary>
-            <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
+            <ul className="tap-row m-0 mt-1 flex list-none flex-col gap-1 p-0">
               {rest.map((link, i) => (
                 <li key={i}>{link}</li>
               ))}
@@ -118,7 +118,7 @@ export default function About() {
               >
                 <Label as="dt">{group.group}</Label>
                 <dd className="m-0 mt-2">
-                  <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  <ul className="tap-row m-0 flex list-none flex-col gap-2 p-0">
                     {group.items.map((item) => (
                       <Skill key={item} name={item} />
                     ))}

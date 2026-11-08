@@ -800,6 +800,9 @@
    * moving the text. Mouse pointers do not get invisible targets.
    */
   @media (pointer: coarse) {
+    .chip {
+      min-height: 44px;
+    }
     .tap {
       position: relative;
     }
@@ -812,6 +815,23 @@
       height: max(100%, 44px);
       transform: translate(-50%, -50%);
     }
+  }
+}
+
+/*
+ * Outside the layers, because these override Tailwind's spacing utilities.
+ * Links that wrap onto several lines: a row of 44px targets cannot be closer
+ * than 44px, or the lower line's hit area takes the upper line's taps.
+ * --tap-gap is 44px less the line's own height. Touch screens only, so the
+ * desktop layout is unchanged. The /work row's Live and Code links sit on its
+ * bottom edge, so a row needs room under them.
+ */
+@media (pointer: coarse) {
+  .tap-row {
+    row-gap: var(--tap-gap, 24px);
+  }
+  [data-row] {
+    padding-bottom: 14px;
   }
 }
 

@@ -15,7 +15,7 @@ export default function Footer() {
         <p>
           {profile.name}, {profile.location}
         </p>
-        <nav aria-label="Profiles" className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <nav aria-label="Profiles" className="tap-row flex flex-wrap items-center gap-x-6 gap-y-3 [--tap-gap:30px]">
           {SOCIALS.map((s) => (
             <a
               key={s.label}

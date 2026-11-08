@@ -38,7 +38,7 @@ export default function Privacy() {
               {"sources" in s && s.sources && (
                 <>
                   <p className="t-label m-0 mt-2 text-ink-2">Sources</p>
-                  <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  <ul className="tap-row m-0 flex list-none flex-col gap-2 p-0">
                     {s.sources.map((src) => (
                       <li key={src.href} className="t-small">
                         <TextLink href={src.href}>{src.label}</TextLink>
