@@ -590,6 +590,38 @@ html[data-vt="back"]::view-transition-new(page-stage) {
 }
 
 /*
+ * 3. Project to case study, on Home and /work. The clicked project's picture
+ * and title grow into the case study's and shrink back, as the groups
+ * morph-image and morph-title, names transitions.ts sets on those elements
+ * for that navigation only. The rest of the page crossfades underneath.
+ */
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+::view-transition-group(morph-image),
+::view-transition-group(morph-title) {
+  z-index: 5;
+}
+html[data-vt="morph"]::view-transition-old(page-stage),
+html[data-vt="morph"]::view-transition-old(morph-title) {
+  animation: vt-fade-out 200ms linear both;
+}
+html[data-vt="morph"]::view-transition-new(page-stage),
+html[data-vt="morph"]::view-transition-new(morph-title) {
+  animation: vt-fade-in 200ms linear both;
+}
+html[data-vt="morph"]::view-transition-old(page-stage) {
+  translate: 0 var(--vt-old-y, 0);
+}
+
+/*
  * 4. Inspect. A screenshot grows out of its thumbnail into the sheet and
  * shrinks back on close, as the group "inspect". Only the picture moves.
  */

@@ -127,7 +127,7 @@ export default function CaseStudy({ project }: { project: Project }) {
             {project.kind}, {project.year}
             {isFlagship(project) && " / Flagship"}
           </Label>
-          <h1 tabIndex={-1} className="t-h1 band mt-3">
+          <h1 tabIndex={-1} data-morph-title={project.slug} className="t-h1 band mt-3">
             {project.title}
           </h1>
           <p className="t-lead mt-4 max-w-measure">{project.summary}</p>

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { Project } from "../data/content";
 import { scan } from "../lib/motion";
+import { returningFrom } from "../lib/transitions";
 import {
   ALL_PROJECTS,
   WORK_FILTERS,
@@ -55,7 +56,9 @@ export function Row({ project, n, onPick }: { project: Project; n: number; onPic
               to={caseStudyPath(project)}
               className="text-ink no-underline after:absolute after:inset-0 after:z-10 after:content-['']"
             >
-              {project.title}
+              <span data-morph-title={project.slug} className="inline-block">
+                {project.title}
+              </span>
             </Link>
           </h2>
           {teamLine(project) && <Label className="mt-1 md:hidden">{teamLine(project)}</Label>}
@@ -122,7 +125,10 @@ export default function Work() {
   const kind = kindFrom(search);
   const list = useRef<HTMLOListElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState<string>(WORK_INDEX.find((p) => p.shot || p.figures)?.slug ?? "");
+  // Coming back from a case study, its row is the one in the frame.
+  const [active, setActive] = useState<string>(
+    () => WORK_INDEX.find((p) => p.slug === returningFrom() && (p.shot || p.figures))?.slug ?? WORK_INDEX.find((p) => p.shot || p.figures)?.slug ?? "",
+  );
   const firstFrame = useRef(true);
 
   const visible = (p: Project) => !kind || filtersOf(p).includes(kind);

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { returningFrom } from "../lib/transitions";
 import type { Project } from "../data/content";
 import { scan } from "../lib/motion";
 import { FLAGSHIPS, WORK_INDEX, caseStudyPath, preloadShot, shotPreview, teamLine } from "../lib/projects";
@@ -14,6 +15,7 @@ function Thumb({ project, eager }: { project: Project; eager: boolean }) {
   return (
     <ShotPicture
       src={project.shot}
+      data-exhibit={project.slug}
       sizes="(min-width: 1024px) 1px, 40vw"
       alt=""
       width={700}
@@ -54,7 +56,9 @@ function FlagRow({
         {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
         <h3 className="t-h3 mt-2">
           <TextLink to={caseStudyPath(project)} arrow={false} className="font-bold">
-            {project.title}
+            <span data-morph-title={project.slug} className="inline-block">
+              {project.title}
+            </span>
           </TextLink>
         </h3>
         <p className="t-small mt-2 max-w-measure">{project.summary}</p>
@@ -91,7 +95,9 @@ function FlagRow({
  * first screen.
  */
 export default function Flagships() {
-  const [active, setActive] = useState(0);
+  // Coming back from a case study, its row is the one in the frame, so the
+  // picture has somewhere to shrink back to.
+  const [active, setActive] = useState(() => Math.max(0, FLAGSHIPS.findIndex((p) => p.slug === returningFrom())));
   const frame = useRef<HTMLDivElement>(null);
   const first = useRef(true);
 
