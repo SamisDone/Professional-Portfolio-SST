@@ -1,3 +1,4 @@
+import { applyDocumentMeta } from "./documentMeta";
 import { routeIndex, sectionFor } from "./routes";
 import { WORK_INDEX, findProject } from "./projects";
 
@@ -81,6 +82,7 @@ export function transitionTo(from: string, to: string, replace: boolean, commit:
   const apply = () => {
     if (!samePage) window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
     html.dataset.section = sectionFor(to);
+    if (!samePage) applyDocumentMeta(to);
     commit();
   };
 

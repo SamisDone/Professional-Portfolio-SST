@@ -9,7 +9,7 @@
  *   images        every <img> has an alt attribute (alt="" for decoration)
  *   canonical     one per page, SITE_URL plus the page's path (none on 404)
  *   social        og:title, og:description, og:url, og:image (file exists),
- *                 og:image:alt, twitter:card summary_large_image
+ *                 og:image:alt, twitter:image:alt, twitter:card summary_large_image
  *   structured    every JSON-LD block parses and names a @context
  *   crawl files   robots.txt points at the sitemap; every sitemap URL is a page
  *   links         no indexable page without an inbound link; pages with fewer
@@ -88,7 +88,7 @@ for (const { path, html } of all) {
     if (canonicals.length !== 1 || canonicals[0] !== want) fail(path, `canonical ${JSON.stringify(canonicals)}, want ${want}`);
   }
 
-  for (const key of ["og:title", "og:description", "og:url", "og:image", "og:image:alt", "twitter:card"]) {
+  for (const key of ["og:title", "og:description", "og:url", "og:image", "og:image:alt", "twitter:card", "twitter:image:alt"]) {
     if (!meta(html, key)) fail(path, `no ${key}`);
   }
   if (meta(html, "twitter:card") !== "summary_large_image") fail(path, "twitter:card is not summary_large_image");

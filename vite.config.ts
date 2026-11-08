@@ -4,7 +4,7 @@ import { appendFileSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
-import { ROUTE_META, NOT_FOUND_META, ogKey, type PageMeta } from "./src/lib/meta.js";
+import { ROUTE_META, NOT_FOUND_META, ogAlt, ogKey, type PageMeta } from "./src/lib/meta.js";
 import { sectionFor } from "./src/lib/routes.js";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL, absolute } from "./src/lib/site.js";
 
@@ -92,6 +92,54 @@ function crawlFilesPlugin(): Plugin {
 }
 
 /**
+ * Fills index.html's double-underscore tokens for one route. The production
+ * build and the dev server both come through here, so the head a developer
+ * sees is the head that ships.
+ */
+function fillTemplate(template: string, path: string, meta: PageMeta, canonicalPath: string) {
+  const extra = [
+    meta.noindex ? `<meta name="robots" content="noindex" />` : "",
+    GOOGLE_SITE_VERIFICATION && path === "/"
+      ? `<meta name="google-site-verification" content="${escape(GOOGLE_SITE_VERIFICATION)}" />`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n    ");
+  // A 404 has no address of its own, so it gets no canonical: pointing
+  // it at the home page reads to Google as a soft 404.
+  const canonical = path === "/404" ? "" : `<link rel="canonical" href="${absolute(canonicalPath)}" />`;
+  return template
+    .replace("<!--__CANONICAL__-->", canonical)
+    .replaceAll("__PAGE_TITLE__", escape(meta.title))
+    .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
+    .replaceAll("__PAGE_SECTION__", sectionFor(path))
+    .replaceAll("__PAGE_URL__", absolute(canonicalPath))
+    .replaceAll("__OG_IMAGE__", `${SITE_URL}/og/${ogKey(canonicalPath)}.png`)
+    .replaceAll("__OG_IMAGE_ALT__", escape(ogAlt(meta)))
+    .replace("<!--__HEAD_EXTRA__-->", extra);
+}
+
+/**
+ * The dev server's half of the route-meta plugin: it serves index.html raw,
+ * so without this the tab read "__PAGE_TITLE__" and og:image:alt the raw
+ * token until the app started.
+ */
+function devMetaPlugin(): Plugin {
+  return {
+    name: "dev-route-meta",
+    apply: "serve",
+    transformIndexHtml: {
+      order: "pre",
+      handler(html, ctx) {
+        const path = ctx.path.replace(/\.html$/, "").replace(/^\/index$/, "/") || "/";
+        const known = path in ROUTE_META;
+        return fillTemplate(html, known ? path : "/404", known ? ROUTE_META[path] : NOT_FOUND_META, known ? path : "/");
+      },
+    },
+  };
+}
+
+/**
  * Emits one real HTML file per route, each with its own title, description,
  * canonical link, Open Graph and Twitter tags, section colour, and robots
  * meta where the page is kept out of search.
@@ -115,28 +163,7 @@ function routeMetaPlugin(): Plugin {
       }
       const template = String(index.source);
 
-      const fill = (path: string, meta: PageMeta, canonicalPath: string) => {
-        const extra = [
-          meta.noindex ? `<meta name="robots" content="noindex" />` : "",
-          GOOGLE_SITE_VERIFICATION && path === "/"
-            ? `<meta name="google-site-verification" content="${escape(GOOGLE_SITE_VERIFICATION)}" />`
-            : "",
-        ]
-          .filter(Boolean)
-          .join("\n    ");
-        // A 404 has no address of its own, so it gets no canonical: pointing
-        // it at the home page reads to Google as a soft 404.
-        const canonical = path === "/404" ? "" : `<link rel="canonical" href="${absolute(canonicalPath)}" />`;
-        return template
-          .replace("<!--__CANONICAL__-->", canonical)
-          .replaceAll("__PAGE_TITLE__", escape(meta.title))
-          .replaceAll("__PAGE_DESCRIPTION__", escape(meta.description))
-          .replaceAll("__PAGE_SECTION__", sectionFor(path))
-          .replaceAll("__PAGE_URL__", absolute(canonicalPath))
-          .replaceAll("__OG_IMAGE__", `${SITE_URL}/og/${ogKey(canonicalPath)}.png`)
-          .replaceAll("__OG_IMAGE_ALT__", escape(`${meta.heading}, on a card with the name ${SITE_NAME_TEXT}`))
-          .replace("<!--__HEAD_EXTRA__-->", extra);
-      };
+      const fill = (path: string, meta: PageMeta, canonicalPath: string) => fillTemplate(template, path, meta, canonicalPath);
 
       for (const [path, meta] of Object.entries(ROUTE_META)) {
         if (path === "/") continue;
@@ -152,8 +179,6 @@ function routeMetaPlugin(): Plugin {
     },
   };
 }
-
-const SITE_NAME_TEXT = "Samonwita Sarker";
 
 /**
  * A short content hash of the CV, stamped onto the link the site renders as
@@ -173,7 +198,7 @@ export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     react(),
     // The SSR pass only produces a render function for scripts/prerender.mjs.
-    ...(isSsrBuild ? [] : [crawlFilesPlugin(), routeMetaPlugin()]),
+    ...(isSsrBuild ? [] : [crawlFilesPlugin(), routeMetaPlugin(), devMetaPlugin()]),
   ],
   build: {
     // Fonts are always files: the CSP allows font-src 'self' only, so a font

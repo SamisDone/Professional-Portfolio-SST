@@ -138,6 +138,9 @@ export function metaFor(pathname: string): PageMeta {
   return ROUTE_META[pathname] ?? NOT_FOUND_META;
 }
 
+/** What a page's social card shows, for og:image:alt and twitter:image:alt. */
+export const ogAlt = (meta: Pick<PageMeta, "heading">) => `${meta.heading}, on a card with the name ${NAME}`;
+
 /**
  * The file name of a page's social card in public/og, written by
  * scripts/make-og.mjs. "/" is "home", "/work/dimsum" is "work-dimsum".
