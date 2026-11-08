@@ -95,6 +95,10 @@ export const ROUTE_META: Record<string, PageMeta> = {
     "All projects and source",
     "Every project in one table, with the source repository for each and a live demo where one exists, including the ones built on other people's repositories.",
   ),
+  "/certificates": page(
+    "Certificates",
+    "Certificates from freeCodeCamp and DataCamp in full-stack development, responsive design, JavaScript and data science, each one viewable at full size.",
+  ),
   "/privacy": page(
     "Privacy",
     "What this site collects and why: the contact form's fields and where they go, what the analytics records, whether any cookies are set, and how to reach me.",

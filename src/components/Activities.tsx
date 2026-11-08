@@ -17,7 +17,7 @@ export default function Activities() {
           Outside the terminal.
         </h1>
         <div className="mt-6">
-          <Button href={certifications.href} variant="primary">
+          <Button to="/certificates" variant="primary">
             View all certificates
           </Button>
         </div>

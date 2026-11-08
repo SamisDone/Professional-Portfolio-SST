@@ -4,6 +4,7 @@ scripts/optimise-shots.mjs writes:
 
   <name>.avif, <name>-700.avif   the same two widths, smaller than WebP
   src/data/shot-previews.json    a 20px WebP of each shot as a data: URI
+  public/certificates/*-thumb.webp   480px thumbnails for the /certificates grid
 
 The preview is what a frame shows while its image downloads. It is a real,
 very small picture of the shot, drawn scaled up, so the frame already has the
@@ -57,3 +58,15 @@ for source in sorted(SHOTS.glob("*.jpg")):
     print(f"{name:16} {image.width}px  avif {' '.join(sizes)}  preview {len(buffer.getvalue())}B")
 
 OUT.write_text(json.dumps(previews, indent=2, sort_keys=True) + "\n")
+
+# Thumbnails for the /certificates grid, written beside each image.
+CERTIFICATES = ROOT / "public" / "certificates"
+for source in sorted(CERTIFICATES.glob("*")):
+    if source.suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp", ".avif"} or source.name.endswith("-thumb.webp"):
+        continue
+    if only and source.stem not in only:
+        continue
+    resized(Image.open(source).convert("RGB"), 480).save(
+        CERTIFICATES / f"{source.stem}-thumb.webp", format="WEBP", quality=78, method=6
+    )
+    print(f"{source.stem:16} thumbnail")

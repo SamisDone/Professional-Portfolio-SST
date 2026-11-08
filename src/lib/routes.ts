@@ -24,6 +24,8 @@ export const ROUTES: RouteDef[] = [
  * the colour of Work.
  */
 export function sectionFor(pathname: string): Section {
+  // A sheet inside Activities.
+  if (pathname === "/certificates") return "pink";
   return ROUTES.find((r) => r.path === pathname)?.section ?? "orange";
 }
 

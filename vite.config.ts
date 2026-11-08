@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { appendFileSync, existsSync, readFileSync } from "node:fs";
+import { appendFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
@@ -25,6 +25,7 @@ const SOURCES: Record<string, string[]> = {
   "/contact": ["src/components/Contact.tsx"],
   "/repositories": ["src/components/Repositories.tsx"],
   "/privacy": ["src/components/Privacy.tsx"],
+  "/certificates": ["src/components/Certificates.tsx", "public/certificates"],
 };
 
 /**
@@ -192,8 +193,25 @@ function cvVersion() {
   }
 }
 
+/** The images in public/certificates, each with its thumbnail if it has one. */
+function certificates() {
+  const dir = "public/certificates";
+  if (!existsSync(dir)) return [];
+  const files = readdirSync(dir);
+  return files
+    .filter((f) => /\.(jpe?g|png|webp|avif)$/i.test(f) && !f.endsWith("-thumb.webp"))
+    .sort()
+    .map((file) => {
+      const thumb = `${file.replace(/\.\w+$/, "")}-thumb.webp`;
+      return { file, thumb: files.includes(thumb) ? thumb : undefined };
+    });
+}
+
 export default defineConfig(({ isSsrBuild }) => ({
-  define: { __CV_VERSION__: JSON.stringify(cvVersion()) },
+  define: {
+    __CV_VERSION__: JSON.stringify(cvVersion()),
+    __CERTIFICATES__: JSON.stringify(certificates()),
+  },
   plugins: [
     react(),
     // The SSR pass only produces a render function for scripts/prerender.mjs.
