@@ -13,6 +13,7 @@
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
 import { AppShell } from "./App";
+import "./lib/pages.server";
 
 export function render(pathname: string): string {
   return renderToString(

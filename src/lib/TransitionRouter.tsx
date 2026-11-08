@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Router, UNSAFE_createBrowserHistory as createBrowserHistory } from "react-router";
+import { loadPage } from "./pages";
 import { transitionTo } from "./transitions";
 
 /**
@@ -12,6 +13,9 @@ import { transitionTo } from "./transitions";
  * runs it inside `document.startViewTransition` where that exists and the
  * visitor has not asked for reduced motion, and at once where not.
  *
+ * The new page's code is in hand before the transition starts: usually from
+ * the preload a link starts when it is pointed at, focused or touched.
+ *
  * Client only. The prerender renders under StaticRouter, so the server HTML
  * is every page in its final state and none of this runs there.
  */
@@ -22,6 +26,7 @@ export default function TransitionRouter({ children }: { children: ReactNode }) 
   // Where the last navigation was headed, not what is on screen: during a run
   // of fast arrow presses the direction is taken from the previous target.
   const last = useRef(history.location.pathname);
+  const latest = useRef(0);
 
   useLayoutEffect(() => {
     // The scroll position is set by the transition, before the new page is
@@ -30,9 +35,18 @@ export default function TransitionRouter({ children }: { children: ReactNode }) 
     return history.listen(({ action, location }) => {
       const from = last.current;
       last.current = location.pathname;
-      transitionTo(from, location.pathname, action === "REPLACE", () =>
-        flushSync(() => setState({ action, location })),
-      );
+      const id = ++latest.current;
+      const go = () => {
+        // A newer navigation has already taken over while this page loaded.
+        if (id !== latest.current) return;
+        transitionTo(from, location.pathname, action === "REPLACE", () =>
+          flushSync(() => setState({ action, location })),
+        );
+      };
+      const loading = loadPage(location.pathname);
+      if (!loading) go();
+      // A chunk that will not load is usually a new deploy: load the page whole.
+      else loading.then(go, () => window.location.assign(location.pathname + location.search));
     });
   }, []);
 

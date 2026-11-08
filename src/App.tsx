@@ -5,19 +5,7 @@ import Pager from "./components/Pager";
 import Footer from "./components/Footer";
 import RouteEffects from "./components/RouteEffects";
 import Inspect from "./components/Inspect";
-import HomePage from "./pages/HomePage";
-import WorkPage from "./pages/WorkPage";
-import CaseStudyPage from "./pages/CaseStudyPage";
-import ExperiencePage from "./pages/ExperiencePage";
-import ResearchPage from "./pages/ResearchPage";
-import AboutPage from "./pages/AboutPage";
-import ActivitiesPage from "./pages/ActivitiesPage";
-import ContactPage from "./pages/ContactPage";
-import RepositoriesPage from "./pages/RepositoriesPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import CertificatesPage from "./pages/CertificatesPage";
-import ContactSentPage from "./pages/ContactSentPage";
+import { RoutePage } from "./lib/pages";
 import { sectionFor } from "./lib/routes";
 
 // The motion layer's specimens, for review in local development only. In a
@@ -57,20 +45,20 @@ export function AppShell() {
       <div className="flex min-h-[100dvh] flex-col">
         <Header />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/work" element={<WorkPage />} />
+          <Route path="/" element={<RoutePage name="HomePage" />} />
+          <Route path="/work" element={<RoutePage name="WorkPage" />} />
           {/* Outside ROUTES, like /repositories: no tab, no arrow-key stop. */}
-          <Route path="/work/:slug" element={<CaseStudyPage />} />
-          <Route path="/experience" element={<ExperiencePage />} />
-          <Route path="/research" element={<ResearchPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/activities" element={<ActivitiesPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/repositories" element={<RepositoriesPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/certificates" element={<CertificatesPage />} />
+          <Route path="/work/:slug" element={<RoutePage name="CaseStudyPage" />} />
+          <Route path="/experience" element={<RoutePage name="ExperiencePage" />} />
+          <Route path="/research" element={<RoutePage name="ResearchPage" />} />
+          <Route path="/about" element={<RoutePage name="AboutPage" />} />
+          <Route path="/activities" element={<RoutePage name="ActivitiesPage" />} />
+          <Route path="/contact" element={<RoutePage name="ContactPage" />} />
+          <Route path="/repositories" element={<RoutePage name="RepositoriesPage" />} />
+          <Route path="/privacy" element={<RoutePage name="PrivacyPage" />} />
+          <Route path="/certificates" element={<RoutePage name="CertificatesPage" />} />
           {/* Where the contact form returns with JavaScript off. */}
-          <Route path="/contact/sent" element={<ContactSentPage />} />
+          <Route path="/contact/sent" element={<RoutePage name="ContactSentPage" />} />
           {MotionLabPage && (
             <Route
               path="/motion-lab"
@@ -81,7 +69,7 @@ export function AppShell() {
               }
             />
           )}
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<RoutePage name="NotFoundPage" />} />
         </Routes>
         <Pager />
         <Footer />
