@@ -326,9 +326,9 @@ its element first enters the viewport, and then the page is still.
 
 <table>
   <tr>
-    <td width="33%"><img src="docs/home-first-load.webp" alt="Home loading for the first time: the tabs drop in, the orange band wipes in behind the name, the proof row's rule draws and Flagship 01's screenshot is uncovered"></td>
+    <td width="33%"><img src="docs/home-first-load.webp" alt="Home loading for the first time: the tabs drop in, the orange band wipes in behind the name, the proof row prints cell by cell like a receipt, and Flagship 01's screenshot is uncovered with its caption sliding out below it"></td>
     <td width="33%"><img src="docs/arrow-paging.webp" alt="Paging with the arrow keys: each page slides in over the last as a sheet, the tab fill moves along the row, and the new page's band and rules draw once it lands"></td>
-    <td width="33%"><img src="docs/work-to-case-study.webp" alt="A row on the work page: its number stamps in the section colour on hover, then its thumbnail grows into the case study's screenshot"></td>
+    <td width="33%"><img src="docs/work-to-case-study.webp" alt="A row on the work page: pointing at it puts its screenshot in the frame beside the table, and clicking it grows that screenshot into the case study's exhibit"></td>
   </tr>
   <tr>
     <td>Home, first load</td>
