@@ -45,7 +45,7 @@ export default function Inspect() {
       opener.current = link;
       const next: Shot = {
         src: link.href,
-        srcSet: thumb.srcset || undefined,
+        srcSet: link.querySelector<HTMLSourceElement>('source[type="image/webp"]')?.srcset || undefined,
         alt: thumb.alt,
         caption: link.closest("figure")?.querySelector("figcaption")?.textContent ?? "",
       };

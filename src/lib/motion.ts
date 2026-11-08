@@ -31,7 +31,7 @@ const TARGETS = [
   ".band", // A2 header bands
   ".proof-mark", // A3 proof marks
   "[data-tabs]", // A4 nav tabs, first page of a session only
-  "div[data-exhibit]", // A5 exhibits, once decoded
+  "div[data-exhibit]", // F3 captions, once the exhibit has decoded
   "[data-stamp]", // A6 labels and index numbers
   "[data-chart]", // C1 and E4, the trajectory
   "[data-flow]", // E2 and E3, how it works

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "../data/content";
 import { scan } from "../lib/motion";
-import { FLAGSHIPS, WORK_INDEX, caseStudyPath, preloadShot, teamLine } from "../lib/projects";
-import { ProjectVisual } from "./Exhibit";
+import { FLAGSHIPS, WORK_INDEX, caseStudyPath, preloadShot, shotPreview, teamLine } from "../lib/projects";
+import { ProjectVisual, ShotPicture } from "./Exhibit";
 import { Label, ProofMark, TextLink } from "./ui";
 
 const n = (i: number) => String(i + 1).padStart(2, "0");
@@ -10,16 +10,18 @@ const n = (i: number) => String(i + 1).padStart(2, "0");
 /** A phone's own small picture for a row, 16:10, at 40% of the row. */
 function Thumb({ project, eager }: { project: Project; eager: boolean }) {
   if (!project.shot) return null;
-  const stem = project.shot.replace(/\.(jpg|jpeg|png)$/i, "");
+  const preview = shotPreview(project.shot);
   return (
-    <img
-      src={`${stem}-700.webp`}
+    <ShotPicture
+      src={project.shot}
+      sizes="(min-width: 1024px) 1px, 40vw"
       alt=""
       width={700}
       height={438}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
-      className="aspect-[16/10] w-full border-2 border-ink bg-paper-2 object-cover object-top lg:hidden"
+      style={{ backgroundImage: preview && `url(${preview})` }}
+      className="aspect-[16/10] w-full border-2 border-ink bg-paper-2 bg-cover bg-top object-cover object-top lg:hidden"
     />
   );
 }

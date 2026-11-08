@@ -1,5 +1,6 @@
 import { featured, notable, otherWork, research, type Project } from "../data/content";
 import shots from "../data/shots.json";
+import previews from "../data/shot-previews.json";
 import { SITE_URL } from "./site";
 
 /** The three spreads on the home page, and the first three rows of /work. */
@@ -97,6 +98,12 @@ const SOURCE = { listing: "Listing image", readme: "README image" } as const;
 const SHOTS = shots as Record<string, ShotRecord>;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** A shot's 20px preview, as a data: URI, for its frame to show while loading. */
+export function shotPreview(shot: string): string | undefined {
+  const stem = shot.replace(/^.*\//, "").replace(/\.\w+$/, "");
+  return (previews as Record<string, string>)[stem];
+}
 
 /**
  * Starts fetching a project's full-size screenshot, the one its case study

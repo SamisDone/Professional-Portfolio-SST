@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type Ref } from "react";
 import type { Project } from "../data/content";
-import { captionFor } from "../lib/projects";
+import { captionFor, shotPreview } from "../lib/projects";
 import { ProofMark } from "./ui";
 
 /** useLayoutEffect warns when rendered to a string; this is the same hook
@@ -8,23 +8,36 @@ import { ProofMark } from "./ui";
 const useIsoLayoutEffect = typeof window === "undefined" ? () => {} : useLayoutEffect;
 
 /**
- * scripts/optimise-shots.mjs writes a 1400px and a 700px WebP beside every
- * capture. `src` stays the original, for a browser with no WebP.
+ * A screenshot in AVIF and WebP, at 700px and 1400px so a screen takes its 1x
+ * or 2x size, with the 1400px JPEG for a browser that reads neither. The
+ * variants are written by scripts/optimise-shots.mjs and
+ * scripts/make-image-variants.py.
  */
-function webpSources(src: string) {
+export function ShotPicture({
+  src,
+  sizes,
+  imgRef,
+  ...img
+}: { src: string; sizes: string; imgRef?: Ref<HTMLImageElement> } & Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "sizes">) {
   const stem = src.replace(/\.(jpg|jpeg|png)$/i, "");
-  if (stem === src) return undefined;
-  return `${stem}-700.webp 700w, ${stem}.webp 1400w`;
+  const set = (ext: string) => `${stem}-700.${ext} 700w, ${stem}.${ext} 1400w`;
+  return (
+    <picture>
+      <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
+      <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
+      <img ref={imgRef} src={src} sizes={sizes} {...img} />
+    </picture>
+  );
 }
 
 /**
  * A screenshot shown as an exhibit: 16:10, a 2px ink frame, and a caption bar
  * saying what it is, where it was captured and when.
  *
- * Until the file decodes, the frame holds a paper-2 block of the same size
- * with the caption already in place, so nothing moves when it arrives. No
- * shimmer and no wipe; the image fades in over 150ms. The server render, and
- * so the page with JavaScript off, shows the image tag as it is.
+ * Until the file decodes, the frame shows a 20px preview of the same picture,
+ * scaled up, with the caption already in place, so nothing moves when it
+ * arrives. The image fades in over 150ms. The server render, and so the page
+ * with JavaScript off, shows the image tag as it is.
  */
 export function Exhibit({
   project,
@@ -41,7 +54,7 @@ export function Exhibit({
   const [loading, setLoading] = useState(typeof window !== "undefined");
   const img = useRef<HTMLImageElement | null>(null);
   const src = project.shot!;
-  const sources = webpSources(src);
+  const preview = shotPreview(src);
 
   // A cached image can finish before React attaches onLoad.
   useIsoLayoutEffect(() => {
@@ -51,15 +64,18 @@ export function Exhibit({
   return (
     <figure className={`m-0 ${className}`}>
       {/* data-exhibit marks the frame the /work thumbnail grows into. */}
-      <div data-exhibit={project.slug} className="relative border-2 border-ink bg-paper-2" style={{ aspectRatio: "16 / 10" }}>
+      <div
+        data-exhibit={project.slug}
+        className="relative border-2 border-ink bg-paper-2 bg-cover bg-top"
+        style={{ aspectRatio: "16 / 10", backgroundImage: preview && `url(${preview})` }}
+      >
         {/* The full-size file. With JavaScript, Inspect opens it in a sheet
             over the page instead (F4); without, this link is the way in. */}
         <a href={src} data-inspect className="block h-full" aria-label={`${project.title} screenshot, full size`}>
-        <img
-          ref={img}
+        <ShotPicture
+          imgRef={img}
           src={src}
-          srcSet={sources}
-          sizes={sources ? sizes : undefined}
+          sizes={sizes}
           alt={project.shotAlt ?? ""}
           width={1400}
           height={875}

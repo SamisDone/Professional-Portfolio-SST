@@ -170,28 +170,8 @@ html.m-js .m-a4 [data-tabs] > .tab:nth-child(5) { animation-delay: calc(4 * var(
 html.m-js .m-a4 [data-tabs] > .tab:nth-child(n + 6) { animation-delay: calc(5 * var(--m-stagger)); }
 
 /* ---------------------------------------------------------------- A5
-   Exhibits: once the image has decoded, a paper-2 cover slides off to the
-   right. No scale and no zoom. The image's own fade is turned off here. */
-html.m-js .m-a5 div[data-exhibit]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--paper-2);
-  /* Shrinking toward its right edge: the same as sliding off to the right,
-     for a flat cover, and on the compositor (see A2). */
-  transform-origin: right;
-  transform: scaleX(1);
-  transition: transform var(--m-enter) var(--m-ease);
-  pointer-events: none;
-}
-html.m-js .m-a5 div[data-exhibit][data-in]::after {
-  transform: scaleX(0);
-}
-html.m-js .m-a5 div[data-exhibit] .exhibit-img {
-  opacity: 1;
-  transition: none;
-}
+   Exhibits: the frame shows the image's own preview until the file has
+   decoded, then the image fades in (.exhibit-img in src/index.css). */
 
 /* ---------------------------------------------------------------- A6
    Labels such as FLAGSHIP, and index numbers, stamp as they enter. */
