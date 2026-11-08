@@ -132,7 +132,7 @@ export type Project = {
 /**
  * The work that carries the most weight, every one live and with a real
  * screenshot, and every one either solo work or team work where her own
- * commits name what she did. The first three are the flagship spreads on the
+ * commits name what she did. The first three are the flagship rows on the
  * home page, and the first flagship's screenshot is the exhibit in the hero
  * (`lib/projects.ts`, FLAGSHIPS). All of them lead the /work index.
  *
@@ -954,8 +954,11 @@ export const experience: Role[] = [
 
 export const about = {
   paragraphs: [
-    "I am a Computer Science and Engineering undergraduate at CUET, graduating in 2027. Two of the Chrome extensions I wrote are published and installable right now, and I built and shipped a bilingual site for a design firm in Montreal.",
-    "The other half of my time goes to research, on explainable AI and NLP. Two papers so far, one peer reviewed at IEEE ICECTE and one first-author system paper at an ACL workshop, and a thesis in progress on reading Bangla off photographs.",
+    // The extensions, the client site and the two papers are on Home and
+    // Research with their receipts; saying them again here, unlinked, made
+    // About longer than three phone screens.
+    "I am a Computer Science and Engineering undergraduate at CUET, graduating in 2027.",
+    "Half of my time goes to building software, and the other half to research on explainable AI and NLP, with a thesis in progress on reading Bangla off photographs.",
     "The thread between the two is that I like problems where the engineering and the reasoning both have to hold up. A model whose predictions you can defend. An extension that keeps a promise about your privacy. A schema that stays correct as it grows.",
   ],
   stack: [

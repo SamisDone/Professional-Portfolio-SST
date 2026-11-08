@@ -16,9 +16,10 @@
  *             404 and /privacy are exempt from the proof item; /privacy must
  *             still show a contact line. On Contact the next action is the
  *             form's first field, and the email address must show as well.
- *   rule 2    at 1280x800, the pages in ROUTES and the 404 at most 2400px
- *             (three screens). /repositories is exempt: an index table, its
- *             length is the point. /work is exempt while rule 4 holds.
+ *   rule 2    the pages in ROUTES and the 404 at most 1600px at 1280x800
+ *             (two screens) and at most 2532px at 390x844 (three screens).
+ *             /repositories is exempt, an index whose length is the point;
+ *             so are /privacy and the case studies, which have an index.
  *   rule 3    case studies: H1, role and the Live and Code links on screen
  *   rule 4    on a page that scrolls, the top of the next section (its heading
  *             or its opening rule) inside the first screen, 48px or more above
@@ -53,7 +54,8 @@ const VIEWPORTS = [
   [1440, 900],
   [390, 844],
 ];
-const MAX_LENGTH = 2400;
+/** Rule 2's limits, by viewport: two screens on a desktop, three on a phone. */
+const MAX_LENGTH = { "1280x800": 1600, "390x844": 2532 };
 const MARGIN = 48;
 
 /*
@@ -103,10 +105,9 @@ const cases = readdirSync(join(root, "dist/work"))
   .map((f) => `/work/${f.slice(0, -5)}`);
 const TOP = ["/", "/work", "/experience", "/research", "/about", "/activities", "/contact", "/repositories", "/404"];
 const ROUTES = [...TOP, "/privacy", ...cases];
-// Rule 2 applies to these. /repositories is left out; /work only counts
-// when rule 4 fails (see below).
-const LENGTH_RULE = new Set(["/", "/experience", "/research", "/about", "/activities", "/contact", "/404"]);
-const LENGTH_IF_NO_CUE = new Set(["/work"]);
+// Rule 2 applies to these. /repositories, /privacy and the case studies are
+// left out.
+const LENGTH_RULE = new Set(["/", "/work", "/experience", "/research", "/about", "/activities", "/contact", "/404"]);
 
 const server = spawn(process.execPath, [join(root, "server.mjs")], { env: { ...process.env, PORT: String(PORT) }, stdio: "pipe" });
 await new Promise((ok, fail) => {
@@ -163,8 +164,8 @@ try {
           { spec, margin: MARGIN },
         );
         const rule1 = Object.values(m.items).every((i) => i.ok);
-        const limited = LENGTH_RULE.has(route) || (LENGTH_IF_NO_CUE.has(route) && !m.rule4);
-        const rule2 = !(w === 1280 && h === 800 && limited) || m.length <= MAX_LENGTH;
+        const max = MAX_LENGTH[`${w}x${h}`];
+        const rule2 = !(max && LENGTH_RULE.has(route)) || m.length <= max;
         rows.push({ route, vp: `${w}x${h}`, reduced, ...m, rule1, rule2 });
 
         if (!reduced && ((w === 1280 && h === 800) || w === 390)) {

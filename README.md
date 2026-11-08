@@ -57,9 +57,9 @@ product.
 
 | Route | What is on it |
 |---|---|
-| `/` | The name at poster scale, one line on what she does, one screenshot exhibit, four proof figures, and three flagship spreads |
-| `/work` | One index table of every project, flagships first, each row opening its case study |
-| `/work/<slug>` | A case study per project: problem, what was built, her part on team work, how it works, the result |
+| `/` | The name at poster scale, one line on what she does, four proof figures, and the three flagships as an index beside one exhibit frame that shows the row you point at |
+| `/work` | One index table of every project, flagships first, each row opening its case study; filter chips by kind, and from 1024px a sticky frame showing the row you point at |
+| `/work/<slug>` | A case study per project: problem, what was built, her part on team work, how it works, the result, with a sticky index of those sections from 1024px |
 | `/experience` | Team lead at BdREN Innovation (Cortex), Fleet AI, Inc., and a freelance client site |
 | `/research` | An IEEE ICECTE 2026 paper, a first-author ACL 2026 system paper, and the thesis in progress |
 | `/about` | Introduction, education with the CGPA and a term-by-term trend chart, and the stack |
@@ -76,7 +76,10 @@ by link and sit outside the sequence.
 
 - **Proof on the first screen.** The name, the role line, the proof figures and
   the primary action are all visible without scrolling at 1280x720 and on a
-  390x844 phone. Pages scroll; nothing is squeezed to fit.
+  390x844 phone. Each page in the reading sequence is at most two screens
+  long at 1280x800 and three on a 390x844 phone, measured by
+  `scripts/measure-pages.mjs`; `/repositories` and the case studies, which
+  have an index, are exempt.
 - **Arrow-key navigation** between pages, with an instant swap and no
   transition to wait for.
 - **It works without JavaScript.** Every route, every case study included, is
@@ -192,7 +195,7 @@ publications, experience, education, leadership, competitions and
 certifications. Change it there and every page that shows it updates.
 
 **Adding a project.** Add an entry to `featured` (the top of the `/work` index;
-the first three are the home page's flagship spreads), `notable` (the rest of
+the first three are the flagship rows on the home page), `notable` (the rest of
 the index) or `otherWork` (named only on `/repositories`). Every project gets
 a case study page at `/work/<slug>` automatically. Write it from the project's own README, not
 from memory: every number on the site came from a real source. Set `role`. On
@@ -352,9 +355,17 @@ never shifts (CLS 0).
 | A4 | The nav tabs drop into place, once per session | header |
 | A5 | A paper cover slides off a screenshot once it has decoded | every exhibit |
 | A6 | Labels and index numbers stamp | flagship labels, work rows |
+| F1 | The proof row prints like a receipt: each cell's rules are drawn from the top, its figure stamps, its label and domain appear, the arrow nudges once; cells 60ms apart | Home |
+| F2 | A ledger's row rules are drawn left to right one after another, each row's text revealed from the top as its rule finishes; dates stamp | Experience, Research, Activities, `/repositories`, `/work` |
+| F3 | After an exhibit's cover slides off, its caption slides out from behind the frame's bottom edge | every exhibit |
+| F4 | A screenshot opens full size in a sheet, growing out of its thumbnail; Escape, the backdrop or Close shut it | every exhibit |
+| F5 | A pager button, pointed at or focused, fills with the destination page's colour from the edge its arrow points to | every pager |
+| F6 | A case study's Role, Type and Status stamp in turn, then its Live and Code links | case studies |
+| F7 | When a message has gone, a SENT stamp lands over the form, then the confirmation line | contact form |
+| F8 | Choosing a filter cuts the rows that leave and slides the rest to their places (FLIP, 200ms) | `/work` |
 | B1 | Buttons: hover on 200ms, press on 120ms | every pressable |
 | B2 | Links thicken their underline, and the arrow nudges 4px its way | every text link |
-| B3 | A work row's number takes the section colour with a stamp; its thumbnail shifts 4px | `/work` |
+| B3 | A work row's number takes the section colour with a stamp | `/work` |
 | B4 | A tab lifts 3px on hover, pulled out of a file | header |
 | B5 | Phone menu items drop in 40ms apart; closing is instant | phone menu |
 | B6 | A field's border draws in on focus; an error drops in | contact form |
@@ -368,8 +379,9 @@ never shifts (CLS 0).
 hangs off `html.m-js`, which a one-line inline script in `index.html` adds
 before the first paint, and only when the visitor has not asked for reduced
 motion. So the prerendered page, a page with JavaScript off and reduced motion
-all show the finished state. `src/lib/motion.ts` (about 0.9kB gzipped
-together with the inline switch, and no animation library) then watches each
+all show the finished state. `src/lib/motion.ts` (1.1kB gzipped, the
+inline switch 0.3kB, and no animation library; Inspect, F4, is another
+1.0kB) then watches each
 element with one `IntersectionObserver` and marks it `data-in` when it first
 enters the viewport. If that script has
 not run within 1.5s, the inline script takes `m-js` off again so nothing waits
@@ -378,7 +390,7 @@ marked finished rather than replayed. The inline script is allowed by its
 sha256 in the CSP in `public/_headers`. Scroll-driven animations are not used:
 they would undraw when the visitor scrolls back up.
 
-Each motion has its own scope class (`m-a1` to `m-e4`) on the app's root in
+Each motion has its own scope class (`m-a1` to `m-f7`) on the app's root in
 `src/App.tsx`, so one can be switched off by deleting its name. In
 development, `/motion-lab` shows every motion as a labelled specimen with a
 replay button; production builds leave that page out.
@@ -394,8 +406,9 @@ replay button; production builds leave that page out.
   shadow. The header and footer stay put.
 - The active tab's fill travels along the tab row to the new tab in the same
   240ms, as one shared element.
-- From `/work` to a case study, the row's thumbnail grows into the exhibit in
-  300ms, and shrinks back on the way out.
+- From `/work` to a case study, the screenshot in the sticky frame grows into
+  the case study's exhibit in 300ms, and shrinks back on the way out, when the
+  row clicked is the one in the frame.
 - Everything else is an instant swap. So is every page change where the API is
   missing or the visitor has asked for reduced motion.
 
@@ -478,6 +491,17 @@ Each of these was a real bug.
   picture of Render.
 - **Tailwind emits `.relative` after `.absolute`,** so an element with both is
   `relative`.
+- **Chrome does not reliably repaint a table row's background as it
+  changes.** F2 draws a ledger's rules as a row background, so on the real
+  table on `/repositories` (from 768px) the rows keep their own border and
+  only their text moves.
+- **Playwright's full-page screenshots can drop a layer that has animated.**
+  To compare a page with its reduced-motion twin, capture it a screen at a
+  time; `measure-pages.mjs` scrolls each page through before its full-page
+  capture so every entrance has at least played.
+- **The inline script in `index.html` also reads `/work`'s `?kind=` filter**
+  and puts it on `<html data-kind>` before the first paint, so a shared
+  filtered link never shows every row first. Its hash is in the CSP.
 - **There is no catch-all rewrite,** deliberately. Every route is a real file, so
   Cloudflare Pages serves `404.html` with a real 404 for anything else. A
   rewrite would answer 200 for junk URLs.

@@ -23,7 +23,7 @@ export default function Activities() {
         </div>
       </section>
 
-      <div className="shell tier-b grid gap-12 lg:grid-cols-12 lg:gap-8">
+      <div className="shell tier-b grid gap-10 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-6">
           <section aria-labelledby="leadership">
             <h2 id="leadership" className="t-h3">
@@ -36,7 +36,7 @@ export default function Activities() {
             </ol>
           </section>
 
-          <section aria-labelledby="certifications" className="mt-12">
+          <section aria-labelledby="certifications" className="mt-10">
             <h2 id="certifications" className="t-h3">
               Certifications
             </h2>
@@ -45,7 +45,7 @@ export default function Activities() {
                 From sm the whole list shows and the disclosure is not drawn. */}
             <ul data-ledger="bottom" className="m-0 mt-4 grid list-none border-t-2 border-ink p-0 sm:grid-cols-2 sm:gap-x-6">
               {certifications.items.map((c, i) => (
-                <li key={c} className={`tint-row t-small border-b border-ink py-3 ${i >= PHONE_CERTS ? "max-sm:hidden" : ""}`}>
+                <li key={c} className={`tint-row t-small border-b border-ink py-2 ${i >= PHONE_CERTS ? "max-sm:hidden" : ""}`}>
                   {c}
                 </li>
               ))}

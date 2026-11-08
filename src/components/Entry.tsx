@@ -21,7 +21,7 @@ export default function Entry({
   receipts?: Receipt[];
 }) {
   return (
-    <li className="tint-row border-t border-ink py-4 first:border-t-2">
+    <li className="tint-row border-t border-ink py-3 first:border-t-2">
       {/* Two columns, so a title that wraps keeps its date on the right
           instead of dropping it under itself. */}
       <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-4">

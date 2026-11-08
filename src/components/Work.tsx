@@ -8,7 +8,6 @@ import {
   WORK_INDEX,
   caseStudyPath,
   filtersOf,
-  isFlagship,
   preloadShot,
   teamLine,
 } from "../lib/projects";
@@ -19,21 +18,11 @@ import { Label, ProofMark, TextLink } from "./ui";
     measure on a server. */
 const useIsoLayoutEffect = typeof window === "undefined" ? () => {} : useLayoutEffect;
 
-/** Stack items shown in the row; the rest are counted, and listed in full on
-    the case study. */
-const STACK = 3;
-
-const COLS = "md:grid-cols-[40px_minmax(0,1.2fr)_minmax(0,2fr)_minmax(0,1.3fr)_56px_96px]";
+/* No stack column: the stack is on every case study and on /repositories,
+   and the rows are shorter without it. */
+const COLS = "md:grid-cols-[40px_minmax(0,1fr)_minmax(0,2fr)_48px_128px]";
 
 export function Row({ project, n, onPick }: { project: Project; n: number; onPick?: () => void }) {
-  const extra = project.stack.length - STACK;
-  const stack = (
-    <>
-      {project.stack.slice(0, STACK).join(", ")}
-      {extra > 0 && `, +${extra}`}
-    </>
-  );
-
   return (
     <li
       className="border-b border-ink"
@@ -50,7 +39,7 @@ export function Row({ project, n, onPick }: { project: Project; n: number; onPic
     >
       <div
         data-row
-        className={`press press-quiet grid grid-cols-[32px_minmax(0,1fr)] gap-x-4 gap-y-2 px-2 py-4 [--fill-hover:var(--section-tint)] md:items-start ${COLS}`}
+        className={`press press-quiet grid grid-cols-[32px_minmax(0,1fr)] gap-x-4 gap-y-2 px-2 py-2 [--fill-hover:var(--section-tint)] md:items-start ${COLS}`}
       >
         <span className="t-label pt-1 text-ink">
           <span data-rownum data-stamp className="inline-block">
@@ -59,11 +48,6 @@ export function Row({ project, n, onPick }: { project: Project; n: number; onPic
         </span>
 
         <div>
-          {isFlagship(project) && (
-            <Label stamp className="mb-1 text-ink">
-              Flagship
-            </Label>
-          )}
           <h2 className="t-h3">
             {/* The whole row opens the case study. The link is stretched over
                 it; Live and Code sit above the stretch with their own targets. */}
@@ -74,21 +58,28 @@ export function Row({ project, n, onPick }: { project: Project; n: number; onPic
               {project.title}
             </Link>
           </h2>
-          {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
-          <p className="t-small mt-2 md:hidden">{project.summary}</p>
-          {project.figureNote && <Label className="mt-2 md:hidden">{project.figureNote}</Label>}
+          {teamLine(project) && <Label className="mt-1 md:hidden">{teamLine(project)}</Label>}
+          {/* On a phone a row says what kind of thing it is; the summary is
+              the case study's first line. */}
+          <Label className="mt-1 md:hidden">
+            {project.kind}, {project.year}
+          </Label>
         </div>
 
         <div className="col-start-2 hidden md:col-start-auto md:block">
           <p className="t-small">{project.summary}</p>
           {project.figureNote && <Label className="mt-2">{project.figureNote}</Label>}
+          {/* The role sits here from md, on one line, rather than wrapping
+              under the title in the narrow project column. */}
+          {teamLine(project) && <Label className="mt-1">{teamLine(project)}</Label>}
         </div>
-        <Label className="hidden pt-1 md:block">{stack}</Label>
         <Label date className="hidden pt-1 md:block">
           {project.year}
         </Label>
 
-        <div className="relative z-20 col-start-2 flex gap-4 md:col-start-auto md:flex-col md:items-end md:gap-2">
+        {/* Live and Code side by side: stacked, they were often taller than
+            the row's text. */}
+        <div className="relative z-20 col-start-2 flex gap-4 md:col-start-auto md:justify-end">
           {project.live && (
             <ProofMark href={project.live} label={`${project.title}, live`} className="t-small">
               Live
@@ -196,7 +187,8 @@ export default function Work() {
       </section>
 
       <section aria-label="Project index" className="shell tier-b">
-        <nav aria-label="Filter by kind" className="mb-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <nav aria-label="Filter by kind">
           <ul className="m-0 flex list-none flex-wrap gap-3 p-0">
             {[{ key: null, label: "All", n: WORK_INDEX.length }, ...WORK_FILTERS.map((f) => ({ ...f, n: count(f.key) }))].map(
               (f) => (
@@ -217,11 +209,16 @@ export default function Work() {
             <p className="t-small mt-3">Filtering needs JavaScript, so every project is shown below.</p>
           </noscript>
         </nav>
+        {/* The way on to every project, here rather than under the table. */}
+        <TextLink to="/repositories" className="t-small">
+          All {ALL_PROJECTS.length} projects, with source
+        </TextLink>
+        </div>
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-9">
             <div aria-hidden className={`hidden gap-x-4 border-b-2 border-ink px-2 pb-2 md:grid ${COLS}`}>
-              {["No.", "Project", "What it is", "Stack", "Year", "Proof"].map((h) => (
+              {["No.", "Project", "What it is", "Year", "Proof"].map((h) => (
                 <Label as="span" key={h} className={`text-ink ${h === "Proof" ? "text-right" : ""}`}>
                   {h}
                 </Label>
@@ -233,18 +230,15 @@ export default function Work() {
               ))}
             </ol>
           </div>
-          <div className="hidden lg:col-span-4 lg:block">
+          <div className="hidden lg:col-span-3 lg:block">
             <div ref={frame} data-work-frame className="sticky top-24">
               {shown && (
-                <ProjectVisual key={shown.slug} project={shown} sizes="(min-width: 1280px) 380px, 30vw" priority />
+                <ProjectVisual key={shown.slug} project={shown} sizes="(min-width: 1280px) 300px, 24vw" priority />
               )}
             </div>
           </div>
         </div>
 
-        <p className="t-small tier-c">
-          <TextLink to="/repositories">All {ALL_PROJECTS.length} projects, with source</TextLink>
-        </p>
       </section>
     </>
   );
