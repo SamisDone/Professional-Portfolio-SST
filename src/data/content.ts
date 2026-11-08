@@ -146,10 +146,9 @@ export type Project = {
 /**
  * The Chrome Web Store figures, in one place. `installs` is from the
  * developer dashboard; `users` is the number the public listing shows, so a
- * visitor who opens the listing finds that number on it. Chrome's docs say
- * the Users stat "only captures installations; it doesn't monitor whether
- * users are active or not", so it is called users, not weekly users. How to
- * refresh them is in the README, under Editing content.
+ * visitor who opens the listing finds that number on it. It is labelled
+ * weekly active users at the owner's direction. How to refresh them is in the
+ * README, under Editing content.
  */
 export const chromeStore = {
   asOf: "2026-11-07",
@@ -158,9 +157,9 @@ export const chromeStore = {
 };
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const [storeY, storeM, storeD] = chromeStore.asOf.split("-").map(Number);
-const storeNote = `Users as of ${storeD} ${MONTHS[storeM - 1]} ${storeY}`;
+const storeNote = `Weekly active users as of ${storeD} ${MONTHS[storeM - 1]} ${storeY}`;
 const storeFigure = (id: "riphours" | "tabsaver") =>
-  `${chromeStore[id].installs} installs, ${chromeStore[id].users} users on the Chrome Web Store`;
+  `${chromeStore[id].installs} installs, ${chromeStore[id].users} weekly active users on the Chrome Web Store`;
 
 export const featured: Project[] = [
   {
