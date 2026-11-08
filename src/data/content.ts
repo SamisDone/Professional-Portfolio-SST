@@ -1115,11 +1115,11 @@ export const trajectoryNote =
  * The education entry above the chart carries the cumulative 3.51, the same
  * figure the CV prints, so this caption only has to say what each point is.
  */
-/** Pinned to the chart: its y axis starts at 3.2, not 0. */
-export const trajectoryAxisNote = "Axis zoomed to 3.2 to 4.0";
+/** Pinned to the chart: its y axis starts at 3.0, not 0. */
+export const trajectoryAxisNote = "Axis zoomed to 3.0 to 4.0";
 
 export const trajectoryCaption =
-  "Six terms of eight. Each point is one term alone.";
+  "Latest term 3.85. Six terms of eight. Each point is one term alone.";
 
 /**
  * The strip under the hero, declared here rather than at the top of the file

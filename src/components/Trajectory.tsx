@@ -12,8 +12,8 @@ const PAD_L = 48;
 const PAD_R = 20;
 const PAD_T = 44;
 const PAD_B = 44;
-const DOMAIN: [number, number] = [3.2, 4.0];
-const GRID = [3.2, 3.4, 3.6, 3.8, 4.0];
+const DOMAIN: [number, number] = [3.0, 4.0];
+const GRID = [3.0, 3.2, 3.4, 3.6, 3.8, 4.0];
 /** The full axis the chart opens on before it zooms (E4), 0 to 3.0. */
 const FULL = [0, 1, 2, 3];
 const FONT = 16;
@@ -29,7 +29,7 @@ const LAST = cgpaHistory.length - 1;
 
 /** The text alternative: every term and its figure, in order. */
 const DESCRIPTION =
-  "Term GPA at CUET, each term on its own rather than cumulative, on an axis zoomed to 3.2 to 4.0. " +
+  "Term GPA at CUET, each term on its own rather than cumulative, on an axis zoomed to 3.0 to 4.0. " +
   cgpaHistory.map((p) => `${p.full}: ${p.value.toFixed(2)}`).join(". ") +
   ".";
 
@@ -38,7 +38,7 @@ const DESCRIPTION =
  * Level 2 and a climb out of it. Ink only: a 2px line, 8px square points, and
  * every point labelled, so the zoomed axis cannot overstate a change.
  *
- * The axis is zoomed to 3.2 to 4.0, and the chart says so in a note that is
+ * The axis is zoomed to 3.0 to 4.0, and the chart says so in a note that is
  * part of it, with JavaScript or without.
  *
  * Rendered complete. The motion layer (E4 and C1 in src/motion.css) opens it
