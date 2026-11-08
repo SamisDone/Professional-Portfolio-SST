@@ -11,7 +11,7 @@ import {
   preloadShot,
   teamLine,
 } from "../lib/projects";
-import { ProjectVisual } from "./Exhibit";
+import { ProjectFrame } from "./Exhibit";
 import { Label, ProofMark, TextLink } from "./ui";
 
 /** useLayoutEffect warns when rendered to a string; there is nothing to
@@ -162,8 +162,7 @@ export default function Work() {
   // Leaving /work: the filter belongs to this page only.
   useEffect(() => () => void delete document.documentElement.dataset.kind, []);
 
-  // A project new to the frame is handed to the motion layer, so its cover
-  // slides off once the picture has decoded (A5).
+  // A project new to the frame is handed to the motion layer.
   useEffect(() => {
     if (firstFrame.current) {
       firstFrame.current = false;
@@ -172,7 +171,6 @@ export default function Work() {
     if (frame.current) scan(frame.current);
   }, [active]);
 
-  const shown = WORK_INDEX.find((p) => p.slug === active);
   const count = (key: string) => WORK_INDEX.filter((p) => filtersOf(p).includes(key)).length;
 
   return (
@@ -232,9 +230,7 @@ export default function Work() {
           </div>
           <div className="hidden lg:col-span-3 lg:block">
             <div ref={frame} data-work-frame className="sticky top-24">
-              {shown && (
-                <ProjectVisual key={shown.slug} project={shown} sizes="(min-width: 1280px) 300px, 24vw" priority />
-              )}
+              {active && <ProjectFrame projects={WORK_INDEX} active={active} sizes="(min-width: 1280px) 300px, 24vw" priority={active} />}
             </div>
           </div>
         </div>

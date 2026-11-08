@@ -873,6 +873,19 @@
   }
 }
 
+/* A frame that swaps between projects: all stacked, the active one opaque. */
+.frame-stack {
+  display: grid;
+}
+.frame-stack > * {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 200ms linear;
+}
+.frame-stack > [data-on] {
+  opacity: 1;
+}
+
 /* The phone menu slides down out of the header. */
 @keyframes menu-in {
   from {

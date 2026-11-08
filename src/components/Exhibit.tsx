@@ -134,6 +134,39 @@ export function FiguresPanel({ project, className = "" }: { project: Project; cl
   );
 }
 
+/**
+ * One frame showing whichever project is active. Each project that has been
+ * shown stays in the frame, stacked in one grid cell, and the swap is a 200ms
+ * crossfade. A project joins the stack the first time it is picked, so a frame
+ * nobody hovers loads one image. Only the active one can take focus.
+ */
+export function ProjectFrame({
+  projects,
+  active,
+  sizes,
+  priority,
+}: {
+  projects: Project[];
+  active: string;
+  sizes: string;
+  /** Which project's image is on the first screen and loads at high priority. */
+  priority?: string;
+}) {
+  const [shown, setShown] = useState([active]);
+  if (!shown.includes(active)) setShown([...shown, active]);
+  return (
+    <div className="frame-stack">
+      {projects
+        .filter((p) => shown.includes(p.slug))
+        .map((p) => (
+          <div key={p.slug} data-on={p.slug === active || undefined} inert={p.slug !== active}>
+            <ProjectVisual project={p} sizes={sizes} priority={p.slug === priority} />
+          </div>
+        ))}
+    </div>
+  );
+}
+
 /** The screenshot, or the figures, or nothing at all. Never an empty box. */
 export function ProjectVisual(props: {
   project: Project;

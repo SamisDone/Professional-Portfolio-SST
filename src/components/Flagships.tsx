@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Project } from "../data/content";
 import { scan } from "../lib/motion";
 import { FLAGSHIPS, WORK_INDEX, caseStudyPath, preloadShot, shotPreview, teamLine } from "../lib/projects";
-import { ProjectVisual, ShotPicture } from "./Exhibit";
+import { ProjectFrame, ShotPicture } from "./Exhibit";
 import { Label, ProofMark, TextLink } from "./ui";
 
 const n = (i: number) => String(i + 1).padStart(2, "0");
@@ -80,8 +80,8 @@ function FlagRow({
 /**
  * The three flagships as an index and a viewer. From lg, one exhibit frame
  * (seven columns) beside the three as numbered rows (five): hovering or
- * keyboard-focusing a row puts that project's screenshot and caption in the
- * frame, behind the same paper cover that slides off every exhibit (A5).
+ * keyboard-focusing a row crossfades that project's screenshot and caption
+ * into the frame.
  * The first row is selected in the prerendered page, and the frame changes
  * only when a row is pointed at or focused, never on its own. Below lg there
  * is no shared frame: each row carries its own small picture.
@@ -94,11 +94,9 @@ export default function Flagships() {
   const [active, setActive] = useState(0);
   const frame = useRef<HTMLDivElement>(null);
   const first = useRef(true);
-  const shown = FLAGSHIPS[active];
 
-  // A swapped-in exhibit is new to the motion layer: hand it over, so its
-  // cover slides off once the picture has decoded. Under reduced motion the
-  // layer is off and the swap is instant.
+  // A swapped-in exhibit is new to the motion layer: hand it over. Under
+  // reduced motion the layer is off and the swap is instant.
   useEffect(() => {
     if (first.current) {
       first.current = false;
@@ -123,14 +121,12 @@ export default function Flagships() {
           Flagships
         </h2>
         <div ref={frame} data-flag-frame className="hidden lg:col-span-7 lg:block">
-          {shown && (
-            <ProjectVisual
-              key={shown.slug}
-              project={shown}
-              sizes="(min-width: 1280px) 690px, 56vw"
-              priority={active === 0}
-            />
-          )}
+          <ProjectFrame
+            projects={FLAGSHIPS}
+            active={FLAGSHIPS[active].slug}
+            sizes="(min-width: 1280px) 690px, 56vw"
+            priority={FLAGSHIPS[0].slug}
+          />
         </div>
         <ol
           className="m-0 list-none p-0 lg:col-span-5 lg:border-l-2 lg:border-ink"
