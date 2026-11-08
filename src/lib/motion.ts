@@ -158,6 +158,11 @@ export function scan(root: ParentNode = document) {
   }
 }
 
+/** Marks everything under `root` as already entered, so it plays nothing. */
+export function settle(root: ParentNode) {
+  root.querySelectorAll(TARGETS).forEach(finish);
+}
+
 /** Plays a group again from its start, for the motion lab's replay buttons. */
 export function replay(root: Element) {
   for (const el of root.querySelectorAll(TARGETS)) {

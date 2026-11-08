@@ -1,5 +1,6 @@
 import { currentResearch, research } from "../data/content";
 import { Label, ProofMark, TextLink } from "./ui";
+import OcrScan from "./OcrScan";
 import DecodeText from "./DecodeText";
 
 /**
@@ -37,13 +38,13 @@ export default function Research() {
       </section>
 
       <div className="shell tier-b grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-8">
+        <OcrScan className="lg:col-span-8">
           {years.map((year) => (
             <section key={year} aria-label={year} className="border-t-4 border-ink pt-6 [&+&]:mt-12">
-              <Label as="h2" stamp className="text-ink">
+              <Label as="h2" className="text-ink">
                 {year}
               </Label>
-              <ul data-ledger="top" className="m-0 mt-4 list-none p-0">
+              <ul className="m-0 mt-4 list-none p-0">
                 {research
                   .filter((m) => m.year === year)
                   .map((m) => (
@@ -51,6 +52,7 @@ export default function Research() {
                       <h3 className="t-h3">
                         {m.href ? <ProofMark href={m.href}>{m.title}</ProofMark> : m.title}
                       </h3>
+                      <div className="relative">
                       <Label className="mt-3">
                         {m.kind} / {m.venue}
                         {m.code && (
@@ -63,13 +65,19 @@ export default function Research() {
                         )}
                       </Label>
                       {m.authors && <Authors names={m.authors} self={m.selfIndex} />}
+                      {/IEEE/.test(m.venue) && (
+                        <span aria-hidden className="peer-stamp">
+                          Peer reviewed
+                        </span>
+                      )}
+                      </div>
                       <p className="t-body mt-3 max-w-measure">{m.note}</p>
                     </li>
                   ))}
               </ul>
             </section>
           ))}
-        </div>
+        </OcrScan>
 
         <aside className="lg:col-span-4">
           <div className="border-2 border-ink p-6">

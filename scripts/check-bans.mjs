@@ -70,7 +70,11 @@ const RULES = [
     why: "no gradients",
   },
   { re: /border-radius:\s*[1-9]|\brounded-(?:sm|md|lg|xl|2xl|3xl|full)\b/, why: "square corners only" },
-  { re: /\bblur\(|\bblur-(?:sm|md|lg|xl|2xl|3xl)\b/, why: "no blur" },
+  {
+    // One exception, marked on its line: the Research page's OCR scan.
+    test: (line) => /\bblur\(|\bblur-(?:sm|md|lg|xl|2xl|3xl)\b/.test(line) && !line.includes("OCR scan: owner's request"),
+    why: "no blur",
+  },
   {
     test: (line) => /font-family|fontFamily|@font-face|\bfont:/.test(line) && faceRe.test(line),
     why: "banned typeface",
