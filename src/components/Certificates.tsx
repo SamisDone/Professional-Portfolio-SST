@@ -1,5 +1,6 @@
 import { certifications } from "../data/content";
 import { TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 /** Lowercase words joined by hyphens: the name a certificate's file should have. */
 const slug = (text: string) =>
@@ -38,9 +39,9 @@ export default function Certificates() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Certificates.
-        </h1>
+        </DecodeText>
       </section>
 
       <section aria-label="Certificates" className="shell tier-b">

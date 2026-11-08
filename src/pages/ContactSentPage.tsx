@@ -1,6 +1,7 @@
 import Page from "../components/Page";
 import { Button, TextLink } from "../components/ui";
 import { profile } from "../data/content";
+import DecodeText from "../components/DecodeText";
 
 /**
  * Where the contact form lands when JavaScript is off: the browser posts the
@@ -12,9 +13,9 @@ export default function ContactSentPage() {
   return (
     <Page title="Message sent">
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Message sent.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-6 max-w-[48ch]">
           Thank you. Your message is on its way to my inbox, and I will reply to the address you gave.
         </p>

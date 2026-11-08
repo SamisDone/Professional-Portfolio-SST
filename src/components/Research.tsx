@@ -1,5 +1,6 @@
 import { currentResearch, research } from "../data/content";
 import { Label, ProofMark, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 /**
  * The author list as the venue prints it, her own name in bold. Position is
@@ -29,9 +30,9 @@ export default function Research() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Research.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-4 max-w-[46ch]">Published work, and what is on the bench now.</p>
       </section>
 

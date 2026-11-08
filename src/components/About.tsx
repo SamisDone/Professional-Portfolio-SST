@@ -3,6 +3,7 @@ import Entry from "./Entry";
 import Trajectory from "./Trajectory";
 import { caseStudyPath, skillReceipts } from "../lib/projects";
 import { Button, Label, ProofMark, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 /** "IEEE paper", "ACL paper": the publisher named last in a venue. */
 const paperName = (venue: string) => `${venue.split(", ").at(-1)?.split(" ")[0]} paper`;
@@ -66,9 +67,9 @@ export default function About() {
   return (
     <>
       <div className="shell tier-a grid lg:grid-cols-12 lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-8">
-        <h1 tabIndex={-1} className="t-h1 band max-w-[18ch] lg:col-span-7 lg:row-start-1">
+        <DecodeText tabIndex={-1} className="t-h1 band max-w-[18ch] lg:col-span-7 lg:row-start-1">
           Build, then ask why.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-8 max-w-measure lg:col-span-7 lg:row-start-3">{first}</p>
         <div className="mt-8 flex flex-wrap gap-4 lg:col-span-7 lg:row-start-2">
           <Button href={profile.resumeUrl} variant="primary">

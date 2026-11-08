@@ -108,29 +108,119 @@ html.m-js .m-a1 .border-t-4[data-in]::before {
   transform: scaleX(1);
 }
 
-/* ---------------------------------------------------------------- A2
-   The band behind an H1 wipes in from the left. The text and the band's ink
-   border are in place from the first frame; only the fill moves. The fill
-   is one flat colour, so growing it with scaleX from the left edge looks the
-   same as wiping it in with a clip, and a transform runs on the compositor
-   instead of repainting every frame on the main thread. */
+/* ---------------------------------------------------------------- D
+   The highlight behind an H1: the band, fill and ink border together, grows
+   from the left with a slight tilt that settles to 0, a strip of tape going
+   down. The text is in place throughout. It is drawn by a pseudo-element the
+   exact size of the band, so the end state is the band without the layer. */
+@keyframes m-tape {
+  from {
+    transform: scaleX(0) rotate(-1.5deg);
+  }
+  to {
+    transform: none;
+  }
+}
 html.m-js .m-a2 .band {
   position: relative;
   isolation: isolate;
   background: transparent;
+  border-color: transparent;
 }
 html.m-js .m-a2 .band::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -2px;
   z-index: -1;
   background: var(--section);
+  border: 2px solid var(--ink);
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform var(--m-enter) var(--m-ease) calc(var(--m-i, 0) * var(--m-stagger));
 }
 html.m-js .m-a2 .band[data-in]::before {
-  transform: scaleX(1);
+  transform: none;
+  animation: m-tape 300ms var(--m-ease) backwards;
+  animation-delay: calc(var(--m-i, 0) * var(--m-stagger));
+}
+html.m-js .m-a2 .band[data-in="now"]::before {
+  animation: none;
+}
+
+/* ---------------------------------------------------------------- C
+   Decode: the real text stays, transparent, and the letters sit over it.
+   html.m-decode is set before the first paint by the inline script in
+   index.html, only for a page not yet visited this session. */
+[data-decode] {
+  position: relative;
+}
+html.m-js.m-decode [data-decode],
+html.m-js [data-decode="pending"],
+html.m-js [data-decode="run"] {
+  color: transparent;
+}
+.dt-fx {
+  position: absolute;
+  inset: 0;
+  color: var(--ink);
+  pointer-events: none;
+}
+.dt-fx > span {
+  position: absolute;
+  white-space: pre;
+}
+.dt-r {
+  font-family: "Martian Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.72em;
+  font-weight: 500;
+  font-stretch: normal;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- E
+   The terminal breadcrumb, fixed over the top of the content. Its box is
+   always there, so the transition can capture it and keep it live. */
+.crumb {
+  position: fixed;
+  inset-inline: 0;
+  top: 72px;
+  z-index: 40;
+  height: 24px;
+  pointer-events: none;
+  view-transition-name: crumb;
+}
+.crumb-line {
+  display: inline-block;
+  padding: 3px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: pre;
+  transition: opacity 150ms linear;
+}
+.crumb-line[hidden] {
+  display: none;
+}
+.crumb-line[data-fade="out"] {
+  opacity: 0;
+}
+::view-transition-group(crumb) {
+  animation: none;
+  z-index: 20;
+}
+::view-transition-old(crumb) {
+  display: none;
+}
+
+/* Any press during an entrance: everything jumps to its final state. */
+html[data-m-skip] *,
+html[data-m-skip] *::before,
+html[data-m-skip] *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
 }
 
 /* ---------------------------------------------------------------- A3

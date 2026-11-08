@@ -14,6 +14,7 @@ import {
 } from "../lib/projects";
 import { ProjectFrame } from "./Exhibit";
 import { Label, ProofMark, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 /** useLayoutEffect warns when rendered to a string; there is nothing to
     measure on a server. */
@@ -182,9 +183,9 @@ export default function Work() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Selected projects.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-4 max-w-[52ch]">
           Every row opens a case study: the problem, what was built, my part in it, and how it turned out.
         </p>

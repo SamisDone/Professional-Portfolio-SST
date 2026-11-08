@@ -16,7 +16,7 @@
  * whatever is already on screen is marked "now" before the layer comes back
  * on: no "complete, then redraws". Only what is still below the fold enters.
  */
-import { whenSettled } from "./transitions";
+import { skipTransition, whenSettled } from "./transitions";
 
 declare global {
   interface Window {
@@ -28,7 +28,6 @@ declare global {
 /** What animates on entry, by selector. Each is gated in CSS by its scope. */
 const TARGETS = [
   ".border-t-4", // A1 section rules
-  ".band", // A2 header bands
   ".proof-mark", // A3 proof marks
   "[data-tabs]", // A4 nav tabs, first page of a session only
   "div[data-exhibit]", // F3 captions, once the exhibit has decoded
@@ -42,18 +41,67 @@ const TARGETS = [
 const STAGGER_MAX = 5;
 /** Longer than any entrance, stagger included. */
 const DONE_MS = 700;
+/** The terminal breadcrumb's typing, which the heading waits for. */
+export const CRUMB_TYPE_MS = 250;
+const BAND_MS = 400;
 const TABS_KEY = "m-tabs";
 
 let io: IntersectionObserver | undefined;
+/** When the last page change committed, for the heading to wait on. */
+let navigatedAt = -Infinity;
+/** Whatever is animating from script now, for a click or a key to end. */
+const skippers = new Set<() => void>();
+/** When the CSS entrances started so far are all over. */
+let entrancesUntil = 0;
 const timers = new WeakMap<Element, number>();
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+export const reducedMotion = reduced;
+
+/** Registers an effect that a click or a key press should end. */
+export function onSkip(fn: () => void) {
+  skippers.add(fn);
+  return () => void skippers.delete(fn);
+}
+
+/** Any press ends whatever is playing: every motion is skippable. */
+function skipAll() {
+  const html = document.documentElement;
+  skipTransition();
+  const active = performance.now() < entrancesUntil;
+  if (!active && skippers.size === 0) return;
+  for (const fn of [...skippers]) fn();
+  // Zero duration for a frame ends every CSS entrance at its final state.
+  html.dataset.mSkip = "";
+  requestAnimationFrame(() => requestAnimationFrame(() => delete html.dataset.mSkip));
+  entrancesUntil = 0;
+}
+
+/**
+ * When the heading may start: the page has stopped sliding and the terminal
+ * breadcrumb has finished typing, so the text effects never overlap.
+ */
+export function headingGate(): Promise<void> {
+  const left = navigatedAt + CRUMB_TYPE_MS - performance.now();
+  return Promise.all([whenSettled(), left > 0 ? new Promise((r) => setTimeout(r, left)) : undefined]).then(() => undefined);
+}
+
+/** D: each H1's highlight grows in, the first thing to move on a page. */
+function revealBands(root: ParentNode = document) {
+  entrancesUntil = Math.max(entrancesUntil, performance.now() + BAND_MS);
+  root.querySelectorAll<HTMLElement>(".band:not([data-in])").forEach((band, i) => {
+    band.style.setProperty("--m-i", String(i));
+    band.setAttribute("data-in", "");
+    timers.set(band, window.setTimeout(() => finish(band), BAND_MS));
+  });
+}
 
 /** Shown and finished: nothing on it plays again. */
 const finish = (el: Element) => el.setAttribute("data-in", "now");
 
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
+  entrancesUntil = Math.max(entrancesUntil, performance.now() + DONE_MS);
   el.setAttribute("data-in", "");
   timers.set(el, window.setTimeout(() => finish(el), DONE_MS));
 }
@@ -117,7 +165,9 @@ export function replay(root: Element) {
     el.removeAttribute("data-in");
     io?.unobserve(el);
   }
+  root.querySelectorAll(".band").forEach((b) => b.removeAttribute("data-in"));
   void (root as HTMLElement).offsetWidth;
+  revealBands(root);
   if (root.matches("[data-tabs-replay]")) {
     try {
       sessionStorage.removeItem(TABS_KEY);
@@ -134,8 +184,11 @@ export function startMotion() {
   const html = document.documentElement;
   window.clearTimeout(window.__mOff);
   if (reduced() || !("IntersectionObserver" in window)) {
-    html.classList.remove("m-js");
+    html.classList.remove("m-js", "m-decode");
     return;
+  }
+  for (const type of ["pointerdown", "keydown"]) {
+    window.addEventListener(type, skipAll, { passive: true, capture: true });
   }
   if (!html.classList.contains("m-js")) {
     // Late, or the inline switch never ran: the page is already showing in
@@ -147,13 +200,20 @@ export function startMotion() {
         finish(el);
       }
     }
+    document.querySelectorAll(".band").forEach(finish);
+    html.classList.remove("m-decode");
     html.classList.add("m-js");
   }
+  revealBands();
   scan();
 }
 
-/** After a page change: scan the new page once the transition has finished,
-    so an entrance never plays under the sheet that is sliding in. */
+/** After a page change: the highlight, then the page's entrances, once the
+    transition and breadcrumb are done, so nothing plays under the slide. */
 export function afterNavigation() {
-  whenSettled().then(() => scan());
+  navigatedAt = performance.now();
+  headingGate().then(() => {
+    revealBands();
+    scan();
+  });
 }

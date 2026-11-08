@@ -1,5 +1,6 @@
 import { profile } from "../data/content";
 import { Button, Label } from "./ui";
+import DecodeText from "./DecodeText";
 
 /**
  * The first screen: who, what, and where to go.
@@ -19,11 +20,11 @@ export default function Hero() {
       <Label className="text-ink">
         {profile.standfirst} / {profile.openTo}
       </Label>
-      <h1 id="hero-name" tabIndex={-1} className="t-display mt-4">
+      <DecodeText id="hero-name" tabIndex={-1} className="t-display mt-4">
         {/* One band per line, each as wide as its word. */}
         <span className="band">{profile.name.split(" ")[0]}</span>{" "}
         <span className="band">{profile.name.split(" ").slice(1).join(" ")}</span>
-      </h1>
+      </DecodeText>
 
       <div className="mt-6 xl:flex xl:items-end xl:justify-between xl:gap-12">
         <p className="t-lead max-w-[36ch] xl:max-w-[56ch]">{profile.positioning}</p>

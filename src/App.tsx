@@ -5,6 +5,7 @@ import Pager from "./components/Pager";
 import Footer from "./components/Footer";
 import RouteEffects from "./components/RouteEffects";
 import Inspect from "./components/Inspect";
+import TerminalCrumb from "./components/TerminalCrumb";
 import { RoutePage } from "./lib/pages";
 import { sectionFor } from "./lib/routes";
 
@@ -39,6 +40,7 @@ export function AppShell() {
       <RouteEffects />
       {/* F4: the sheet a screenshot opens in. */}
       <Inspect />
+      <TerminalCrumb />
       {/* The one place a page change is announced. RouteEffects writes the
           new page's title here after each swap. */}
       <p id="route-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />

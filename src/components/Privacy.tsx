@@ -1,15 +1,16 @@
 import { privacy, profile } from "../data/content";
 import { formatDate } from "../lib/projects";
 import { Label, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 /** The privacy page: what the site collects, in plain language. */
 export default function Privacy() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Privacy.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-4 max-w-[52ch]">What this site collects, where it goes, and how to reach me about it.</p>
         <Label className="mt-4">Last updated {formatDate(privacy.updated)}</Label>
       </section>

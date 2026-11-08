@@ -1,6 +1,7 @@
 import { certifications, competitions, leadership } from "../data/content";
 import Entry from "./Entry";
 import { Button } from "./ui";
+import DecodeText from "./DecodeText";
 
 /**
  * Club roles, competitions and certificates, as two ledgers side by side
@@ -13,9 +14,9 @@ export default function Activities() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band max-w-[18ch]">
+        <DecodeText tabIndex={-1} className="t-h1 band max-w-[18ch]">
           Outside the terminal.
-        </h1>
+        </DecodeText>
         <div className="mt-6">
           <Button to="/certificates" variant="primary">
             View all certificates

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { profile, type Project } from "../data/content";
 import { ALL_PROJECTS, caseStudyPath, WORK_INDEX } from "../lib/projects";
 import { Label, ProofMark, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 const owner = (repo: string) => {
   const m = repo.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -73,9 +74,9 @@ export default function Repositories() {
         <TextLink to="/work" arrow="left" className="t-small">
           Back to the work
         </TextLink>
-        <h1 tabIndex={-1} className="t-h1 band mt-12">
+        <DecodeText tabIndex={-1} className="t-h1 band mt-12">
           Everything, listed.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-4 max-w-[58ch]">
           {ALL_PROJECTS.length} projects, {live} with something running you can open. The work page shows{" "}
           {WORK_INDEX.length} of them, {WORK_INDEX.filter((p) => p.live).length} of those live. Source on every row.

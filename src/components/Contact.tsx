@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { contactForm, profile } from "../data/content";
 import { absolute } from "../lib/site";
 import { Button, Label, TextLink } from "./ui";
+import DecodeText from "./DecodeText";
 
 // Static Forms (staticforms.dev) emails each submission to the account that
 // owns the API key in contactForm.apiKey. The key is public by design: it
@@ -151,9 +152,9 @@ export default function Contact() {
   return (
     <div className="shell tier-a grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8">
       <section aria-label="Get in touch" className="lg:col-span-5 lg:row-start-1">
-        <h1 tabIndex={-1} className="t-h1 band max-w-[14ch]">
+        <DecodeText tabIndex={-1} className="t-h1 band max-w-[14ch]">
           Get in touch.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-6 max-w-measure">
           I am looking for job opportunities in software engineering and ML. If you are hiring, or have a
           project, a paper idea, or a question about anything here, write to me.

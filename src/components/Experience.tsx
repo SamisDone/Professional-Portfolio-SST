@@ -1,5 +1,6 @@
 import { experience, profile } from "../data/content";
 import { Button, Label, ProofMark } from "./ui";
+import DecodeText from "./DecodeText";
 
 /**
  * Employment as a ledger: dates and place in the left margin, the work on the
@@ -10,9 +11,9 @@ export default function Experience() {
   return (
     <>
       <section className="shell tier-a">
-        <h1 tabIndex={-1} className="t-h1 band">
+        <DecodeText tabIndex={-1} className="t-h1 band">
           Experience.
-        </h1>
+        </DecodeText>
         <p className="t-lead mt-4 max-w-[46ch]">Industrial attachment, contract and freelance work.</p>
         <div className="mt-6">
           <Button href={profile.resumeUrl} variant="primary">
