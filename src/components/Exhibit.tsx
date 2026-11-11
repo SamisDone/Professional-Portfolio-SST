@@ -175,24 +175,25 @@ export function Exhibit({
 
 /**
  * For work with no interface to photograph. The project's own measured
- * figures, split by ink rules, as tall as the figures need: four across from
- * lg, two by two below. A 16:10 box the size of a screenshot left four
- * small numbers floating in 740px of nothing. The caption links where the
- * figures are published. Never a mocked-up screen standing in for a real one.
+ * figures, split by ink rules, as tall as the figures need. The panel sizes
+ * itself from its own width, not the viewport's: four across when it has the
+ * room, as on a case study, and two by two in the 300px /work frame, where
+ * four across ran the numbers into each other (.figures in index.css).
+ * A 16:10 box the size of a screenshot left four small numbers floating in
+ * 740px of nothing. The caption links where the figures are published. Never
+ * a mocked-up screen standing in for a real one.
  */
 export function FiguresPanel({ project, className = "" }: { project: Project; className?: string }) {
   const figures = (project.figures ?? []).slice(0, 4);
   return (
-    <figure className={`m-0 ${className}`}>
-      <dl className="m-0 grid grid-cols-2 border-2 border-ink lg:grid-cols-4">
-        {figures.map((f, i) => (
+    <figure className={`figures m-0 ${className}`}>
+      <dl className="figures-grid m-0 border-2 border-ink">
+        {figures.map((f) => (
           <div
             key={f.label}
             // Reversed so the figure reads first while the markup keeps the
             // order a definition list requires: the term, then its value.
-            className={`flex flex-col-reverse justify-end gap-2 p-4 sm:p-6 ${i % 2 === 1 ? "border-l-2 border-ink" : ""} ${
-              i > 1 ? "border-t-2 border-ink lg:border-t-0" : ""
-            } ${i === 2 ? "lg:border-l-2" : ""}`}
+            className="flex flex-col-reverse justify-end gap-2"
           >
             <dt className="t-label text-ink-2">{f.label}</dt>
             <dd className="t-figure m-0">{f.value}</dd>

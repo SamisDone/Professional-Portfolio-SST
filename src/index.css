@@ -273,6 +273,52 @@
   .t-figure {
     font-size: 2.5rem;
   }
+
+  /*
+   * A project's figures panel (FiguresPanel) answers to its own width, since
+   * it sits 1184px wide on a case study and 300px wide in the /work frame.
+   * Two by two until it has 36rem, four across after. The figure keeps
+   * 2.5rem where the cell has room for it and steps down with the panel
+   * where it does not, so "~11M" never runs into the cell beside it.
+   */
+  .figures {
+    container-type: inline-size;
+  }
+  .figures-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .figures-grid > * {
+    min-width: 0;
+    padding: 12px;
+  }
+  .figures-grid > :nth-child(even) {
+    border-left: 2px solid var(--ink);
+  }
+  .figures-grid > :nth-child(n + 3) {
+    border-top: 2px solid var(--ink);
+  }
+  .figures-grid .t-figure {
+    font-size: clamp(1.25rem, 10cqi, 2.5rem);
+  }
+  @container (min-width: 36rem) {
+    .figures-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .figures-grid > * {
+      padding: 24px;
+    }
+    .figures-grid > :nth-child(n + 2) {
+      border-left: 2px solid var(--ink);
+    }
+    .figures-grid > :nth-child(n + 3) {
+      border-top: 0;
+    }
+    .figures-grid .t-figure {
+      font-size: clamp(1.25rem, 4.5cqi, 2.5rem);
+    }
+  }
+
   .t-h1 {
     font-size: clamp(2.25rem, 5vw, 4rem);
     line-height: 1;
