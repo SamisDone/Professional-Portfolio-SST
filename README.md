@@ -1,57 +1,135 @@
 <p><img src="docs/banner.svg" width="100%" alt="Samonwita Sarker, on an orange band, over the line: I build software that ships, and I research how to make a model's predictions explainable."></p>
 
-# Samonwita Sarker, portfolio
+# Hi, I'm Samonwita.
 
-The personal site of Samonwita Sarker, a Computer Science and Engineering
-undergraduate at CUET (class of 2027) who builds software and researches
-explainable AI and NLP.
+I study Computer Science and Engineering at CUET in Chattogram, Bangladesh, and
+graduate in 2027. Half my time goes to building software and the other half to
+research on explainable AI and NLP. Right now that means a thesis on reading
+Bangla text off photographs.
 
-**Live:** [samonwitasarker.pages.dev](https://samonwitasarker.pages.dev)
+What ties the two halves together is that I like problems where the
+engineering and the reasoning both have to hold up: a model whose predictions
+you can defend, a browser extension that keeps a promise about your privacy, a
+schema that stays correct as it grows.
 
-![The home page: the name at poster scale with the lead and buttons beside the surname, the four proof figures under it, and the first flagship's screenshot starting below](docs/home.jpg)
+I'm looking for **software engineering and ML roles**, remote now or on site
+after I graduate.
+
+**[Visit the site](https://samonwitasarker.pages.dev)** &nbsp;·&nbsp;
+[Download my CV](https://samonwitasarker.pages.dev/Samonwita_Sarker_CV.pdf) &nbsp;·&nbsp;
+[LinkedIn](https://www.linkedin.com/in/samonwita-sarker-a87737262/) &nbsp;·&nbsp;
+[Codeforces](https://codeforces.com/profile/jinxed_sam)
+
+<p><img src="docs/home-first-load.webp" width="100%" alt="The site's home page loading for the first time: the tabs drop into place, a strip of orange tape goes down behind the name while each letter is read into place, the four proof figures print like a receipt, and the first project's screenshot is uncovered"></p>
+
+## Things I've built
+
+| | |
+|---|---|
+| **[RIPHours](https://samonwitasarker.pages.dev/work/riphours)** | A Chrome time tracker that makes no network requests, so your browsing history never leaves your machine. 500+ installs. |
+| **[TabSaver](https://samonwitasarker.pages.dev/work/tabsaver)** | Brings back a whole working session, tab groups intact, in one click. 700+ installs. |
+| **[Greenlight](https://samonwitasarker.pages.dev/work/greenlight)** | A robot arm you drive in the browser six different ways, from a joystick to your voice. I wrote the software; we were finalists at IUT Techathon 2026. |
+| **[Kaker Theng](https://samonwitasarker.pages.dev/work/kakertheng)** | Turns your handwriting into a Bangla and English font, with vowel signs, reph and conjuncts where they belong. A finished font covers 99.4% of the consonant clusters in 28 million words of Bangla Wikipedia. |
+| **[PIERRA](https://samonwitasarker.pages.dev/work/pierra)** | An English and French site for an exterior design firm in Montreal. My first paid client. |
+
+There are fourteen on the [work page](https://samonwitasarker.pages.dev/work),
+each with the problem, what I built, how it turned out and a link you can
+check, and [27 with their source](https://samonwitasarker.pages.dev/repositories).
+
+## Research
+
+- **[A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability](https://ieeexplore.ieee.org/document/11429440)**,
+  ICECTE 2026, IEEE. Peer reviewed. Every prediction comes with its SHAP
+  attribution, so a flagged case traces back to the features that drove it.
+- **[Still Loading@DravidianLangTech 2026: Telugu Prompt-Style Recovery using Multilingual Transformers](https://aclanthology.org/2026.dravidianlangtech-1.58/)**,
+  ACL 2026. First author. We sorted Telugu transcripts into nine
+  communicative styles, and our MuRIL system placed 7th.
+- **In progress:** my undergraduate thesis, grapheme-aware Bangla and English
+  scene text recognition. Bangla letters are composed rather than laid out
+  one after the next, so a recogniser that reads a word as a flat sequence
+  loses the conjuncts.
+
+## Where I've worked
+
+- **Cortex, BdREN Innovation** (September 2026). I led the five-person crawler
+  team and built the scraper for CUET's website: 735 documents, all 382
+  faculty profiles and 1,106 linked files, each traced back to where it came
+  from so the answers Cortex gives can cite a real source.
+- **Fleet AI, Inc.** (May to August 2026, remote). I wrote 70+ evaluation tasks
+  for agentic AI and reviewed other contributors' tasks before they shipped.
+- **Freelance** (2025). The PIERRA site, from brief to deployment.
+
+Away from the keyboard I'm President of the CUET MUN Club and Joint General
+Secretary of the CUET Debating Society, and I debate in inter-university
+parliamentary tournaments.
+
+## This site
+
+It's built on one idea: **every claim carries its receipt.** Explainable AI
+traces a prediction back to the features behind it, and a debater backs every
+point with evidence, so the site does the same. Every number links to the thing
+that proves it, every project picture is a capture of the real, running
+product, and even the footer says which commit the site was built from.
+
+It looks like an evidence file: paper, black ink, thick rules, a colour for
+each section like the dividers in a ring binder, and a yellow mark on anything
+you can check for yourself.
+
+### How it moves
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/work.jpg" alt="The work page: one index table of every project, each row opening its case study"></td>
-    <td width="50%"><img src="docs/research.jpg" alt="The research page: two publications with author lists and a thesis in progress"></td>
+    <td width="50%"><img src="docs/arrow-paging.webp" alt="Paging through the site with the arrow keys: each page slides in over the last like a sheet, the active tab's fill travels along the row, and each new heading is read into place"></td>
+    <td width="50%"><img src="docs/work-to-case-study.webp" alt="Pointing at rows on the work page puts each project's screenshot in the frame beside the table; clicking one grows that screenshot into its case study"></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/about.jpg" alt="The about page: introduction, education and a chart of term grades"></td>
-    <td width="50%" align="center"><img src="docs/home-mobile.jpg" alt="The home page on a phone" width="220"></td>
+    <td><b>Arrow keys</b> walk the pages in order, each sliding in like a sheet.</td>
+    <td><b>Point at a project</b> to see it; click and its picture grows into the case study.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/work-filter.webp" alt="Filtering the work page by kind: rows that leave are cut, and the rest slide up to their new places"></td>
+    <td width="50%"><img src="docs/research-scan.webp" alt="The research page on a first visit: a scan bar passes down the list, sharp above it and soft below, and a PEER REVIEWED stamp lands on the IEEE paper"></td>
+  </tr>
+  <tr>
+    <td><b>Filters</b> cut the rows that leave and slide the rest into place.</td>
+    <td><b>Research</b> is scanned in, and the peer-reviewed paper gets its stamp.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/about-chart.webp" alt="The about page on a first visit: the heading is read into place, then the grades chart draws its line term by term and each point stamps"></td>
+    <td width="50%" align="center"><img src="docs/home-mobile.jpg" width="200" alt="The home page on a phone"></td>
+  </tr>
+  <tr>
+    <td><b>My grades</b>, dip included, drawn term by term.</td>
+    <td><b>On a phone.</b></td>
   </tr>
 </table>
 
+### The pages
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/work.jpg" alt="The work page: every project in one index, each row opening its case study, with filter chips and a frame showing the row you point at"></td>
+    <td width="50%"><img src="docs/research.jpg" alt="The research page: two published papers with their authors, and the thesis in progress"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/about.jpg" alt="The about page: who I am, education and a chart of term grades"></td>
+    <td width="50%"><img src="docs/contact.jpg" alt="The contact page: a short note, email, a contact form and profiles"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/home.jpg" alt="The home page at rest: the name at poster scale, four proof figures, and three flagship projects"></td>
+    <td width="50%"><img src="docs/not-found.jpg" alt="The 404 page, filed like everything else: the address that was asked for, no record found, and an index of the real pages"></td>
+  </tr>
+</table>
+
+## Say hello
+
+The quickest way is the [contact page](https://samonwitasarker.pages.dev/contact)
+or an email to [sarker.samonwita@gmail.com](mailto:sarker.samonwita@gmail.com).
+
 ---
 
-## Contents
-
-- [What the site is](#what-the-site-is)
-- [Pages](#pages)
-- [What it does well](#what-it-does-well)
-- [Tech stack](#tech-stack)
-- [Getting started](#getting-started)
-- [Project structure](#project-structure)
-- [Editing content](#editing-content)
-- [Design system](#design-system)
-- [How the build works](#how-the-build-works)
-- [Things that are easy to break](#things-that-are-easy-to-break)
-- [Deployment](#deployment)
-- [Credits](#credits)
-
----
-
-## What the site is
-
-A portfolio built on one idea: **every claim carries its receipt.** Explainable
-AI traces a prediction back to the features that caused it, and a debater backs
-every point with evidence. The site does the same. Every project states the
-problem, what was built and how it turned out, with a live link and the source
-wherever they exist. Every figure in the strip under the hero links to the
-thing that proves it: the Chrome Web Store listing, the IEEE paper, the ACL
-Anthology page, the list of running projects.
-
-Nothing is mocked up. Every project image is a capture of the real, running
-product.
+<details>
+<summary><b>Under the hood</b>: how the site is built, run, edited and deployed</summary>
 
 ## Pages
 
@@ -76,10 +154,11 @@ by link and sit outside the sequence.
 
 - **Proof on the first screen.** The name, the role line, the proof figures and
   the primary action are all visible without scrolling at 1280x720 and on a
-  390x844 phone. Each page in the reading sequence is at most two screens
-  long at 1280x800 and three on a 390x844 phone, measured by
-  `scripts/measure-pages.mjs`; `/repositories` and the case studies, which
-  have an index, are exempt.
+  390x844 phone. Page length is measured by `scripts/measure-pages.mjs`
+  against a budget of two screens at 1280x800 and three on a 390x844 phone;
+  `/repositories` and the case studies, which have an index, are exempt. As
+  of November 2026 Home, Work and Experience are over it on a desktop, and
+  About and Activities on a phone.
 - **Arrow-key navigation** between pages, with an instant swap and no
   transition to wait for.
 - **It works without JavaScript.** Every route, every case study included, is
@@ -88,7 +167,11 @@ by link and sit outside the sequence.
 - **Real metadata per page.** Each route ships its own title, description,
   canonical link and Open Graph tags, plus a generated sitemap and a social
   card rendered from the site's own fonts and tokens.
-- **Genuine 404s,** with a designed page and a real 404 status.
+- **Genuine 404s,** with a real 404 status and a page filed like the rest: the
+  address that was asked for, "no record", and an index of the seven pages.
+- **Its own receipt.** The footer states the date and short hash of the commit
+  the site was built from (`buildStamp` in `vite.config.ts`), and prints no
+  line at all when git cannot answer.
 - **Accessible by default.** One `h1` per page, labelled controls, a skip link,
   a 3px focus ring, 44px touch targets on touch screens, text contrast of 7:1
   or better, the new page announced on every change, and nothing animating
@@ -142,6 +225,7 @@ node scripts/optimise-shots.mjs sixpence
 node scripts/make-og.mjs           # re-render og.png and apple-touch-icon.png
 python scripts/subset-fonts.py ... # rebuild the two font files from the upstream TTFs
 node scripts/showcase.mjs          # record the 2 minute showcase video (needs a running preview)
+node scripts/make-readme-media.mjs # re-record docs/, this README's pictures (needs a running preview)
 ```
 
 All of them need a Playwright browser: `npx playwright install chromium`.
@@ -324,18 +408,8 @@ place, drawn with a ruler or swept with a highlighter. Crisp starts, hard
 stops, no springs, no bounce, and nothing loops. Each motion runs once, when
 its element first enters the viewport, and then the page is still.
 
-<table>
-  <tr>
-    <td width="33%"><img src="docs/home-first-load.webp" alt="Home loading for the first time: the tabs drop in, the orange band wipes in behind the name, the proof row prints cell by cell like a receipt, and Flagship 01's screenshot is uncovered with its caption sliding out below it"></td>
-    <td width="33%"><img src="docs/arrow-paging.webp" alt="Paging with the arrow keys: each page slides in over the last as a sheet, the tab fill moves along the row, and the new page's band and rules draw once it lands"></td>
-    <td width="33%"><img src="docs/work-to-case-study.webp" alt="A row on the work page: pointing at it puts its screenshot in the frame beside the table, and clicking it grows that screenshot into the case study's exhibit"></td>
-  </tr>
-  <tr>
-    <td>Home, first load</td>
-    <td>Arrow paging</td>
-    <td>Work row to case study</td>
-  </tr>
-</table>
+The recordings under [How it moves](#how-it-moves) at the top of this file show
+it running.
 
 **Tokens,** all in `src/motion.css` and nothing else used: 120ms for a snap
 (stamps, presses), 200ms for a hover or state change, 320ms for something
@@ -374,6 +448,19 @@ never shifts (CLS 0).
 | E2 | How it works builds in drafting order: connector lines, box outlines, labels | case studies |
 | E3 | Then its numbers advance one step per tick, a stamp and a hard pause each | case studies |
 | C3 | Entrances on a new page wait until the page transition has finished | everywhere |
+
+**Three text effects** sit on top of that layer, each once per page per
+session, and together they are over inside a second of a page change:
+
+- A page's `h1` is read into place (`src/lib/decode.ts`): a reading head three
+  letters wide travels left to right behind the tape, each letter under it a
+  guess in Martian Mono, the real letters standing behind it. 320 to 560ms by
+  length. What has been read stays read, so a heading is never a field of
+  noise.
+- One mono line, `cd /research`, is typed at the top of the content on a page
+  change, in 160ms, and fades after 360ms (`TerminalCrumb.tsx`).
+- On Research a scan bar passes down the list in 420ms, sharp above it and
+  soft below, and then the PEER REVIEWED stamp lands (`OcrScan.tsx`).
 
 **How it switches on.** Nothing is hidden in the HTML. Every starting state
 hangs off `html.m-js`, which a one-line inline script in `index.html` adds
@@ -562,6 +649,8 @@ Cloudflare Pages does: flat route files, the `_redirects` 301s and real 404s.
 
 After changing the social card, paste the URL into LinkedIn's Post
 Inspector: LinkedIn caches the card on its first scrape.
+
+</details>
 
 ## Credits
 

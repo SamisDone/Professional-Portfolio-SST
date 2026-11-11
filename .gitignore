@@ -47,3 +47,6 @@ cv/*
 
 # Output of scripts/measure-pages.mjs
 .measure/
+
+# README media recorder scratch, rebuildable from scripts/make-readme-media.mjs
+.readme-media/
