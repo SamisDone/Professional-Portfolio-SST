@@ -4,7 +4,9 @@
 % https://github.com/jakeryang/resume
 %-------------------------
 
-\documentclass[a4paper,11pt]{article}
+% 10pt, not 11: with the summary, the skills up top and six projects, 11pt
+% runs onto a second page. Check the page count after any edit.
+\documentclass[a4paper,10pt]{article}
 
 \usepackage{latexsym}
 \usepackage[a4paper,top=0.45in,bottom=0.4in,left=0.5in,right=0.5in]{geometry}
@@ -47,7 +49,7 @@
 }
 
 \newcommand{\resumeSubheading}[4]{
-  \vspace{-2pt}\item
+  \vspace{1pt}\item
     \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{#1} & \textbf{\small #2} \\
       \textit{\small#3} & \textit{\small #4} \\
@@ -67,7 +69,7 @@
 \newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
 \newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
 \newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-9pt}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-7pt}}
 
 % A link shown as underlined text
 \newcommand{\lnk}[2]{\href{#1}{\underline{#2}}}
@@ -83,8 +85,14 @@
     \lnk{https://www.linkedin.com/in/samonwita-sarker-a87737262/}{LinkedIn} $|$
     \lnk{https://github.com/SamisDone}{github.com/SamisDone} $|$
     \lnk{https://samonwitasarker.pages.dev/}{samonwitasarker.pages.dev}
-    \vspace{-8pt}
+    \vspace{-6pt}
 \end{center}
+
+%-----------SUMMARY-----------
+% Written for full-stack AI engineer roles. Every claim in it is backed by an
+% entry below, so change the entry first and then this.
+{\small Full-stack engineer building LLM-backed products end to end: React and Next.js front ends, Node.js and Python back ends, and the guardrails, evaluation and data pipelines around the model.}
+\vspace{-6pt}
 
 %-----------EDUCATION-----------
 \section{Education}
@@ -94,6 +102,19 @@
       {B.Sc. in Computer Science and Engineering; CGPA: 3.51/4.00 (latest term: 3.85)}{Chattogram, Bangladesh}
   \resumeSubHeadingListEnd
 
+%-----------SKILLS-----------
+% Second, above Experience, so the stack a full-stack AI role screens for is
+% read before anything else. Each item is used in an entry below.
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: TypeScript, JavaScript, Python, C++, Java, C, PHP, SQL} $|$ \textbf{Tools}{: Git, Docker, Linux, LaTeX} \\
+     \textbf{Full-Stack}{: React, Next.js, Tailwind CSS, Node.js, Express.js, FastAPI, Bun, REST APIs, PostgreSQL, Firebase} \\
+     \textbf{AI Engineering}{: LLM integration (Gemini API), structured outputs and guardrails, agent evaluation, RAG data pipelines, PyTorch, Hugging Face Transformers, NLP, multimodal deep learning, scikit-learn, SHAP}
+    }}
+ \end{itemize}
+ \vspace{-14pt}
+
 %-----------EXPERIENCE-----------
 \section{Experience}
   \resumeSubHeadingListStart
@@ -102,7 +123,7 @@
       {BdREN Innovation (Cortex)}{Sep 2026}
       {Team Lead, Crawler Team (Industrial Attachment) $|$ \lnk{https://github.com/BdREN-Innovation/Cortex}{GitHub}}{Bangladesh}
       \resumeItemListStart
-        \resumeItem{Led the five-person crawler team for Cortex, which crawls a website into a vector database and answers questions with citations; split the work into owned portions and took it through review.}
+        \resumeItem{Led the five-person crawler team for Cortex, a \textbf{RAG assistant} that crawls a website into a vector database and answers questions with citations; split the work into owned portions and took it through review.}
         \resumeItem{Built the CUET scraper in \textbf{Python} (JSON API first, headless-browser fallback, 26-check verification), capturing \textbf{735 documents, 382 faculty profiles, and 1,106 linked files} with source provenance.}
       \resumeItemListEnd
 
@@ -126,9 +147,24 @@
 \vspace{-9pt}
 
 %-----------PROJECTS-----------
+% Ordered for full-stack AI roles: the two with a model in the loop first.
 \section{Projects}
     \vspace{-5pt}
     \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\textbf{DimSum: LLM-Assisted Energy Optimizer (Team of 4)} $|$ \emph{Bun, TypeScript, Gemini API}}{2026 $|$ \lnk{https://dimsum-y32f.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD}{GitHub}}
+          \resumeItemListStart
+            \resumeItem{Built the Gemini stage turning plain-English operator notes into structured directives for a 24-hour campus energy plan, and a \textbf{deterministic guardrail layer} that repairs or discards unsafe model output.}
+            \resumeItem{Cut median model latency from \textbf{5.7s to 2.3s}; all ten published scenarios match the organisers' reference cost.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{MediHub: AI Hospital Management Platform} $|$ \emph{React, Node.js, Firebase, Gemini API}}{2026 $|$ \lnk{https://ai-powered-hospital-management-syst.vercel.app/}{Live} $|$ \lnk{https://github.com/SamisDone/AI-Powered-Hospital-Management-System}{GitHub}}
+          \resumeItemListStart
+            \resumeItem{Built a full-stack platform with \textbf{three roles} (admin, doctor, patient) on Firebase Auth; the role gates routes and reads.}
+            \resumeItem{Integrated the \textbf{Gemini API} to summarise an uploaded medical report into findings, test results and recommendations.}
+          \resumeItemListEnd
 
       \resumeProjectHeading
           {\textbf{Greenlight: Robot Arm Simulator} $|$ \emph{Next.js, Three.js, TypeScript, Zustand}}{2026 $|$ \lnk{https://greenlight-ptsd.vercel.app/}{Live} $|$ \lnk{https://github.com/SamisDone/GreenLight-IUT-Techathon-Hackathon}{GitHub}}
@@ -140,22 +176,15 @@
       \resumeProjectHeading
           {\textbf{Kaker Theng: Handwriting to Font (Solo)} $|$ \emph{Python, FastAPI, Next.js, HarfBuzz, fontTools}}{2026 $|$ \lnk{https://kaker-theng-api.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/Kaker-Theng}{GitHub}}
           \resumeItemListStart
-            \resumeItem{Built a web app that turns handwriting, drawn in the browser or photographed from a printed template, into a working \textbf{Bangla and English font} (TTF and WOFF2).}
+            \resumeItem{Built a web app that turns handwriting, drawn in the browser or photographed, into a \textbf{Bangla and English font}.}
             \resumeItem{Kept Noto Sans Bengali's shaping tables and swapped in the writer's outlines, so reph, phala and conjuncts shape correctly; a complete font renders \textbf{99.4\% of consonant clusters} in 28M words of Bangla Wikipedia.}
           \resumeItemListEnd
 
       \resumeProjectHeading
-          {\textbf{Sixpence: Personal Finance Ledger} $|$ \emph{PHP 8, PostgreSQL}}{2026 $|$ \lnk{https://sixpence.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/SixPence}{GitHub}}
+          {\textbf{Sixpence: Personal Finance Ledger (Solo)} $|$ \emph{PHP 8, PostgreSQL, Docker}}{2026 $|$ \lnk{https://sixpence.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/SixPence}{GitHub}}
           \resumeItemListStart
             \resumeItem{Built and deployed a finance app with \textbf{no framework and no third-party dependencies}, writing the PDF export engine and SMTP client from scratch; budgets, recurring bills, savings goals, and reports in 12 currencies.}
             \resumeItem{Secured with prepared statements, CSRF tokens, lockout, and a strict CSP; \textbf{68 tests} in CI on PHP 8.1 to 8.4.}
-          \resumeItemListEnd
-
-      \resumeProjectHeading
-          {\textbf{DimSum: LLM-Assisted Energy Optimizer} $|$ \emph{Bun, TypeScript, Gemini API}}{2026 $|$ \lnk{https://dimsum-y32f.onrender.com/}{Live} $|$ \lnk{https://github.com/SamisDone/DimSum-BUP-CSE-Fest-Preli-Team-PTSD}{GitHub}}
-          \resumeItemListStart
-            \resumeItem{Built the Gemini stage turning plain-English operator notes into structured directives for a 24-hour campus energy plan, and a \textbf{deterministic guardrail layer} that repairs or discards unsafe model output.}
-            \resumeItem{Cut median model latency from \textbf{5.7s to 2.3s}; all ten published scenarios match the organisers' reference cost.}
           \resumeItemListEnd
 
       \resumeProjectHeading
@@ -165,28 +194,16 @@
             \resumeItem{TabSaver (\textbf{700+ installs}): restores whole tab groups in one click, freeing memory without losing context.}
           \resumeItemListEnd
 
-
     \resumeSubHeadingListEnd
-\vspace{-12pt}
+\vspace{-10pt}
 
 %-----------RESEARCH-----------
 \section{Research \& Publications}
   \begin{itemize}[leftmargin=2.2em]
     \resumeItem{\textbf{A Machine Learning and Explainable AI-Based Multiclass Police Fraud Prediction Scheme with SHAP Based Interpretability.} M. Chowdhury, J. Islam, Md. A. I. Semon, \textbf{S. Sarker}, M. M. Barua, A. Akter. \emph{ICECTE 2026}, IEEE. \lnk{https://ieeexplore.ieee.org/document/11429440}{IEEE Xplore}}
     % Macro F1 (0.1703, chance about 0.11) left out on purpose; add it back for research-focused applications.
-    \resumeItem{\textbf{7th place, DravidianLangTech @ ACL 2026 Shared Task (Telugu Prompt-Style Recovery).} First-author system paper on nine-way Telugu style classification. \lnk{https://aclanthology.org/2026.dravidianlangtech-1.58/}{Paper} $|$ \lnk{https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu}{Code}}
+    \resumeItem{\textbf{7th place, DravidianLangTech @ ACL 2026 Shared Task (Telugu Prompt-Style Recovery).} First-author system paper on nine-way Telugu style classification with multilingual transformers. \lnk{https://aclanthology.org/2026.dravidianlangtech-1.58/}{Paper} $|$ \lnk{https://github.com/Priyontee1713/Still-Loading-Prompt-Recovery-for-LLM-in-Telugu}{Code}}
   \end{itemize}\vspace{-9pt}
-
-%-----------SKILLS-----------
-\section{Technical Skills}
- \begin{itemize}[leftmargin=0.15in, label={}]
-    \small{\item{
-     \textbf{Languages}{: C++, Python, TypeScript, JavaScript, Java, C, PHP, SQL} $|$ \textbf{Tools}{: Git, Docker, Linux, LaTeX} \\
-     \textbf{Web}{: React, Next.js, Node.js, Express.js, PostgreSQL, Firebase, Tailwind CSS, Three.js} \\
-     \textbf{AI/ML}{: PyTorch, scikit-learn, Hugging Face Transformers, NLP, multimodal deep learning, SHAP, Gemini API}
-    }}
- \end{itemize}
- \vspace{-14pt}
 
 %-----------LEADERSHIP-----------
 \section{Leadership \& Competitions}
