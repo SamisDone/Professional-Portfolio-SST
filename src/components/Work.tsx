@@ -173,7 +173,7 @@ export default function Work() {
         </p>
       </section>
 
-      <section aria-label="Project index" className="shell tier-b">
+      <section aria-label="Project index" className="shell tier-c">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
         <nav aria-label="Filter by kind">
           <ul className="m-0 flex list-none flex-wrap gap-3 p-0">

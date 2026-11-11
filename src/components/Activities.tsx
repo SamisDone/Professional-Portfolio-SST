@@ -24,7 +24,7 @@ export default function Activities() {
         </div>
       </section>
 
-      <div className="shell tier-b grid gap-10 lg:grid-cols-12 lg:gap-8">
+      <div className="shell tier-b grid gap-8 lg:grid-cols-12">
         <div className="lg:col-span-6">
           <section aria-labelledby="leadership">
             <h2 id="leadership" className="t-h3">
@@ -37,7 +37,7 @@ export default function Activities() {
             </ol>
           </section>
 
-          <section aria-labelledby="certifications" className="mt-10">
+          <section aria-labelledby="certifications" className="mt-8">
             <h2 id="certifications" className="t-h3">
               Certifications
             </h2>

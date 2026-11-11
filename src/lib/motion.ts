@@ -128,6 +128,9 @@ function countUp(el: HTMLElement) {
 
 /** Plays the element's entrance, then marks it finished. */
 function show(el: HTMLElement) {
+  // A proof mark on more than one line cannot be wiped: its clip is measured
+  // from the first line only, which would hide the others until the end.
+  if (el.matches(".proof-mark") && el.getClientRects().length > 1) return finish(el);
   entrancesUntil = Math.max(entrancesUntil, performance.now() + DONE_MS);
   el.setAttribute("data-in", "");
   el.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);

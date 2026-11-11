@@ -40,7 +40,9 @@ export default {
     borderWidth: { DEFAULT: "1px", 0: "0", 2: "2px", 3: "3px", 4: "4px" },
     boxShadow: { none: "none" },
     // The 4px scale: 4, 8, 12, 16, 24, 32, 48, 72, 112. 20 is the phone
-    // gutter, 64 the header, 160 the index thumbnail.
+    // gutter, 64 the header, 160 the index thumbnail. 96 is where a sticky
+    // panel rests: the 64px header plus the breadcrumb under it. A class off
+    // this scale makes no CSS at all, so scripts/check-bans.mjs fails on one.
     spacing: {
       0: "0",
       px: "1px",
@@ -55,6 +57,7 @@ export default {
       12: "48px",
       16: "64px",
       18: "72px",
+      24: "96px",
       28: "112px",
       40: "160px",
     },

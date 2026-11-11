@@ -8,13 +8,12 @@ import { cgpaHistory, trajectoryAxisNote, trajectoryCaption, trajectoryNote } fr
  */
 const W = 640;
 const H = 300;
-const PAD_L = 48;
-const PAD_R = 20;
+const PAD_L = 58;
+const PAD_R = 40;
 const PAD_T = 44;
 const PAD_B = 44;
 const DOMAIN: [number, number] = [3.0, 4.0];
 const GRID = [3.0, 3.2, 3.4, 3.6, 3.8, 4.0];
-const FONT = 16;
 
 const x = (i: number) => PAD_L + ((W - PAD_L - PAD_R) * i) / (cgpaHistory.length - 1);
 const y = (v: number) => H - PAD_B - ((v - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0])) * (H - PAD_T - PAD_B);
@@ -31,7 +30,9 @@ const DESCRIPTION =
 /**
  * The grade record, drawn because the shape is the point: a dip through
  * Level 2 and a climb out of it. Ink only: a 2px line, 8px square points, and
- * every point labelled, so the zoomed axis cannot overstate a change.
+ * every point labelled, so the zoomed axis cannot overstate a change. Each
+ * figure sits on a paper outline (.chart-value), so a grid line that crosses
+ * one, as the 3.2 line crosses 3.33, stops short of it.
  *
  * The axis is zoomed to 3.0 to 4.0, and the chart says so in a note that is
  * part of it, with JavaScript or without.
@@ -71,16 +72,15 @@ export default function Trajectory() {
               y={y(v)}
               textAnchor="end"
               dominantBaseline="middle"
-              className="t-label"
+              className="t-label chart-text"
               fill="var(--ink-2)"
-              style={{ fontSize: FONT }}
             >
               {v.toFixed(1)}
             </text>
           </g>
         ))}
 
-        <text x={W - PAD_R} y={PAD_T - 22} textAnchor="end" className="t-label" fill="var(--ink)" style={{ fontSize: FONT }}>
+        <text x={W - PAD_R} y={PAD_T - 22} textAnchor="end" className="t-label chart-text" fill="var(--ink)">
           {trajectoryAxisNote}
         </text>
 
@@ -98,7 +98,7 @@ export default function Trajectory() {
         {cgpaHistory.map((p, i) => {
           const last = i === cgpaHistory.length - 1;
           const anchor = i === 0 ? "start" : last ? "end" : "middle";
-          const ax = i === 0 ? x(i) - 4 : last ? x(i) + 4 : x(i);
+          const ax = i === 0 ? x(i) + 2 : last ? x(i) + 4 : x(i);
           // A low point's label goes under it, or the line runs through it.
           const prevV = cgpaHistory[i - 1]?.value ?? Infinity;
           const nextV = cgpaHistory[i + 1]?.value ?? Infinity;
@@ -123,19 +123,21 @@ export default function Trajectory() {
                 x={ax}
                 y={below ? y(p.value) + 28 : y(p.value) - 14}
                 textAnchor={anchor}
-                className="m-plabel t-label"
+                className="m-plabel t-label chart-text chart-value"
                 fill="var(--ink)"
-                style={{ ...place, fontSize: FONT }}
+                style={place}
               >
                 {p.value.toFixed(2)}
               </text>
+              {/* Centred under its point, with room either side: anchored to
+                  the chart's edges, the first two and the last two terms ran
+                  into each other at the size a phone needs. */}
               <text
-                x={ax}
-                y={H - PAD_B + 26}
-                textAnchor={anchor}
-                className="t-label"
+                x={x(i)}
+                y={H - PAD_B + 34}
+                textAnchor="middle"
+                className="t-label chart-text"
                 fill="var(--ink-2)"
-                style={{ fontSize: FONT }}
               >
                 <title>{p.full}</title>
                 {p.label}

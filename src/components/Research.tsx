@@ -34,7 +34,7 @@ export default function Research() {
         <DecodeText tabIndex={-1} className="t-h1 band">
           Research.
         </DecodeText>
-        <p className="t-lead mt-4 max-w-[46ch]">Published work, and what is on the bench now.</p>
+        <p className="t-lead mt-4 max-w-[46ch]">Published work, and the thesis in progress.</p>
       </section>
 
       <div className="shell tier-b grid gap-12 lg:grid-cols-12 lg:gap-8">

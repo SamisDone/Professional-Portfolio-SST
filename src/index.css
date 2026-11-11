@@ -943,3 +943,26 @@ html.menu-open {
   max-height: 92vh;
 }
 
+
+/*
+ * The trajectory's lettering, in the chart's own units. 16 of 640 is the
+ * Label's 12px in the 470px cell the chart has from lg. A phone draws the
+ * same chart about 350px wide, where 16 units came out under 9px, so the
+ * units grow there and the figures stay near 12px. Unlayered, to sit over
+ * .t-label's own size.
+ */
+.chart-text {
+  font-size: 16px;
+}
+@media (max-width: 639.98px) {
+  .chart-text {
+    font-size: 22px;
+  }
+}
+/* A paper outline behind each figure, so a grid line never runs through one. */
+.chart-value {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}

@@ -75,7 +75,7 @@ export default function Certificates() {
         )}
 
         {withoutImage.length > 0 && (
-          <ul data-ledger="bottom" className={`m-0 list-none border-t-2 border-ink p-0 ${IMAGES.length > 0 ? "mt-10" : ""}`}>
+          <ul data-ledger="bottom" className={`m-0 list-none border-t-2 border-ink p-0 ${IMAGES.length > 0 ? "mt-8" : ""}`}>
             {withoutImage.map((c) => (
               <li key={c} className="tint-row t-body border-b border-ink py-3">
                 {c}

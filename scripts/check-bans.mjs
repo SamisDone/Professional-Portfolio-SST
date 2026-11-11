@@ -12,7 +12,7 @@
  * text in src/fonts is skipped: it is not ours to restyle.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, resolve, join, relative, extname } from "node:path";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -54,7 +54,18 @@ const BANNED_FACES = [
 ];
 const faceRe = new RegExp(`(?:^|["'\\s,\\[])(${BANNED_FACES.map((f) => f.replace(/ /g, "\\s+")).join("|")})(?=["'\\s,\\]]|$)`, "i");
 
-const HYPE = /\b(crafting|seamless(?:ly)?|cutting-edge|leverag(?:e|es|ed|ing)|unlock(?:s|ed|ing)?|elevat(?:e|es|ed|ing)|empower(?:s|ed|ing)?|journey|delve|passionate|innovative|robust|game-changing)\b/i;
+/*
+ * Spacing replaces Tailwind's scale (tailwind.config.js), so a step that is
+ * not on it, `mt-10` say, compiles to nothing and the gap it was written for
+ * is silently missing. Read from the config so this cannot drift from it.
+ */
+const { default: tailwind } = await import(pathToFileURL(join(root, "tailwind.config.js")).href);
+const SPACING = new Set(Object.keys(tailwind.theme.spacing));
+const SPACED =
+  /(?<![\w-])-?(?:[a-z0-9[\]=-]+:)*-?(?:m[trblxyse]?|p[trblxyse]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|left|right|bottom|w|h|min-w|min-h|max-w|max-h|size|basis|translate-[xy]|scroll-m[trblxy]?|scroll-p[trblxy]?)-(\d+(?:\.\d+)?)(?![\w./%-])/g;
+const offScale = (line) => [...line.matchAll(SPACED)].filter((m) => !SPACING.has(m[1])).map((m) => m[0]);
+
+const HYPE =/\b(crafting|seamless(?:ly)?|cutting-edge|leverag(?:e|es|ed|ing)|unlock(?:s|ed|ing)?|elevat(?:e|es|ed|ing)|empower(?:s|ed|ing)?|journey|delve|passionate|innovative|robust|game-changing)\b/i;
 
 /** Each rule: a test on one line, and why it is banned. */
 const RULES = [
@@ -141,6 +152,11 @@ for (const file of files) {
     }
     for (const rule of RULES) {
       if (rule.re ? rule.re.test(line) : rule.test(line)) failures.push(`${at}  ${rule.why}`);
+    }
+
+    // Spacing only from the scale, wherever a class list can be written.
+    if (/\.(?:tsx|html)$/.test(rel) && !/^\s*(\/\/|\*|\/\*)/.test(line)) {
+      for (const cls of offScale(line)) failures.push(`${at}  ${cls} is off the spacing scale, so it makes no CSS`);
     }
 
     // Colour only from tokens. In src/ no hex may appear outside the token

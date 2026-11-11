@@ -404,6 +404,13 @@ html.m-js .m-a3 .proof-mark {
 html.m-js .m-a3 .proof-mark[data-in] {
   clip-path: inset(0 0 0 0);
 }
+/* A clip on an inline box is measured from its first line alone, so a mark
+   that wraps, a paper's title on Research, lost every line after the first
+   for as long as the clip stayed on. Once the wipe is over the clip comes
+   off, and a mark already on several lines skips the wipe (motion.ts). */
+html.m-js .m-a3 .proof-mark[data-in="now"] {
+  clip-path: none;
+}
 
 /* ---------------------------------------------------------------- A4
    Nav tabs drop 8px into place, one after another, on the first page of a
@@ -658,6 +665,15 @@ html.m-js .m-f2 [data-ledger][data-in] > * > * {
 html.m-js .m-f2 [data-ledger][data-in] [data-date] {
   animation: m-stamp var(--m-snap) var(--m-ease) backwards;
   animation-delay: calc(var(--r, 0) * var(--m-stagger) + 160ms);
+}
+
+/* Finished: a row that a /work filter hides and shows again, or a date that
+   a breakpoint hides and shows again, is a new box to the browser, which
+   would play its reveal a second time. Once the ledger has entered, none of
+   it animates again. */
+html.m-js .m-f2 [data-ledger][data-in="now"] > * > *,
+html.m-js .m-f2 [data-ledger][data-in="now"] [data-date] {
+  animation: none;
 }
 
 /* ---------------------------------------------------------------- F3
