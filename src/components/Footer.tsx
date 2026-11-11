@@ -7,14 +7,30 @@ const SOCIALS = [
   { label: "Codeforces", href: profile.codeforces },
 ];
 
-/** The one inverse block on the site: paper on ink, 16.73:1. */
+/** Undefined outside Vite, as in a script that imports this file directly. */
+const build = typeof __BUILD__ === "undefined" ? null : __BUILD__;
+
+/**
+ * The one inverse block on the site: paper on ink, 16.73:1. Under the name it
+ * carries the site's own receipt, the day of the commit it was built from and
+ * that commit's hash, so the page that asks for proof of everything else says
+ * how current it is.
+ */
 export default function Footer() {
   return (
     <footer className="site-footer on-ink mt-18 bg-ink text-paper">
       <div className="shell t-label flex flex-col gap-6 py-8 sm:flex-row sm:items-center sm:justify-between">
-        <p>
-          {profile.name}, {profile.location}
-        </p>
+        <div>
+          <p>
+            {profile.name}, {profile.location}
+          </p>
+          {build && (
+            <p className="mt-2">
+              {/* A hash is lower case wherever else a reader meets it. */}
+              Updated {build.date} / build <span className="normal-case">{build.sha}</span>
+            </p>
+          )}
+        </div>
         <nav aria-label="Profiles" className="tap-row flex flex-wrap items-center gap-x-6 gap-y-3 [--tap-gap:30px]">
           {SOCIALS.map((s) => (
             <a

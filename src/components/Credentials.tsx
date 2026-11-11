@@ -23,6 +23,14 @@ const CARDS: Card[] = [
 ];
 
 /**
+ * A place to break after an "@". The ACL paper's title carries
+ * "Loading@DravidianLangTech", one unbreakable run that reached the rule of
+ * its cell at 1024px; now it can turn the line at the sign.
+ */
+const breakable = (title: string) =>
+  title.split("@").flatMap((part, i) => (i === 0 ? [part] : ["@", <wbr key={i} />, part]));
+
+/**
  * The end of Home on a desktop: the two papers and the Cortex role, drawn like
  * the proof row, so the page closes on evidence rather than on a lone button.
  * A phone reaches the pager straight after the flagships and skips this.
@@ -38,7 +46,7 @@ export default function Credentials() {
           const body = (
             <>
               <span className="t-label text-ink-2">{card.venue}</span>
-              <h3 className="t-h3 mt-2">{card.title}</h3>
+              <h3 className="t-h3 mt-2">{breakable(card.title)}</h3>
               <span className="t-small mt-2 block">{card.line}</span>
               <span className="t-label mt-auto block pt-3 text-ink-2">
                 {card.internal ? card.href : domainOf(card.href)}

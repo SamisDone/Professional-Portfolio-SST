@@ -207,6 +207,26 @@ function certificates() {
     });
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * The commit this build was made from, for the line in the footer: its short
+ * hash and its date as "7 Nov 2026". Read from git, so the client build and
+ * the prerender pass agree and the same commit always prints the same line.
+ * Null when git cannot answer; the footer then prints no line at all, since a
+ * guessed date is worse than none.
+ */
+function buildStamp() {
+  try {
+    const [sha, day] = execFileSync("git", ["log", "-1", "--format=%h %cs"], { encoding: "utf8" }).trim().split(" ");
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day ?? "");
+    if (!sha || !match) return null;
+    return { sha, date: `${Number(match[3])} ${MONTHS[Number(match[2]) - 1]} ${match[1]}` };
+  } catch {
+    return null;
+  }
+}
+
 /** The looping videos that exist in public/shots, by file name. */
 function shotLoops() {
   return existsSync("public/shots") ? readdirSync("public/shots").filter((f) => f.endsWith("-loop.mp4")) : [];
@@ -217,6 +237,7 @@ export default defineConfig(({ isSsrBuild }) => ({
     __SHOT_LOOPS__: JSON.stringify(shotLoops()),
     __CV_VERSION__: JSON.stringify(cvVersion()),
     __CERTIFICATES__: JSON.stringify(certificates()),
+    __BUILD__: JSON.stringify(buildStamp()),
   },
   plugins: [
     react(),

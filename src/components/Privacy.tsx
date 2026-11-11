@@ -15,7 +15,7 @@ export default function Privacy() {
         <Label className="mt-4">Last updated {formatDate(privacy.updated)}</Label>
       </section>
 
-      <dl className="shell tier-b m-0">
+      <dl className="shell tier-b my-0">
         {/* First, so the way to ask about any of this is on the first screen. */}
         <div className="grid gap-3 border-t-2 border-ink py-6 lg:grid-cols-12 lg:gap-8">
           <dt className="t-label pt-1 text-ink-2 lg:col-span-3">Contact</dt>

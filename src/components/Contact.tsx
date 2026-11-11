@@ -146,8 +146,10 @@ export default function Contact() {
    * The markup is in phone order: the heading, the lead, the email address and
    * the CV, then the form, then the details and the profiles, so a phone
    * reaches both ways to write before anything else. From `lg` the form takes
-   * the right column from the top and the details sit under the email in the
-   * left one.
+   * the right column from the top with the profiles under it, and the details
+   * sit under the email in the left one. The profiles used to follow the
+   * details on the left, which left the right column empty for 400px under
+   * the Send button.
    */
   return (
     <div className="shell tier-a grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8">
@@ -168,7 +170,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section aria-label="Contact form" className="mt-12 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:mt-0">
+      <section aria-label="Contact form" className="mt-12 lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:mt-0">
         {contactForm.fallback && (
           <p className="t-body mb-6 border-2 border-ink bg-paper-2 px-4 py-3">
             {contactForm.fallbackNotice}{" "}
@@ -243,7 +245,7 @@ export default function Contact() {
         </form>
       </section>
 
-      <section aria-label="Details and profiles" className="mt-12 lg:col-span-5 lg:row-start-2 lg:mt-8">
+      <section aria-label="Details" className="mt-12 lg:col-span-5 lg:row-start-2 lg:mt-8">
         <dl className="m-0 flex flex-col gap-4 border-t-2 border-ink pt-6">
           {[
             ["Looking for", profile.status],
@@ -256,8 +258,10 @@ export default function Contact() {
             </div>
           ))}
         </dl>
+      </section>
 
-        <ul className="m-0 mt-12 list-none p-0">
+      <section aria-label="Profiles" className="mt-12 lg:col-span-7 lg:col-start-6 lg:row-start-2 lg:mt-8">
+        <ul className="m-0 list-none p-0">
           {SOCIALS.map((s) => (
             <li key={s.label} className="tint-row flex items-baseline justify-between gap-4 border-t border-ink py-3 last:border-b">
               <Label as="span">{s.label}</Label>

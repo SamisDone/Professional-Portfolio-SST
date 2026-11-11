@@ -9,6 +9,12 @@ declare const __SHOT_LOOPS__: string[];
 /** The images in public/certificates, listed by vite.config.ts at build time. */
 declare const __CERTIFICATES__: { file: string; thumb?: string }[];
 
+/**
+ * The commit the site was built from and the day it was made, read from git
+ * by vite.config.ts. Null when git cannot answer, and then nothing is shown.
+ */
+declare const __BUILD__: { sha: string; date: string } | null;
+
 interface Document {
   startViewTransition?: (callback: () => void | Promise<void>) => ViewTransition;
 }
