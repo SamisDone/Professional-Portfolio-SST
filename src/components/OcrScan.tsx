@@ -4,7 +4,7 @@ import { headingGate, onSkip, settle } from "../lib/motion";
 /** useLayoutEffect warns when rendered to a string. */
 const useIsoLayoutEffect = typeof window === "undefined" ? () => {} : useLayoutEffect;
 
-const SCAN_MS = 600;
+const SCAN_MS = 420;
 
 /**
  * Sweeps a scan bar down its content once on entry, so the page looks

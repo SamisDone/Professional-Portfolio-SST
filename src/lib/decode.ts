@@ -2,13 +2,23 @@ import { headingGate, onSkip } from "./motion";
 
 /**
  * The signature: text resolving like an OCR system reading it. The letters
- * are built by hand, directly in the DOM, because they change about thirty
- * times a second and React has no reason to know.
+ * are built by hand, directly in the DOM, because they change many times a
+ * second and React has no reason to know.
+ *
+ * A reading head of a few letters travels left to right. Ahead of it the
+ * band is empty, inside it each letter is still a guess, and behind it the
+ * real letters stand. The whole heading was once a field of cycling letters
+ * for most of a second, which read as noise: a name was "LZWSZJ" before it
+ * was a name. Now what has been read stays read, and the head is past in
+ * about half a second.
  */
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/_<>";
-const FRAME_MS = 33;
-/** How long the first letter cycles before it locks. */
-const HOLD_MS = 160;
+// Letters and digits only: what a recogniser mistakes a letter for.
+const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const FRAME_MS = 40;
+/** How long the first letter is a guess before it locks. */
+const HOLD_MS = 60;
+/** How many letters the reading head covers. */
+const HEAD = 3;
 /** After the highlight starts growing, as the brief sets it. */
 const AFTER_HIGHLIGHT_MS = 80;
 
@@ -58,7 +68,6 @@ function buildLetters(root: HTMLElement, fx: HTMLElement) {
       el.style.width = `${r.width}px`;
       el.style.height = `${r.height}px`;
       el.style.lineHeight = `${r.height}px`;
-      el.textContent = glyph();
       fx.append(el);
       placed.push({ el, final });
     }
@@ -111,9 +120,12 @@ export function playDecode(root: HTMLElement, key: string) {
     // A resize would leave the letters where the text used to be.
     window.addEventListener("resize", finish);
 
-    const total = Math.min(900, Math.max(600, 420 + placed.length * 28));
+    const total = Math.min(560, Math.max(320, 200 + placed.length * 18));
     const span = Math.max(1, placed.length - 1);
-    const letters: Letter[] = placed.map((p, i) => ({ ...p, at: HOLD_MS + ((total - HOLD_MS) * i) / span, locked: false }));
+    const step = (total - HOLD_MS) / span;
+    const letters: Letter[] = placed.map((p, i) => ({ ...p, at: HOLD_MS + step * i, locked: false }));
+    // A letter is a guess from the moment the head reaches it until it locks.
+    const guessFor = Math.max(HOLD_MS, step * HEAD);
 
     const start = performance.now();
     let last = start;
@@ -131,7 +143,7 @@ export function playDecode(root: HTMLElement, key: string) {
             l.el.textContent = l.final;
           } else {
             open++;
-            l.el.textContent = glyph();
+            if (elapsed >= l.at - guessFor) l.el.textContent = glyph();
           }
         }
         if (open === 0) return finish();

@@ -43,7 +43,7 @@ const STAGGER_MAX = 5;
 /** Longer than any entrance, stagger included. */
 const DONE_MS = 700;
 /** The terminal breadcrumb's typing, which the heading waits for. */
-export const CRUMB_TYPE_MS = 250;
+export const CRUMB_TYPE_MS = 160;
 const BAND_MS = 400;
 const TABS_KEY = "m-tabs";
 

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { CRUMB_TYPE_MS, onSkip, reducedMotion } from "../lib/motion";
 
-const HOLD_MS = 500;
+const HOLD_MS = 360;
 const FADE_MS = 150;
 
 /** The history stack position React Router keeps in each entry's state. */
